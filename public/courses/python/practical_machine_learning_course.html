@@ -1,0 +1,844 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine Learning with Python — Practical Course</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+--bg:#071018;
+--card:#101a2d;
+--border:#23324d;
+--accent:#00e5bc;
+--accent2:#38bdf8;
+--accent3:#ff5e7e;
+--text:#edf2ff;
+--muted:#8ea0b8;
+--code:#090f1a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+background:var(--bg);
+color:var(--text);
+font-family:Inter,sans-serif;
+line-height:1.7;
+}
+.sidebar{
+position:fixed;
+left:0;top:0;bottom:0;
+width:290px;
+overflow:auto;
+background:#08111d;
+border-right:1px solid var(--border);
+padding:1.5rem 0;
+}
+.logo{
+padding:0 1.5rem;
+margin-bottom:1rem;
+}
+.logo h2{
+font-family:Syne,sans-serif;
+color:var(--accent);
+font-size:1.5rem;
+}
+.logo p{
+color:var(--muted);
+font-size:.8rem;
+}
+.nav-title{
+padding:1rem 1.5rem .4rem;
+color:var(--muted);
+font-size:.75rem;
+letter-spacing:.12em;
+text-transform:uppercase;
+}
+.nav-link{
+display:block;
+padding:.6rem 1.5rem;
+text-decoration:none;
+color:#c3d2e6;
+font-weight:600;
+transition:.2s;
+}
+.nav-link:hover{
+background:rgba(0,229,188,.08);
+color:var(--accent);
+border-left:3px solid var(--accent);
+}
+.main{
+margin-left:290px;
+}
+.hero{
+padding:5rem 4rem;
+border-bottom:1px solid var(--border);
+}
+.badge{
+display:inline-block;
+padding:.4rem 1rem;
+border-radius:999px;
+background:rgba(0,229,188,.08);
+border:1px solid rgba(0,229,188,.25);
+color:var(--accent);
+margin-bottom:1.5rem;
+}
+.hero h1{
+font-family:Syne,sans-serif;
+font-size:4rem;
+line-height:1.1;
+margin-bottom:1rem;
+}
+.hero h1 span{color:var(--accent)}
+.hero p{
+max-width:850px;
+font-size:1.05rem;
+color:var(--muted);
+}
+.section{
+padding:4rem;
+border-bottom:1px solid var(--border);
+}
+.section-title{
+font-family:Syne,sans-serif;
+font-size:2.2rem;
+margin-bottom:.8rem;
+}
+.section-desc{
+color:var(--muted);
+margin-bottom:2rem;
+}
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:1rem;
+margin:2rem 0;
+}
+.card{
+background:var(--card);
+border:1px solid var(--border);
+border-radius:16px;
+padding:1.5rem;
+}
+.card h3{
+font-family:Syne,sans-serif;
+margin-bottom:.8rem;
+color:var(--accent);
+}
+.card p{
+color:var(--muted);
+font-size:.95rem;
+}
+.code{
+background:var(--code);
+border:1px solid var(--border);
+border-radius:14px;
+overflow:auto;
+margin:1.5rem 0;
+}
+.code-head{
+padding:.9rem 1rem;
+border-bottom:1px solid var(--border);
+font-family:'JetBrains Mono',monospace;
+font-size:.82rem;
+color:var(--accent2);
+}
+pre{
+padding:1.4rem;
+font-family:'JetBrains Mono',monospace;
+font-size:.87rem;
+line-height:1.7;
+color:#d9e7ff;
+}
+.project{
+background:linear-gradient(135deg,rgba(0,229,188,.08),rgba(56,189,248,.05));
+border:1px solid rgba(0,229,188,.25);
+border-radius:18px;
+padding:2rem;
+margin:2rem 0;
+}
+.project h3{
+font-family:Syne,sans-serif;
+color:var(--accent);
+margin-bottom:1rem;
+}
+.diagram{
+background:#111c30;
+border:1px solid var(--border);
+padding:1.5rem;
+border-radius:16px;
+margin:1.5rem 0;
+}
+.flow{
+display:flex;
+flex-wrap:wrap;
+gap:1rem;
+justify-content:center;
+align-items:center;
+}
+.box{
+background:rgba(56,189,248,.08);
+border:1px solid rgba(56,189,248,.25);
+padding:1rem 1.2rem;
+border-radius:12px;
+font-weight:700;
+min-width:160px;
+text-align:center;
+}
+.arrow{
+font-size:1.5rem;
+color:var(--accent);
+}
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:1.5rem;
+}
+th,td{
+border:1px solid var(--border);
+padding:1rem;
+}
+th{
+background:#12203a;
+color:var(--accent2);
+}
+td{
+color:var(--muted);
+}
+.footer{
+padding:3rem;
+text-align:center;
+color:var(--muted);
+}
+@media(max-width:900px){
+.sidebar{display:none}
+.main{margin-left:0}
+.hero,.section{padding:2rem}
+.hero h1{font-size:2.5rem}
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<div class="logo">
+<h2>🤖 ML Practical Course</h2>
+<p>Projects + Codes + Concepts</p>
+</div>
+
+<div class="nav-title">Foundations</div>
+<a href="#python" class="nav-link">Python for ML</a>
+<a href="#libraries" class="nav-link">Libraries</a>
+
+<div class="nav-title">Machine Learning</div>
+<a href="#regression" class="nav-link">Regression</a>
+<a href="#classification" class="nav-link">Classification</a>
+<a href="#clustering" class="nav-link">Clustering</a>
+<a href="#deep" class="nav-link">Deep Learning</a>
+<a href="#cv" class="nav-link">Computer Vision</a>
+<a href="#nlp" class="nav-link">NLP</a>
+
+<div class="nav-title">Advanced</div>
+<a href="#deployment" class="nav-link">Deployment</a>
+<a href="#roadmap" class="nav-link">Learning Roadmap</a>
+</div>
+
+<div class="main">
+
+<section class="hero">
+<div class="badge">Practical Machine Learning Handbook</div>
+<h1>Machine Learning <span>with Python</span></h1>
+<p>
+This handbook is designed as a practical coding-first Machine Learning course.
+Every concept contains explanation, workflow diagrams, implementation code,
+and real-world projects so you actually learn by building systems.
+</p>
+</section>
+
+<section class="section" id="python">
+<h2 class="section-title">Python Essentials for Machine Learning</h2>
+<p class="section-desc">
+Before ML, you must become comfortable with Python programming, arrays, loops, functions, file handling, and object-oriented programming.
+</p>
+
+<div class="cards">
+<div class="card">
+<h3>NumPy Arrays</h3>
+<p>Fast mathematical operations and matrix computation.</p>
+</div>
+
+<div class="card">
+<h3>Pandas</h3>
+<p>Data cleaning, transformation, and CSV handling.</p>
+</div>
+
+<div class="card">
+<h3>Matplotlib</h3>
+<p>Data visualization and plotting graphs.</p>
+</div>
+
+<div class="card">
+<h3>Functions & Classes</h3>
+<p>Build reusable ML pipelines and systems.</p>
+</div>
+</div>
+
+<div class="project">
+<h3>📌 Beginner Project — Student Marks Analyzer</h3>
+<p>
+Learn Python basics, loops, NumPy, Pandas, and plotting by analyzing marks data.
+</p>
+
+<div class="code">
+<div class="code-head">student_analysis.py</div>
+<pre>
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = {
+    "Student":["A","B","C","D"],
+    "Marks":[85,92,78,95]
+}
+
+df = pd.DataFrame(data)
+
+print(df.describe())
+
+plt.bar(df["Student"], df["Marks"])
+plt.title("Student Performance")
+plt.show()
+</pre>
+</div>
+</div>
+</section>
+
+<section class="section" id="libraries">
+<h2 class="section-title">Important ML Libraries</h2>
+
+<table>
+<tr>
+<th>Library</th>
+<th>Purpose</th>
+<th>Real Usage</th>
+</tr>
+
+<tr>
+<td>NumPy</td>
+<td>Matrix Operations</td>
+<td>Neural Network Computation</td>
+</tr>
+
+<tr>
+<td>Pandas</td>
+<td>Data Analysis</td>
+<td>Cleaning Datasets</td>
+</tr>
+
+<tr>
+<td>Scikit-learn</td>
+<td>Traditional ML</td>
+<td>Regression & Classification</td>
+</tr>
+
+<tr>
+<td>TensorFlow</td>
+<td>Deep Learning</td>
+<td>CNN, NLP, AI Models</td>
+</tr>
+
+<tr>
+<td>OpenCV</td>
+<td>Computer Vision</td>
+<td>Image Processing</td>
+</tr>
+
+<tr>
+<td>NLTK / SpaCy</td>
+<td>NLP</td>
+<td>Text Processing</td>
+</tr>
+</table>
+</section>
+
+<section class="section" id="regression">
+<h2 class="section-title">Regression Algorithms</h2>
+<p class="section-desc">
+Regression predicts continuous numerical values.
+</p>
+
+<div class="diagram">
+<div class="flow">
+<div class="box">Input Features</div>
+<div class="arrow">→</div>
+<div class="box">Regression Model</div>
+<div class="arrow">→</div>
+<div class="box">Predicted Value</div>
+</div>
+</div>
+
+<div class="cards">
+<div class="card">
+<h3>Linear Regression</h3>
+<p>Predicts values using straight-line relationships.</p>
+</div>
+
+<div class="card">
+<h3>Polynomial Regression</h3>
+<p>Handles non-linear data patterns.</p>
+</div>
+
+<div class="card">
+<h3>Ridge & Lasso</h3>
+<p>Prevents overfitting using regularization.</p>
+</div>
+</div>
+
+<div class="project">
+<h3>📌 Project — House Price Prediction</h3>
+
+<div class="code">
+<div class="code-head">house_price_prediction.py</div>
+<pre>
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+data = pd.read_csv("housing.csv")
+
+X = data[['area','bedrooms']]
+y = data['price']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,y,test_size=0.2
+)
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+prediction = model.predict(X_test)
+
+print(prediction)
+</pre>
+</div>
+
+<p>
+Concepts learned:
+Data preprocessing, train-test split, model training, prediction.
+</p>
+</div>
+</section>
+
+<section class="section" id="classification">
+<h2 class="section-title">Classification Algorithms</h2>
+
+<div class="cards">
+<div class="card">
+<h3>Logistic Regression</h3>
+<p>Binary classification model.</p>
+</div>
+
+<div class="card">
+<h3>Decision Tree</h3>
+<p>Decision-based classification system.</p>
+</div>
+
+<div class="card">
+<h3>Random Forest</h3>
+<p>Multiple decision trees combined together.</p>
+</div>
+
+<div class="card">
+<h3>SVM</h3>
+<p>Separates data using optimal hyperplanes.</p>
+</div>
+</div>
+
+<div class="project">
+<h3>📌 Project — Heart Disease Prediction</h3>
+
+<div class="code">
+<div class="code-head">heart_disease_prediction.py</div>
+<pre>
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+import pandas as pd
+
+data = pd.read_csv("heart.csv")
+
+X = data.drop("target", axis=1)
+y = data["target"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,y,test_size=0.2
+)
+
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
+
+accuracy = model.score(X_test, y_test)
+
+print("Accuracy:", accuracy)
+</pre>
+</div>
+
+<p>
+Concepts learned:
+Classification, feature selection, model accuracy, prediction systems.
+</p>
+</div>
+</section>
+
+<section class="section" id="clustering">
+<h2 class="section-title">Unsupervised Learning & Clustering</h2>
+
+<div class="diagram">
+<div class="flow">
+<div class="box">Unlabeled Data</div>
+<div class="arrow">→</div>
+<div class="box">Similarity Detection</div>
+<div class="arrow">→</div>
+<div class="box">Clusters</div>
+</div>
+</div>
+
+<div class="cards">
+<div class="card">
+<h3>K-Means</h3>
+<p>Groups similar points together.</p>
+</div>
+
+<div class="card">
+<h3>Hierarchical Clustering</h3>
+<p>Creates cluster trees.</p>
+</div>
+
+<div class="card">
+<h3>PCA</h3>
+<p>Reduces dimensions for visualization.</p>
+</div>
+</div>
+
+<div class="project">
+<h3>📌 Project — Customer Segmentation</h3>
+
+<div class="code">
+<div class="code-head">customer_segmentation.py</div>
+<pre>
+from sklearn.cluster import KMeans
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = pd.read_csv("customers.csv")
+
+X = data[['Annual Income','Spending Score']]
+
+model = KMeans(n_clusters=5)
+
+data['Cluster'] = model.fit_predict(X)
+
+plt.scatter(
+    data['Annual Income'],
+    data['Spending Score'],
+    c=data['Cluster']
+)
+
+plt.show()
+</pre>
+</div>
+
+<p>
+Concepts learned:
+Clustering, grouping patterns, customer analytics.
+</p>
+</div>
+</section>
+
+<section class="section" id="deep">
+<h2 class="section-title">Deep Learning</h2>
+
+<div class="diagram">
+<div class="flow">
+<div class="box">Input Layer</div>
+<div class="arrow">→</div>
+<div class="box">Hidden Layers</div>
+<div class="arrow">→</div>
+<div class="box">Output Layer</div>
+</div>
+</div>
+
+<div class="cards">
+<div class="card">
+<h3>ANN</h3>
+<p>Basic neural networks.</p>
+</div>
+
+<div class="card">
+<h3>CNN</h3>
+<p>Image processing neural networks.</p>
+</div>
+
+<div class="card">
+<h3>RNN / LSTM</h3>
+<p>Sequential and time-series learning.</p>
+</div>
+</div>
+
+<div class="project">
+<h3>📌 Project — Cat vs Dog Image Classifier</h3>
+
+<div class="code">
+<div class="code-head">cnn_classifier.py</div>
+<pre>
+import tensorflow as tf
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Conv2D(
+        32,(3,3),activation='relu',
+        input_shape=(128,128,3)
+    ),
+
+    tf.keras.layers.MaxPooling2D(2,2),
+
+    tf.keras.layers.Flatten(),
+
+    tf.keras.layers.Dense(
+        128,activation='relu'
+    ),
+
+    tf.keras.layers.Dense(
+        1,activation='sigmoid'
+    )
+])
+
+model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+</pre>
+</div>
+
+<p>
+Concepts learned:
+Convolution, feature extraction, pooling, image classification.
+</p>
+</div>
+</section>
+
+<section class="section" id="cv">
+<h2 class="section-title">Computer Vision with OpenCV</h2>
+
+<div class="cards">
+<div class="card">
+<h3>Image Processing</h3>
+<p>Reading and transforming images.</p>
+</div>
+
+<div class="card">
+<h3>Object Detection</h3>
+<p>Detects objects in videos and images.</p>
+</div>
+
+<div class="card">
+<h3>Pose Detection</h3>
+<p>Tracks body movement using AI.</p>
+</div>
+</div>
+
+<div class="project">
+<h3>📌 Project — Real-Time Face Detection</h3>
+
+<div class="code">
+<div class="code-head">face_detection.py</div>
+<pre>
+import cv2
+
+camera = cv2.VideoCapture(0)
+
+face_model = cv2.CascadeClassifier(
+    cv2.data.haarcascades +
+    'haarcascade_frontalface_default.xml'
+)
+
+while True:
+    success, frame = camera.read()
+
+    gray = cv2.cvtColor(
+        frame,
+        cv2.COLOR_BGR2GRAY
+    )
+
+    faces = face_model.detectMultiScale(
+        gray,
+        1.1,
+        4
+    )
+
+    for (x,y,w,h) in faces:
+        cv2.rectangle(
+            frame,
+            (x,y),
+            (x+w,y+h),
+            (255,0,0),
+            2
+        )
+
+    cv2.imshow("Face Detection", frame)
+
+    if cv2.waitKey(1) == 27:
+        break
+</pre>
+</div>
+
+<p>
+Concepts learned:
+OpenCV, webcam handling, object detection.
+</p>
+</div>
+</section>
+
+<section class="section" id="nlp">
+<h2 class="section-title">Natural Language Processing</h2>
+
+<div class="cards">
+<div class="card">
+<h3>Tokenization</h3>
+<p>Splits text into words.</p>
+</div>
+
+<div class="card">
+<h3>TF-IDF</h3>
+<p>Converts text into vectors.</p>
+</div>
+
+<div class="card">
+<h3>Transformers</h3>
+<p>Modern language models.</p>
+</div>
+</div>
+
+<div class="project">
+<h3>📌 Project — Sentiment Analysis</h3>
+
+<div class="code">
+<div class="code-head">sentiment_analysis.py</div>
+<pre>
+from textblob import TextBlob
+
+text = "Machine learning is amazing"
+
+analysis = TextBlob(text)
+
+print(analysis.sentiment)
+</pre>
+</div>
+
+<p>
+Concepts learned:
+NLP preprocessing, sentiment scoring, text analysis.
+</p>
+</div>
+</section>
+
+<section class="section" id="deployment">
+<h2 class="section-title">ML Model Deployment</h2>
+
+<div class="cards">
+<div class="card">
+<h3>Flask</h3>
+<p>Deploy ML models as web applications.</p>
+</div>
+
+<div class="card">
+<h3>FastAPI</h3>
+<p>High-performance API deployment.</p>
+</div>
+
+<div class="card">
+<h3>Streamlit</h3>
+<p>Build ML dashboards quickly.</p>
+</div>
+</div>
+
+<div class="project">
+<h3>📌 Project — ML Web App using Flask</h3>
+
+<div class="code">
+<div class="code-head">app.py</div>
+<pre>
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "ML Model Running"
+
+app.run(debug=True)
+</pre>
+</div>
+</div>
+</section>
+
+<section class="section" id="roadmap">
+<h2 class="section-title">Recommended Learning Roadmap</h2>
+
+<div class="diagram">
+<div class="flow">
+<div class="box">Python</div>
+<div class="arrow">→</div>
+<div class="box">NumPy + Pandas</div>
+<div class="arrow">→</div>
+<div class="box">ML Algorithms</div>
+<div class="arrow">→</div>
+<div class="box">Deep Learning</div>
+<div class="arrow">→</div>
+<div class="box">Projects</div>
+<div class="arrow">→</div>
+<div class="box">Deployment</div>
+</div>
+</div>
+
+<table>
+<tr>
+<th>Phase</th>
+<th>Focus</th>
+<th>Projects</th>
+</tr>
+
+<tr>
+<td>Beginner</td>
+<td>Python + Data Handling</td>
+<td>Marks Analyzer</td>
+</tr>
+
+<tr>
+<td>Intermediate</td>
+<td>ML Algorithms</td>
+<td>Price Prediction</td>
+</tr>
+
+<tr>
+<td>Advanced</td>
+<td>Deep Learning</td>
+<td>CNN Classifier</td>
+</tr>
+
+<tr>
+<td>Expert</td>
+<td>Deployment & AI Systems</td>
+<td>AI Web Applications</td>
+</tr>
+</table>
+</section>
+
+<div class="footer">
+Machine Learning with Python — Coding-Focused Practical Course
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHP + Laravel — Learn by Building</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700;800&family=Fraunces:ital,wght@0,300;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --php-purple: #7c3aed;
+  --php-light: #a78bfa;
+  --laravel-red: #f43f5e;
+  --laravel-light: #fb7185;
+  --bg: #0d0d14;
+  --bg2: #13131f;
+  --bg3: #1a1a2e;
+  --surface: #1e1e32;
+  --surface2: #252540;
+  --border: #2e2e4e;
+  --border2: #3d3d60;
+  --text: #e2e0ff;
+  --text2: #9997bb;
+  --text3: #6b68a0;
+  --green: #22d3a5;
+  --yellow: #fbbf24;
+  --orange: #fb923c;
+  --blue: #38bdf8;
+  --note-bg: #0f1a2e;
+  --note-border: #1d4ed8;
+  --note-text: #93c5fd;
+  --tip-bg: #0f1f16;
+  --tip-border: #16a34a;
+  --tip-text: #86efac;
+  --warn-bg: #1f1200;
+  --warn-border: #d97706;
+  --warn-text: #fcd34d;
+  --code-bg: #0a0a14;
+  --line-hl: #1e2a4a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;font-size:15px;line-height:1.7}
+::selection{background:#7c3aed55;color:#fff}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ── HEADER ── */
+.site-header{position:sticky;top:0;z-index:100;background:rgba(13,13,20,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:58px}
+.logo{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px}
+.logo-php{color:var(--php-light)}
+.logo-sep{color:var(--text3)}
+.logo-laravel{color:var(--laravel-light)}
+.nav-tabs{display:flex;gap:4px}
+.nav-tab{padding:6px 16px;border-radius:6px;border:1px solid transparent;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text2)}
+.nav-tab:hover{color:var(--text);background:var(--surface)}
+.nav-tab.active{background:var(--php-purple);color:#fff;border-color:var(--php-purple)}
+.nav-tab.proj2{background:none}
+.nav-tab.proj2.active{background:var(--laravel-red);border-color:var(--laravel-red)}
+.progress-wrap{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text3)}
+.progress-bar{width:120px;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--php-purple),var(--laravel-red));border-radius:2px;transition:width .5s}
+
+/* ── HERO ── */
+.hero{padding:64px 48px;background:linear-gradient(135deg,var(--bg) 0%,var(--bg3) 100%);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40%;right:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(124,58,237,.12) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-40%;left:-5%;width:400px;height:400px;background:radial-gradient(circle,rgba(244,63,94,.08) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border:1px solid var(--border2);border-radius:99px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--php-light);margin-bottom:20px}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(36px,5vw,60px);font-weight:700;line-height:1.05;margin-bottom:16px}
+.hero h1 em{font-style:italic;color:var(--php-light)}
+.hero p{font-size:17px;color:var(--text2);max-width:620px;line-height:1.75;margin-bottom:32px}
+.hero-cards{display:flex;gap:16px;flex-wrap:wrap}
+.hero-card{padding:14px 20px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:13px;display:flex;align-items:center;gap:10px}
+.hero-card-dot{width:8px;height:8px;border-radius:50%}
+.hero-card-dot.php{background:var(--php-light)}
+.hero-card-dot.laravel{background:var(--laravel-light)}
+.hero-card-dot.green{background:var(--green)}
+.hero-card strong{color:var(--text);font-weight:600}
+.hero-card span{color:var(--text3)}
+
+/* ── LAYOUT ── */
+.page{display:flex;min-height:calc(100vh - 58px)}
+.sidebar{width:260px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);position:sticky;top:58px;height:calc(100vh - 58px);overflow-y:auto;padding:20px 0}
+.sidebar-section{margin-bottom:24px}
+.sidebar-heading{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);padding:0 20px;margin-bottom:8px}
+.sidebar-item{display:block;padding:7px 20px;font-size:13px;color:var(--text2);cursor:pointer;transition:all .15s;border-left:2px solid transparent;text-decoration:none}
+.sidebar-item:hover{color:var(--text);background:var(--surface)}
+.sidebar-item.active{color:var(--php-light);border-left-color:var(--php-light);background:rgba(124,58,237,.08)}
+.sidebar-item.proj2-item.active{color:var(--laravel-light);border-left-color:var(--laravel-light);background:rgba(244,63,94,.08)}
+.sidebar-num{display:inline-block;width:20px;height:20px;border-radius:4px;background:var(--surface2);font-size:10px;font-weight:700;text-align:center;line-height:20px;margin-right:8px;color:var(--text3)}
+.sidebar-item.active .sidebar-num{background:var(--php-purple);color:#fff}
+.main{flex:1;padding:40px 48px;max-width:1000px}
+
+/* ── PROJECT HEADER ── */
+.project-header{display:none;margin-bottom:40px}
+.project-header.visible{display:block}
+.project-tag{display:inline-flex;align-items:center;gap:8px;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.project-tag.p1{background:rgba(124,58,237,.15);color:var(--php-light);border:1px solid rgba(124,58,237,.3)}
+.project-tag.p2{background:rgba(244,63,94,.15);color:var(--laravel-light);border:1px solid rgba(244,63,94,.3)}
+.project-title{font-family:'Fraunces',serif;font-size:36px;font-weight:700;margin-bottom:8px;line-height:1.2}
+.project-desc{color:var(--text2);font-size:15px;max-width:680px;line-height:1.75}
+.project-tech{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.tech-pill{padding:4px 12px;border-radius:99px;font-size:12px;font-weight:600;background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+
+/* ── SECTION ── */
+.section{display:none;margin-bottom:64px}
+.section.visible{display:block}
+.section-header{margin-bottom:32px}
+.section-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.section-title{font-family:'Fraunces',serif;font-size:28px;font-weight:700;line-height:1.2;margin-bottom:8px}
+.section-subtitle{color:var(--text2);font-size:15px;line-height:1.7}
+.section-divider{height:1px;background:var(--border);margin:40px 0}
+
+/* ── CODE BLOCK ── */
+.code-wrap{margin:24px 0;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--code-bg)}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.code-filename{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--text2)}
+.code-filename span{color:var(--green)}
+.code-lang{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;background:rgba(124,58,237,.2);color:var(--php-light);font-family:'JetBrains Mono',monospace}
+.code-lang.blade{background:rgba(244,63,94,.2);color:var(--laravel-light)}
+.code-lang.sql{background:rgba(251,191,36,.2);color:var(--yellow)}
+.code-lang.sh{background:rgba(34,211,165,.2);color:var(--green)}
+.code-body{padding:0;overflow-x:auto}
+.code-table{width:100%;border-collapse:collapse}
+.code-line{display:contents}
+.code-line:hover .code-num{color:var(--text2)}
+.code-line:hover .code-text{background:var(--line-hl)}
+.code-num{padding:4px 12px 4px 16px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text3);text-align:right;user-select:none;min-width:48px;vertical-align:top;white-space:nowrap;border-right:1px solid var(--border)}
+.code-text{padding:4px 20px;font-family:'JetBrains Mono',monospace;font-size:12.5px;white-space:pre;color:#c9c7e8;width:100%;vertical-align:top}
+.code-text .kw{color:#c792ea}
+.code-text .fn{color:#82aaff}
+.code-text .str{color:#c3e88d}
+.code-text .cm{color:#546e7a;font-style:italic}
+.code-text .var{color:#f78c6c}
+.code-text .num{color:#f78c6c}
+.code-text .tag{color:#f07178}
+.code-text .attr{color:#ffcb6b}
+.code-text .op{color:#89ddff}
+
+/* ── ANNOTATION ── */
+.annotation-row{display:contents}
+.annotation-cell{padding:0}
+.annotation{background:var(--note-bg);border-left:3px solid var(--note-border);padding:10px 20px 10px 16px;margin:0;font-size:13px;color:var(--note-text);line-height:1.65;display:flex;gap:10px;align-items:flex-start}
+.annotation.tip{background:var(--tip-bg);border-left-color:var(--tip-border);color:var(--tip-text)}
+.annotation.warn{background:var(--warn-bg);border-left-color:var(--warn-border);color:var(--warn-text)}
+.annotation.concept{background:rgba(56,189,248,.07);border-left-color:var(--blue);color:#7dd3fc}
+.ann-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.ann-text{}
+.ann-concept-tag{display:inline-block;padding:1px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(124,58,237,.3);color:var(--php-light);margin-left:6px;font-family:'JetBrains Mono',monospace}
+.ann-concept-tag.laravel{background:rgba(244,63,94,.3);color:var(--laravel-light)}
+.ann-concept-tag.sql{background:rgba(251,191,36,.2);color:var(--yellow)}
+
+/* ── NOTE BOXES ── */
+.note-box{margin:24px 0;padding:18px 20px;border-radius:10px;border:1px solid;font-size:14px;line-height:1.7}
+.note-box.info{background:var(--note-bg);border-color:rgba(29,78,216,.4);color:var(--note-text)}
+.note-box.tip{background:var(--tip-bg);border-color:rgba(22,163,74,.4);color:var(--tip-text)}
+.note-box.warn{background:var(--warn-bg);border-color:rgba(217,119,6,.4);color:var(--warn-text)}
+.note-box.concept{background:rgba(56,189,248,.06);border-color:rgba(56,189,248,.3);color:#7dd3fc}
+.note-box h4{font-weight:700;font-size:13px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;opacity:.85}
+.note-box code{font-family:'JetBrains Mono',monospace;font-size:12.5px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.07)}
+
+/* ── CONCEPT BADGE ── */
+.concept-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:5px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:.04em;margin:2px 3px;cursor:default}
+.concept-badge.php{background:rgba(124,58,237,.2);color:var(--php-light);border:1px solid rgba(124,58,237,.3)}
+.concept-badge.laravel{background:rgba(244,63,94,.18);color:var(--laravel-light);border:1px solid rgba(244,63,94,.3)}
+.concept-badge.mysql{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+.concept-badge.blade{background:rgba(248,113,113,.15);color:#fca5a5;border:1px solid rgba(248,113,113,.3)}
+.concept-badge.security{background:rgba(34,211,165,.13);color:#6ee7b7;border:1px solid rgba(34,211,165,.3)}
+
+/* ── STEP ── */
+.step-wrap{margin:32px 0}
+.step-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.step-num{width:32px;height:32px;border-radius:8px;background:var(--php-purple);color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'JetBrains Mono',monospace}
+.step-num.p2{background:var(--laravel-red)}
+.step-title{font-size:17px;font-weight:700;color:var(--text)}
+.step-desc{color:var(--text2);font-size:14px;line-height:1.7;margin-bottom:16px;padding-left:46px}
+
+/* ── CONCEPT PANELS ── */
+.concepts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:20px 0}
+.concept-card{padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;transition:border-color .2s}
+.concept-card:hover{border-color:var(--border2)}
+.concept-card-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.concept-card-title{font-size:14px;font-weight:600;color:var(--text)}
+.concept-card-desc{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.5}
+
+/* ── WHAT YOU LEARN ── */
+.learn-list{margin:16px 0;display:flex;flex-wrap:wrap;gap:8px}
+
+/* ── DIVIDER / PHASE HEADER ── */
+.phase-header{padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin:32px 0;display:flex;align-items:center;gap:16px}
+.phase-icon{font-size:24px}
+.phase-title{font-weight:700;font-size:16px;color:var(--text)}
+.phase-desc{font-size:13px;color:var(--text2)}
+
+/* ── TOGGLE ANNOTATIONS ── */
+.ann-toggle{font-size:12px;padding:4px 12px;border-radius:5px;border:1px solid var(--border2);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .2s;font-family:'Sora',sans-serif}
+.ann-toggle:hover{color:var(--text);border-color:var(--text3)}
+.ann-toggle.active{background:rgba(124,58,237,.15);border-color:var(--php-purple);color:var(--php-light)}
+.annotations-hidden .annotation{display:none}
+
+/* ── PROJECT INTRO ── */
+.file-tree{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.8}
+.ft-dir{color:var(--blue)}
+.ft-file{color:var(--text2)}
+.ft-comment{color:var(--text3);font-style:italic}
+.ft-new{color:var(--green)}
+.ft-indent{display:inline-block;width:20px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .sidebar{display:none}
+  .main{padding:24px 20px}
+  .hero{padding:40px 24px}
+  .site-header{padding:0 20px}
+  .nav-tabs{display:none}
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.section.visible{animation:fadeUp .3s ease both}
+.hero{animation:fadeUp .5s ease both}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="logo">
+    <span class="logo-php">&lt;?php</span>
+    <span class="logo-sep">+</span>
+    <span class="logo-laravel">Laravel</span>
+    <span class="logo-sep">—</span>
+    <span style="color:var(--text2);font-weight:400">Learn by Building</span>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchProject('p1',this)">📋 Internship Management</button>
+    <button class="nav-tab proj2" onclick="switchProject('p2',this)">✅ Task Manager</button>
+  </div>
+  <div class="progress-wrap">
+    <span id="progress-label">0 / 0 files</span>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <button class="ann-toggle active" id="ann-toggle" onclick="toggleAnnotations()">💡 Notes ON</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero" id="main-hero">
+  <div class="hero-badge">⚡ Project-Based Learning</div>
+  <h1>Learn PHP &amp; Laravel<br><em>by Building Real Projects</em></h1>
+  <p>Two complete projects with every single line of code annotated — what PHP concept it uses, why it's written that way, and how Laravel handles it under the hood.</p>
+  <div class="hero-cards">
+    <div class="hero-card"><div class="hero-card-dot php"></div><strong>Project 1:</strong><span>&nbsp;Internship Management System</span></div>
+    <div class="hero-card"><div class="hero-card-dot laravel"></div><strong>Project 2:</strong><span>&nbsp;Task Manager + Attendance Tracker</span></div>
+    <div class="hero-card"><div class="hero-card-dot green"></div><strong>100+</strong><span>&nbsp;annotated code lines</span></div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <!-- filled by JS -->
+</nav>
+
+<!-- MAIN -->
+<main class="main" id="main-content">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PROJECT 1: INTERNSHIP MANAGEMENT SYSTEM -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<div class="project-header visible" id="ph-p1">
+  <div class="project-tag p1">Project 1</div>
+  <div class="project-title">Internship Management System</div>
+  <div class="project-desc">A full PHP + Laravel web app where admins manage interns, departments, tasks, and attendance. You'll learn everything from plain PHP fundamentals to Laravel's MVC, Eloquent ORM, Blade templating, and Auth — all through real working code.</div>
+  <div class="project-tech">
+    <span class="tech-pill">PHP 8.2</span>
+    <span class="tech-pill">Laravel 11</span>
+    <span class="tech-pill">MySQL</span>
+    <span class="tech-pill">Blade</span>
+    <span class="tech-pill">Eloquent ORM</span>
+    <span class="tech-pill">Laravel Auth (Breeze)</span>
+    <span class="tech-pill">REST API (optional)</span>
+  </div>
+</div>
+
+<div class="project-header" id="ph-p2">
+  <div class="project-tag p2">Project 2</div>
+  <div class="project-title">Task Manager + Attendance Tracker</div>
+  <div class="project-desc">A Laravel + pure PHP hybrid project with a Task CRUD system and a daily Attendance Tracker. You'll reinforce OOP, database relationships, form validation, session auth, and build a simple REST API endpoint.</div>
+  <div class="project-tech">
+    <span class="tech-pill">PHP 8 OOP</span>
+    <span class="tech-pill">Laravel 11</span>
+    <span class="tech-pill">Eloquent Relationships</span>
+    <span class="tech-pill">Blade Components</span>
+    <span class="tech-pill">API Routes</span>
+    <span class="tech-pill">Session Auth</span>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P1 · SECTION 1: Project Overview -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section visible" id="p1-s1" data-project="p1">
+  <div class="section-header">
+    <div class="section-label">Step 1 — Foundation</div>
+    <div class="section-title">Project Overview &amp; Setup</div>
+    <div class="section-subtitle">Before writing code, understand what we're building and how it's structured. This section covers Laravel project creation, folder layout, and the database schema.</div>
+  </div>
+
+  <div class="note-box info">
+    <h4>📦 What We're Building</h4>
+    An Internship Management System with: Admin login, intern registration, department management, task assignment, attendance tracking, and a dashboard. Each feature maps directly to core PHP/Laravel concepts.
+  </div>
+
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div class="step-title">Install Laravel &amp; Create the Project</div>
+    </div>
+    <div class="step-desc">Run these terminal commands once. They set up a fresh Laravel 11 application.</div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-filename">terminal</span>
+        <span class="code-lang sh">SHELL</span>
+      </div>
+      <div class="code-body">
+        <table class="code-table">
+          <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="cm"># Install Composer if not installed: https://getcomposer.org</span></td></tr>
+          <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Composer is PHP's package manager — like npm for JavaScript. It downloads and manages all PHP libraries including Laravel itself. <span class="ann-concept-tag">PHP</span> <span class="ann-concept-tag">Composer</span></span></div></td></tr>
+
+          <tr class="code-line"><td class="code-num">2</td><td class="code-text"><span class="fn">composer</span> create-project laravel/laravel internship-system</td></tr>
+          <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">🚀</span><span class="ann-text">This downloads Laravel and all its dependencies into a folder called <code>internship-system</code>. Laravel ships with routing, ORM, auth, templating, and more out of the box. <span class="ann-concept-tag laravel">Laravel</span></span></div></td></tr>
+
+          <tr class="code-line"><td class="code-num">3</td><td class="code-text"><span class="kw">cd</span> internship-system</td></tr>
+
+          <tr class="code-line"><td class="code-num">4</td><td class="code-text"><span class="fn">composer</span> require laravel/breeze --dev</td></tr>
+          <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">🔐</span><span class="ann-text">Breeze is Laravel's lightweight auth package. It generates login, register, and dashboard pages so you don't build auth from scratch. <span class="ann-concept-tag laravel">Laravel Auth</span></span></div></td></tr>
+
+          <tr class="code-line"><td class="code-num">5</td><td class="code-text"><span class="fn">php</span> artisan breeze:install blade</td></tr>
+          <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">🛠</span><span class="ann-text"><code>php artisan</code> is Laravel's CLI tool. <code>breeze:install blade</code> generates auth views using Blade (Laravel's templating engine). Other options: vue, react, api. <span class="ann-concept-tag laravel">Artisan CLI</span></span></div></td></tr>
+
+          <tr class="code-line"><td class="code-num">6</td><td class="code-text"><span class="fn">npm</span> install &amp;&amp; npm run dev</td></tr>
+          <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation tip"><span class="ann-icon">💡</span><span class="ann-text">Compiles Tailwind CSS and JS assets. Keep this running in a separate terminal during development so your CSS updates live. <span class="ann-concept-tag">Frontend</span></span></div></td></tr>
+
+          <tr class="code-line"><td class="code-num">7</td><td class="code-text"><span class="fn">php</span> artisan serve</td></tr>
+          <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">🌐</span><span class="ann-text">Starts a local development server at <code>http://localhost:8000</code>. You'll see the Laravel welcome page. <span class="ann-concept-tag laravel">Laravel</span></span></div></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div class="step-title">Configure Database (.env)</div>
+    </div>
+    <div class="step-desc">Laravel reads database credentials from the <code>.env</code> file. Never commit this file to Git — it holds secrets.</div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-filename"><span>.env</span></span>
+        <span class="code-lang">ENV</span>
+      </div>
+      <div class="code-body">
+        <table class="code-table">
+          <tr class="code-line"><td class="code-num">1</td><td class="code-text">APP_NAME=<span class="str">"Internship System"</span></td></tr>
+          <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Laravel reads <code>.env</code> into PHP's environment. You access these with <code>env('APP_NAME')</code> or <code>config('app.name')</code> anywhere in your app. <span class="ann-concept-tag laravel">Laravel Config</span></span></div></td></tr>
+
+          <tr class="code-line"><td class="code-num">2</td><td class="code-text">APP_ENV=<span class="str">local</span></td></tr>
+          <tr class="code-line"><td class="code-num">3</td><td class="code-text">APP_DEBUG=<span class="kw">true</span></td></tr>
+          <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation warn"><span class="ann-icon">⚠️</span><span class="ann-text">Set <code>APP_DEBUG=false</code> in production! When true, errors show full stack traces — leaking sensitive code info to users. <span class="ann-concept-tag security">Security</span></span></div></td></tr>
+
+          <tr class="code-line"><td class="code-num">4</td><td class="code-text">&nbsp;</td></tr>
+          <tr class="code-line"><td class="code-num">5</td><td class="code-text">DB_CONNECTION=<span class="str">mysql</span></td></tr>
+          <tr class="code-line"><td class="code-num">6</td><td class="code-text">DB_HOST=<span class="str">127.0.0.1</span></td></tr>
+          <tr class="code-line"><td class="code-num">7</td><td class="code-text">DB_PORT=<span class="str">3306</span></td></tr>
+          <tr class="code-line"><td class="code-num">8</td><td class="code-text">DB_DATABASE=<span class="str">internship_db</span></td></tr>
+          <tr class="code-line"><td class="code-num">9</td><td class="code-text">DB_USERNAME=<span class="str">root</span></td></tr>
+          <tr class="code-line"><td class="code-num">10</td><td class="code-text">DB_PASSWORD=<span class="str">yourpassword</span></td></tr>
+          <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">🗄</span><span class="ann-text">Laravel uses these .env values to create a PDO connection to MySQL. Under the hood it wraps PDO — the same PHP data layer you'd write manually, but abstracted through Eloquent. <span class="ann-concept-tag">PHP PDO</span> <span class="ann-concept-tag laravel">Eloquent</span></span></div></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-wrap">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div class="step-title">Project Folder Structure</div>
+    </div>
+    <div class="step-desc">Understanding where files live is critical. Laravel follows strict conventions — knowing them makes navigation intuitive.</div>
+
+    <div class="file-tree">
+      <div><span class="ft-dir">internship-system/</span></div>
+      <div><span class="ft-indent"></span><span class="ft-dir">app/</span></div>
+      <div><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-dir">Http/Controllers/</span> <span class="ft-comment">← request handlers (our main logic)</span></div>
+      <div><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-new">InternController.php</span> <span class="ft-comment">← we create this</span></div>
+      <div><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-new">DepartmentController.php</span></div>
+      <div><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-new">AttendanceController.php</span></div>
+      <div><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-dir">Models/</span> <span class="ft-comment">← Eloquent models (maps to DB tables)</span></div>
+      <div><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-new">Intern.php</span></div>
+      <div><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-new">Department.php</span></div>
+      <div><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-new">Attendance.php</span></div>
+      <div><span class="ft-indent"></span><span class="ft-dir">database/</span></div>
+      <div><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-dir">migrations/</span> <span class="ft-comment">← PHP classes that define DB tables</span></div>
+      <div><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-dir">seeders/</span>   <span class="ft-comment">← fills DB with test data</span></div>
+      <div><span class="ft-indent"></span><span class="ft-dir">resources/views/</span> <span class="ft-comment">← Blade HTML templates</span></div>
+      <div><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-new">interns/</span> <span class="ft-comment">← index.blade.php, create.blade.php, edit.blade.php</span></div>
+      <div><span class="ft-indent"></span><span class="ft-dir">routes/</span></div>
+      <div><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-new">web.php</span>  <span class="ft-comment">← maps URLs to controllers</span></div>
+      <div><span class="ft-indent"></span><span class="ft-indent"></span><span class="ft-new">api.php</span>  <span class="ft-comment">← API endpoints (JSON responses)</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P1 · SECTION 2: Database Migrations -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section" id="p1-s2" data-project="p1">
+  <div class="section-header">
+    <div class="section-label">Step 2 — Database</div>
+    <div class="section-title">Migrations — Database Schema</div>
+    <div class="section-subtitle">Migrations are PHP classes that define your database tables. They're version control for your schema — your whole team can recreate the DB with one command.</div>
+  </div>
+
+  <div class="learn-list">
+    <span class="concept-badge php">PHP Classes</span>
+    <span class="concept-badge laravel">Laravel Migrations</span>
+    <span class="concept-badge mysql">MySQL Schema</span>
+    <span class="concept-badge laravel">Artisan CLI</span>
+  </div>
+
+  <div class="note-box info">
+    <h4>📌 Generate the migration file</h4>
+    Run: <code>php artisan make:model Intern -m</code><br>
+    This creates <code>app/Models/Intern.php</code> AND <code>database/migrations/xxxx_create_interns_table.php</code> in one shot. The <code>-m</code> flag means "also make a migration".
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">database/migrations/<span>xxxx_create_interns_table.php</span></span>
+      <span class="code-lang">PHP</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="kw">&lt;?php</span></td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text"><span class="kw">use</span> <span class="fn">Illuminate\Database\Migrations\Migration</span>;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>use</code> is PHP's import statement for namespaced classes. It's like Python's <code>import</code>. Without it, you'd need to write the full path every time. <span class="ann-concept-tag">PHP Namespaces</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text"><span class="kw">use</span> <span class="fn">Illuminate\Database\Schema\Blueprint</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text"><span class="kw">use</span> <span class="fn">Illuminate\Support\Facades\Schema</span>;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text"><code>Schema</code> is a Laravel Facade — a static interface to a service in the container. Facades let you call complex services cleanly: <code>Schema::create()</code> instead of instantiating an object. <span class="ann-concept-tag laravel">Facades</span> <span class="ann-concept-tag laravel">Service Container</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text"><span class="kw">return new class</span> <span class="kw">extends</span> <span class="fn">Migration</span> {</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>new class extends Migration</code> is an anonymous class (PHP 7+). It creates a class without giving it a name and immediately instantiates it. PHP OOP: inheritance (<code>extends</code>) means this class gains all of Migration's behaviour. <span class="ann-concept-tag">PHP OOP</span> <span class="ann-concept-tag">Anonymous Class</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">up</span>(): <span class="kw">void</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>up()</code> runs when you execute <code>php artisan migrate</code>. The <code>: void</code> return type hint means this function returns nothing. <span class="ann-concept-tag">PHP Return Types</span> <span class="ann-concept-tag laravel">Migrations</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">Schema</span>::<span class="fn">create</span>(<span class="str">'interns'</span>, <span class="kw">function</span> (<span class="fn">Blueprint</span> <span class="var">$table</span>) {</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>Schema::create()</code> takes a table name and a closure. A closure is an anonymous function passed as an argument — here it receives a <code>Blueprint</code> object to define columns. <span class="ann-concept-tag">PHP Closures</span> <span class="ann-concept-tag mysql">MySQL DDL</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">10</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$table</span>-&gt;<span class="fn">id</span>();</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">🗄</span><span class="ann-text">Creates <code>id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY</code>. Laravel's shorthand. <span class="ann-concept-tag mysql">MySQL</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">11</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$table</span>-&gt;<span class="fn">string</span>(<span class="str">'name'</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Creates a <code>VARCHAR(255)</code> column. The <code>-&gt;</code> is PHP's object operator — calling methods on the <code>$table</code> object. <span class="ann-concept-tag">PHP OOP</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">12</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$table</span>-&gt;<span class="fn">string</span>(<span class="str">'email'</span>)-&gt;<span class="fn">unique</span>();</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Method chaining — calling <code>unique()</code> directly on the return value of <code>string()</code>. This adds a UNIQUE constraint on the column. PHP allows this because each method returns <code>$this</code>. <span class="ann-concept-tag">PHP Method Chaining</span> <span class="ann-concept-tag mysql">MySQL Constraints</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">13</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$table</span>-&gt;<span class="fn">string</span>(<span class="str">'phone'</span>)-&gt;<span class="fn">nullable</span>();</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>nullable()</code> allows NULL values. Without it, the column is NOT NULL and the DB rejects inserts without a phone. <span class="ann-concept-tag mysql">MySQL NULL</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">14</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$table</span>-&gt;<span class="fn">foreignId</span>(<span class="str">'department_id'</span>)-&gt;<span class="fn">constrained</span>()-&gt;<span class="fn">onDelete</span>(<span class="str">'cascade'</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">🔗</span><span class="ann-text"><code>foreignId()</code> creates an unsigned BIGINT. <code>constrained()</code> adds a FOREIGN KEY to <code>departments.id</code>. <code>onDelete('cascade')</code> means if a department is deleted, all its interns are also deleted. This is a DB relationship. <span class="ann-concept-tag mysql">Foreign Keys</span> <span class="ann-concept-tag laravel">Relationships</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">15</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$table</span>-&gt;<span class="fn">enum</span>(<span class="str">'status'</span>, [<span class="str">'active'</span>, <span class="str">'completed'</span>, <span class="str">'terminated'</span>])-&gt;<span class="fn">default</span>(<span class="str">'active'</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">ENUM columns only allow specific values. The second parameter is a PHP array <code>[...]</code> of allowed strings. <code>default()</code> sets the value when none is provided. <span class="ann-concept-tag">PHP Arrays</span> <span class="ann-concept-tag mysql">MySQL ENUM</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">16</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$table</span>-&gt;<span class="fn">date</span>(<span class="str">'start_date'</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">17</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$table</span>-&gt;<span class="fn">date</span>(<span class="str">'end_date'</span>)-&gt;<span class="fn">nullable</span>();</td></tr>
+        <tr class="code-line"><td class="code-num">18</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$table</span>-&gt;<span class="fn">timestamps</span>();</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">⏰</span><span class="ann-text"><code>timestamps()</code> adds <code>created_at</code> and <code>updated_at</code> DATETIME columns. Laravel's Eloquent model automatically populates these — you never set them manually. <span class="ann-concept-tag laravel">Eloquent Auto-timestamps</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">19</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</td></tr>
+        <tr class="code-line"><td class="code-num">20</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">21</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">22</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">down</span>(): <span class="kw">void</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">🔄</span><span class="ann-text"><code>down()</code> is the rollback: it undoes <code>up()</code>. Running <code>php artisan migrate:rollback</code> calls this. Always write the inverse of <code>up()</code>. <span class="ann-concept-tag laravel">Migration Rollback</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">23</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="fn">Schema</span>::<span class="fn">dropIfExists</span>(<span class="str">'interns'</span>); }</td></tr>
+        <tr class="code-line"><td class="code-num">24</td><td class="code-text">};</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="note-box tip">
+    <h4>🔨 Run your migrations</h4>
+    After creating all migration files, run: <code>php artisan migrate</code><br>
+    This executes all pending <code>up()</code> methods in order and creates your tables. Check your DB — you'll see the tables appear.
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P1 · SECTION 3: Eloquent Model -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section" id="p1-s3" data-project="p1">
+  <div class="section-header">
+    <div class="section-label">Step 3 — Model Layer</div>
+    <div class="section-title">Eloquent Models — The Data Layer</div>
+    <div class="section-subtitle">Eloquent is Laravel's ORM (Object-Relational Mapper). Each model class maps to a DB table. Instead of raw SQL, you write clean PHP method chains.</div>
+  </div>
+
+  <div class="learn-list">
+    <span class="concept-badge php">PHP Classes & OOP</span>
+    <span class="concept-badge php">PHP Properties</span>
+    <span class="concept-badge laravel">Eloquent ORM</span>
+    <span class="concept-badge laravel">Relationships</span>
+    <span class="concept-badge laravel">Accessors & Mutators</span>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">app/Models/<span>Intern.php</span></span>
+      <span class="code-lang">PHP</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="kw">&lt;?php</span></td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text"><span class="kw">namespace</span> <span class="fn">App\Models</span>;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Namespaces organise PHP code like folders. <code>App\Models</code> means this file lives in the <code>app/Models/</code> directory. Without namespace declaration, Laravel's autoloader can't find this class. <span class="ann-concept-tag">PHP Namespaces</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text"><span class="kw">use</span> <span class="fn">Illuminate\Database\Eloquent\Model</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text"><span class="kw">use</span> <span class="fn">Illuminate\Database\Eloquent\Factories\HasFactory</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text"><span class="kw">use</span> <span class="fn">Illuminate\Database\Eloquent\Casts\Attribute</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text"><span class="kw">class</span> <span class="fn">Intern</span> <span class="kw">extends</span> <span class="fn">Model</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>class Intern extends Model</code> — PHP class inheritance. By extending <code>Model</code>, the <code>Intern</code> class inherits all of Eloquent's powers: <code>find()</code>, <code>where()</code>, <code>create()</code>, <code>save()</code>, etc. It maps to the <code>interns</code> table automatically (pluralised lowercase). <span class="ann-concept-tag">PHP Inheritance</span> <span class="ann-concept-tag laravel">Eloquent</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text">{</td></tr>
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">use</span> <span class="fn">HasFactory</span>;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>use HasFactory</code> is a PHP Trait — a code mixin. It adds the <code>factory()</code> static method to this class, allowing <code>Intern::factory()->create()</code> in seeders and tests. <span class="ann-concept-tag">PHP Traits</span> <span class="ann-concept-tag laravel">Factories</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">10</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">11</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">protected</span> <span class="var">$fillable</span> = [</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation warn"><span class="ann-icon">⚠️</span><span class="ann-text"><code>$fillable</code> is a PHP class property listing which columns can be mass-assigned. This prevents a "mass assignment" attack where a malicious user could set any column (like <code>is_admin=true</code>) via a form POST. <span class="ann-concept-tag security">Security</span> <span class="ann-concept-tag laravel">Mass Assignment</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">12</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'name'</span>, <span class="str">'email'</span>, <span class="str">'phone'</span>, <span class="str">'department_id'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">13</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'status'</span>, <span class="str">'start_date'</span>, <span class="str">'end_date'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">14</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;];</td></tr>
+        <tr class="code-line"><td class="code-num">15</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">16</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">protected</span> <span class="var">$casts</span> = [</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>$casts</code> tells Eloquent to automatically convert column values to PHP types. Without this, <code>start_date</code> comes back as a plain string; with <code>'date'</code>, it becomes a Carbon object (rich date class). <span class="ann-concept-tag laravel">Eloquent Casts</span> <span class="ann-concept-tag">PHP Types</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">17</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'start_date'</span> =&gt; <span class="str">'date'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">18</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'end_date'</span>   =&gt; <span class="str">'date'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">19</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;];</td></tr>
+        <tr class="code-line"><td class="code-num">20</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">21</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// ── RELATIONSHIPS ──────────────────────────────</span></td></tr>
+        <tr class="code-line"><td class="code-num">22</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">department</span>()</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">🔗</span><span class="ann-text">This is a relationship method — it tells Eloquent how <code>Intern</code> relates to <code>Department</code>. The method name <code>department</code> becomes a "dynamic property" — you call it as <code>$intern->department</code> (no parentheses) to get the related model. <span class="ann-concept-tag laravel">Eloquent Relationships</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">23</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">24</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="var">$this</span>-&gt;<span class="fn">belongsTo</span>(<span class="fn">Department</span>::<span class="kw">class</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>belongsTo</code> = many-to-one. An intern belongs to one department. Eloquent uses <code>department_id</code> column to do the join automatically. <code>Department::class</code> is PHP's way to get the fully-qualified class name as a string: <code>"App\Models\Department"</code>. <span class="ann-concept-tag">PHP ::class</span> <span class="ann-concept-tag laravel">BelongsTo</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">25</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">26</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">27</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">attendances</span>()</td></tr>
+        <tr class="code-line"><td class="code-num">28</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">29</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="var">$this</span>-&gt;<span class="fn">hasMany</span>(<span class="fn">Attendance</span>::<span class="kw">class</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">🔗</span><span class="ann-text"><code>hasMany</code> = one-to-many. One intern has many attendance records. Usage: <code>$intern->attendances</code> returns a Collection of all attendance rows for this intern — no SQL needed. <span class="ann-concept-tag laravel">HasMany</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">30</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">31</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">32</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// ── QUERY SCOPES ───────────────────────────────</span></td></tr>
+        <tr class="code-line"><td class="code-num">33</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">scopeActive</span>(<span class="var">$query</span>)</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text">A Query Scope is a reusable WHERE clause. Methods starting with <code>scope</code> + PascalCase become chainable: <code>Intern::active()->get()</code>. The <code>$query</code> param is the query builder passed automatically. <span class="ann-concept-tag laravel">Query Scopes</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">34</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">35</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="var">$query</span>-&gt;<span class="fn">where</span>(<span class="str">'status'</span>, <span class="str">'active'</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">36</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">37</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">38</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// ── ACCESSOR: computed property ─────────────────</span></td></tr>
+        <tr class="code-line"><td class="code-num">39</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">protected function</span> <span class="fn">daysRemaining</span>(): <span class="fn">Attribute</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text">An Accessor adds a computed property to the model. <code>$intern->days_remaining</code> (snake_case) calls this method automatically. It doesn't exist in the DB — it's computed in PHP. <span class="ann-concept-tag laravel">Eloquent Accessors</span> <span class="ann-concept-tag">PHP</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">40</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">41</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">Attribute</span>::<span class="fn">make</span>(</td></tr>
+        <tr class="code-line"><td class="code-num">42</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">get</span>: <span class="fn">fn</span>(<span class="var">$v</span>, <span class="var">$attrs</span>) =&gt;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Arrow function syntax (PHP 7.4+). <code>fn($v, $attrs) =&gt;</code> creates a short anonymous function. <code>$attrs</code> gives access to raw attribute values from the DB row. <span class="ann-concept-tag">PHP Arrow Functions</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">43</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$attrs</span>[<span class="str">'end_date'</span>]</td></tr>
+        <tr class="code-line"><td class="code-num">44</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;? <span class="fn">now</span>()-&gt;<span class="fn">diffInDays</span>(<span class="var">$attrs</span>[<span class="str">'end_date'</span>])</td></tr>
+        <tr class="code-line"><td class="code-num">45</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="kw">null</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Ternary operator: <code>condition ? value_if_true : value_if_false</code>. If <code>end_date</code> is set, calculate days remaining using Carbon's <code>diffInDays()</code>. If null, return null. <span class="ann-concept-tag">PHP Ternary</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">46</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);</td></tr>
+        <tr class="code-line"><td class="code-num">47</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">48</td><td class="code-text">}</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P1 · SECTION 4: Controller -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section" id="p1-s4" data-project="p1">
+  <div class="section-header">
+    <div class="section-label">Step 4 — Controller Layer</div>
+    <div class="section-title">InternController — CRUD Logic</div>
+    <div class="section-subtitle">Controllers are the "middle layer" — they receive HTTP requests, use models to fetch/save data, then return a view or redirect. This is MVC in action.</div>
+  </div>
+
+  <div class="learn-list">
+    <span class="concept-badge php">PHP Classes & Methods</span>
+    <span class="concept-badge laravel">MVC Controllers</span>
+    <span class="concept-badge laravel">Route Model Binding</span>
+    <span class="concept-badge laravel">Form Validation</span>
+    <span class="concept-badge laravel">Flash Messages</span>
+  </div>
+
+  <div class="note-box info">
+    <h4>🛠 Generate the controller</h4>
+    <code>php artisan make:controller InternController --resource</code><br>
+    The <code>--resource</code> flag pre-creates all 7 CRUD methods: index, create, store, show, edit, update, destroy.
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">app/Http/Controllers/<span>InternController.php</span></span>
+      <span class="code-lang">PHP</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="kw">&lt;?php</span></td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text"><span class="kw">namespace</span> <span class="fn">App\Http\Controllers</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text"><span class="kw">use</span> <span class="fn">App\Models\Intern</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text"><span class="kw">use</span> <span class="fn">App\Models\Department</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text"><span class="kw">use</span> <span class="fn">Illuminate\Http\Request</span>;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>Request</code> is Laravel's HTTP request class. It wraps <code>$_GET</code>, <code>$_POST</code>, <code>$_FILES</code>, headers etc. in a clean OOP interface. By type-hinting it in a method, Laravel auto-injects it (Dependency Injection). <span class="ann-concept-tag laravel">Dependency Injection</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text"><span class="kw">class</span> <span class="fn">InternController</span> <span class="kw">extends</span> <span class="fn">Controller</span></td></tr>
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text">{</td></tr>
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// GET /interns — list all</span></td></tr>
+        <tr class="code-line"><td class="code-num">10</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">index</span>(<span class="fn">Request</span> <span class="var">$request</span>)</td></tr>
+        <tr class="code-line"><td class="code-num">11</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">12</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$query</span> = <span class="fn">Intern</span>::<span class="fn">with</span>(<span class="str">'department'</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text"><code>with('department')</code> is Eager Loading — it fetches all related departments in one extra query instead of N queries. Without this, accessing <code>$intern->department</code> inside a loop fires a new query per intern (N+1 problem). Always eager-load relationships you'll use in views. <span class="ann-concept-tag laravel">Eager Loading</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">13</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">14</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (<span class="var">$request</span>-&gt;<span class="fn">filled</span>(<span class="str">'search'</span>)) {</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>$request->filled('search')</code> checks if the query param exists AND is not empty. PHP equivalent: <code>!empty($_GET['search'])</code>. This handles search from a URL like <code>/interns?search=arjun</code>. <span class="ann-concept-tag">PHP Conditionals</span> <span class="ann-concept-tag laravel">Request</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">15</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$search</span> = <span class="var">$request</span>-&gt;<span class="fn">input</span>(<span class="str">'search'</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">16</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$query</span>-&gt;<span class="fn">where</span>(<span class="kw">function</span>(<span class="var">$q</span>) <span class="kw">use</span> (<span class="var">$search</span>) {</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Closure with <code>use ($search)</code> — captures the outer variable into the closure's scope. PHP closures don't automatically access outer variables (unlike JavaScript). The <code>use</code> keyword imports them. <span class="ann-concept-tag">PHP Closures</span> <span class="ann-concept-tag">Variable Scope</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">17</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$q</span>-&gt;<span class="fn">where</span>(<span class="str">'name'</span>, <span class="str">'like'</span>, <span class="str">"%{$search}%"</span>)</td></tr>
+        <tr class="code-line"><td class="code-num">18</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">->orWhere</span>(<span class="str">'email'</span>, <span class="str">'like'</span>, <span class="str">"%{$search}%"</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">🗄</span><span class="ann-text"><code>LIKE "%search%"</code> is SQL pattern matching. <code>orWhere</code> adds an OR condition. String interpolation <code>"%{$search}%"</code> — curly braces inside double-quoted strings allow complex expressions. <span class="ann-concept-tag">PHP Strings</span> <span class="ann-concept-tag mysql">SQL LIKE</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">19</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</td></tr>
+        <tr class="code-line"><td class="code-num">20</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">21</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">22</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$interns</span> = <span class="var">$query</span>-&gt;<span class="fn">latest</span>()-&gt;<span class="fn">paginate</span>(<span class="num">15</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>latest()</code> = ORDER BY created_at DESC. <code>paginate(15)</code> returns 15 records per page and adds page metadata. In Blade, <code>{{ $interns->links() }}</code> auto-renders pagination buttons. <span class="ann-concept-tag laravel">Pagination</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">23</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">24</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">view</span>(<span class="str">'interns.index'</span>, <span class="fn">compact</span>(<span class="str">'interns'</span>));</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>view()</code> loads <code>resources/views/interns/index.blade.php</code>. <code>compact('interns')</code> is a PHP shorthand for <code>['interns' => $interns]</code> — it creates an array from variable names. The view then gets <code>$interns</code>. <span class="ann-concept-tag">PHP compact()</span> <span class="ann-concept-tag laravel">Blade Views</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">25</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">26</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">27</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// POST /interns — save new intern</span></td></tr>
+        <tr class="code-line"><td class="code-num">28</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">store</span>(<span class="fn">Request</span> <span class="var">$request</span>)</td></tr>
+        <tr class="code-line"><td class="code-num">29</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">30</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$validated</span> = <span class="var">$request</span>-&gt;<span class="fn">validate</span>([</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">🛡</span><span class="ann-text"><code>validate()</code> is Laravel's built-in form validation. If rules fail, it automatically redirects back to the form with <code>$errors</code> available in Blade. No need for manual if/else checks. <span class="ann-concept-tag laravel">Form Validation</span> <span class="ann-concept-tag security">Security</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">31</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'name'</span>          =&gt; <span class="str">'required|string|max:100'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">32</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'email'</span>         =&gt; <span class="str">'required|email|unique:interns,email'</span>,</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Validation rules are pipe-separated strings. <code>unique:interns,email</code> checks the <code>email</code> column in the <code>interns</code> table. Each rule is a plain PHP string — Laravel parses it. <span class="ann-concept-tag">PHP Strings</span> <span class="ann-concept-tag laravel">Validation Rules</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">33</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'phone'</span>         =&gt; <span class="str">'nullable|string|max:15'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">34</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'department_id'</span> =&gt; <span class="str">'required|exists:departments,id'</span>,</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>exists:departments,id</code> checks that the submitted <code>department_id</code> actually exists in the DB. Prevents submitting IDs that don't exist. <span class="ann-concept-tag laravel">Validation</span> <span class="ann-concept-tag security">Security</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">35</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'start_date'</span>    =&gt; <span class="str">'required|date'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">36</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'end_date'</span>      =&gt; <span class="str">'nullable|date|after:start_date'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">37</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]);</td></tr>
+        <tr class="code-line"><td class="code-num">38</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">39</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">Intern</span>::<span class="fn">create</span>(<span class="var">$validated</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>Intern::create($validated)</code> inserts a row. It only uses keys in <code>$fillable</code> — that's why both need to match. Eloquent generates: <code>INSERT INTO interns (name, email, ...) VALUES (?, ?, ...)</code> with PDO prepared statements automatically. <span class="ann-concept-tag laravel">Eloquent create()</span> <span class="ann-concept-tag security">SQL Injection Prevention</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">40</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">41</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">redirect</span>()-&gt;<span class="fn">route</span>(<span class="str">'interns.index'</span>)</td></tr>
+        <tr class="code-line"><td class="code-num">42</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;<span class="fn">with</span>(<span class="str">'success'</span>, <span class="str">'Intern added!'</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>redirect()->route('interns.index')</code> sends the browser to the named route. <code>->with('success', '...')</code> flashes a message to the session for ONE request only — shows a toast/alert in the next page load. <span class="ann-concept-tag laravel">Flash Messages</span> <span class="ann-concept-tag laravel">Named Routes</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">43</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">44</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">45</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// GET /interns/{intern}/edit — show edit form</span></td></tr>
+        <tr class="code-line"><td class="code-num">46</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">edit</span>(<span class="fn">Intern</span> <span class="var">$intern</span>)</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text">Route Model Binding — by type-hinting <code>Intern $intern</code>, Laravel automatically finds the record from the URL parameter <code>{intern}</code> and injects it. If the ID doesn't exist, it returns 404 automatically. No manual <code>Intern::findOrFail()</code> needed. <span class="ann-concept-tag laravel">Route Model Binding</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">47</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">48</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$departments</span> = <span class="fn">Department</span>::<span class="fn">orderBy</span>(<span class="str">'name'</span>)-&gt;<span class="fn">get</span>();</td></tr>
+        <tr class="code-line"><td class="code-num">49</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">view</span>(<span class="str">'interns.edit'</span>, <span class="fn">compact</span>(<span class="str">'intern'</span>, <span class="str">'departments'</span>));</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>compact()</code> with multiple args creates <code>['intern'=>$intern, 'departments'=>$departments]</code>. Both variables become available in the Blade view. <span class="ann-concept-tag">PHP compact()</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">50</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">51</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">52</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// DELETE /interns/{intern}</span></td></tr>
+        <tr class="code-line"><td class="code-num">53</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">destroy</span>(<span class="fn">Intern</span> <span class="var">$intern</span>)</td></tr>
+        <tr class="code-line"><td class="code-num">54</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">55</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$intern</span>-&gt;<span class="fn">delete</span>();</td></tr>
+        <tr class="code-line"><td class="code-num">56</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">back</span>()-&gt;<span class="fn">with</span>(<span class="str">'success'</span>, <span class="str">'Intern removed.'</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>$intern->delete()</code> runs DELETE FROM interns WHERE id = ?. <code>back()</code> redirects to the previous page (equivalent to hitting the back button). <span class="ann-concept-tag laravel">Eloquent delete()</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">57</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">58</td><td class="code-text">}</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P1 · SECTION 5: Routes -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section" id="p1-s5" data-project="p1">
+  <div class="section-header">
+    <div class="section-label">Step 5 — Routing</div>
+    <div class="section-title">Routes — URL to Controller Map</div>
+    <div class="section-subtitle">Routes define which URL patterns go to which controller method. In Laravel, all routes live in <code>routes/web.php</code> (browser requests) and <code>routes/api.php</code> (API requests).</div>
+  </div>
+
+  <div class="learn-list">
+    <span class="concept-badge laravel">Laravel Routing</span>
+    <span class="concept-badge laravel">Resource Routes</span>
+    <span class="concept-badge laravel">Middleware</span>
+    <span class="concept-badge laravel">Route Groups</span>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">routes/<span>web.php</span></span>
+      <span class="code-lang">PHP</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="kw">&lt;?php</span></td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text"><span class="kw">use</span> <span class="fn">Illuminate\Support\Facades\Route</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text"><span class="kw">use</span> <span class="fn">App\Http\Controllers\InternController</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text"><span class="kw">use</span> <span class="fn">App\Http\Controllers\DepartmentController</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text"><span class="kw">use</span> <span class="fn">App\Http\Controllers\AttendanceController</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text"><span class="cm">// Public route — no auth needed</span></td></tr>
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text"><span class="fn">Route</span>::<span class="fn">get</span>(<span class="str">'/'</span>, <span class="kw">fn</span>() =&gt; <span class="fn">redirect</span>()-&gt;<span class="fn">route</span>(<span class="str">'login'</span>));</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Arrow function as route callback — <code>fn() =&gt;</code> is PHP 7.4+ syntax for short anonymous functions. Here it redirects the root URL <code>/</code> to the login page. <span class="ann-concept-tag">PHP Arrow Functions</span> <span class="ann-concept-tag laravel">Routing</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">10</td><td class="code-text"><span class="cm">// Protected routes — must be logged in</span></td></tr>
+        <tr class="code-line"><td class="code-num">11</td><td class="code-text"><span class="fn">Route</span>::<span class="fn">middleware</span>([<span class="str">'auth'</span>])-&gt;<span class="fn">group</span>(<span class="kw">function</span>() {</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text">Middleware is code that runs BEFORE or AFTER a request reaches the controller. <code>'auth'</code> middleware checks the session — if not logged in, redirects to <code>/login</code>. Grouping applies it to ALL routes inside the closure. <span class="ann-concept-tag laravel">Middleware</span> <span class="ann-concept-tag">PHP Closures</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">12</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">13</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">Route</span>::<span class="fn">resource</span>(<span class="str">'interns'</span>, <span class="fn">InternController</span>::<span class="kw">class</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text">One line creates 7 routes: GET /interns (index), GET /interns/create, POST /interns (store), GET /interns/{intern} (show), GET /interns/{intern}/edit, PUT/PATCH /interns/{intern} (update), DELETE /interns/{intern} (destroy). Run <code>php artisan route:list</code> to see all. <span class="ann-concept-tag laravel">Resource Routes</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">14</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">Route</span>::<span class="fn">resource</span>(<span class="str">'departments'</span>, <span class="fn">DepartmentController</span>::<span class="kw">class</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">15</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">Route</span>::<span class="fn">resource</span>(<span class="str">'attendance'</span>, <span class="fn">AttendanceController</span>::<span class="kw">class</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">16</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">17</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Custom route for dashboard stats</span></td></tr>
+        <tr class="code-line"><td class="code-num">18</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">Route</span>::<span class="fn">get</span>(<span class="str">'/dashboard'</span>, [<span class="fn">InternController</span>::<span class="kw">class</span>, <span class="str">'dashboard'</span>])</td></tr>
+        <tr class="code-line"><td class="code-num">19</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;<span class="fn">name</span>(<span class="str">'dashboard'</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>->name('dashboard')</code> gives this route a name. Now in Blade: <code>{{ route('dashboard') }}</code> generates the URL automatically — if you change the URL later, all links update. <span class="ann-concept-tag laravel">Named Routes</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">20</td><td class="code-text">});</td></tr>
+        <tr class="code-line"><td class="code-num">21</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">22</td><td class="code-text"><span class="cm">// Breeze auth routes (login, register, logout)</span></td></tr>
+        <tr class="code-line"><td class="code-num">23</td><td class="code-text"><span class="kw">require</span> <span class="fn">__DIR__</span>.<span class="str">'/auth.php'</span>;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>require</code> includes another PHP file. <code>__DIR__</code> is a PHP magic constant — the directory of the current file. This includes <code>routes/auth.php</code> which Breeze auto-generated with login/register routes. <span class="ann-concept-tag">PHP __DIR__</span> <span class="ann-concept-tag laravel">Breeze Auth</span></span></div></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="note-box info">
+    <h4>📌 NOTE: API Routing (routes/api.php)</h4>
+    API routes in <code>routes/api.php</code> are automatically prefixed with <code>/api</code>. They use token auth (Sanctum) instead of sessions. Here's how you'd add an API endpoint for your AIML team:<br><br>
+    <code>Route::middleware('auth:sanctum')->get('/interns', fn() => Intern::all());</code><br><br>
+    To set up: run <code>php artisan install:api</code> (Laravel 11). This creates the api.php file and installs Sanctum. Your Python ML models can then call <code>POST /api/predict</code> with a Bearer token. Full API guide: see Laravel docs → "Sanctum".
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P1 · SECTION 6: Blade View -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section" id="p1-s6" data-project="p1">
+  <div class="section-header">
+    <div class="section-label">Step 6 — View Layer</div>
+    <div class="section-title">Blade Templates — The UI Layer</div>
+    <div class="section-subtitle">Blade is Laravel's templating engine. It compiles to plain PHP for speed. The <code>@</code> directive syntax handles layout inheritance, loops, conditionals, and form helpers.</div>
+  </div>
+
+  <div class="learn-list">
+    <span class="concept-badge blade">Blade Templating</span>
+    <span class="concept-badge laravel">Layout Inheritance</span>
+    <span class="concept-badge laravel">CSRF Protection</span>
+    <span class="concept-badge blade">Blade Directives</span>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">resources/views/interns/<span>index.blade.php</span></span>
+      <span class="code-lang blade">BLADE</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="tag">@extends</span>(<span class="str">'layouts.app'</span>)</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>@extends</code> is Blade's inheritance directive. This view "inherits" from <code>resources/views/layouts/app.blade.php</code> — the master layout with nav, header, footer. We only define what's different (the content). <span class="ann-concept-tag blade">Template Inheritance</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text"><span class="tag">@section</span>(<span class="str">'title'</span>, <span class="str">'Interns — Internship System'</span>)</td></tr>
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text"><span class="tag">@section</span>(<span class="str">'content'</span>)</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>@section('content')</code> fills the <code>@yield('content')</code> slot in the layout. Everything between <code>@section</code> and <code>@endsection</code> goes there. This is how you avoid repeating nav/footer HTML on every page. <span class="ann-concept-tag blade">Sections & Yields</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text"><span class="tag">@if</span>(session(<span class="str">'success'</span>))</td></tr>
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class=<span class="str">"alert-success"</span>&gt;{{ session(<span class="str">'success'</span>) }}&lt;/div&gt;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>{{ }}</code> is Blade's echo with automatic HTML escaping. It converts <code>&lt;</code> to <code>&amp;lt;</code> preventing XSS attacks. <code>session('success')</code> reads the flash message set by <code>->with('success', ...)</code>. <span class="ann-concept-tag security">XSS Prevention</span> <span class="ann-concept-tag blade">Blade Echo</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text"><span class="tag">@endif</span></td></tr>
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">10</td><td class="code-text">&lt;div class=<span class="str">"flex justify-between mb-6"</span>&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">11</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;All Interns&lt;/h1&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">12</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;a href=<span class="str">"{{ route('interns.create') }}"</span>&gt;+ Add Intern&lt;/a&gt;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>route('interns.create')</code> generates the URL for the named route. Resource routes auto-name themselves: <code>interns.index</code>, <code>interns.create</code>, <code>interns.store</code>, <code>interns.edit</code>, <code>interns.update</code>, <code>interns.destroy</code>. <span class="ann-concept-tag laravel">Named Routes</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">13</td><td class="code-text">&lt;/div&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">14</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">15</td><td class="code-text"><span class="cm">{{-- Search form --}}</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>{{-- --}}</code> is a Blade comment. Unlike HTML <code>&lt;!-- --&gt;</code>, Blade comments are removed during compilation and never sent to the browser. <span class="ann-concept-tag blade">Blade Comments</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">16</td><td class="code-text">&lt;form method=<span class="str">"GET"</span>&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">17</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input name=<span class="str">"search"</span> value=<span class="str">"{{ request('search') }}"</span>&gt;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>request('search')</code> is Laravel's helper to read query params. It equals <code>$_GET['search'] ?? ''</code>. Prefilling the input with the current search keeps it persistent after submitting. <span class="ann-concept-tag laravel">Request Helper</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">18</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;button type=<span class="str">"submit"</span>&gt;Search&lt;/button&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">19</td><td class="code-text">&lt;/form&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">20</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">21</td><td class="code-text"><span class="tag">@forelse</span>(<span class="var">$interns</span> <span class="kw">as</span> <span class="var">$intern</span>)</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text"><code>@forelse</code> is like <code>@foreach</code> but with a built-in <code>@empty</code> fallback — cleaner than writing <code>@if($interns->isEmpty()) ... @else @foreach ... @endforeach @endif</code>. <span class="ann-concept-tag blade">@forelse</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">22</td><td class="code-text">&lt;div class=<span class="str">"intern-card"</span>&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">23</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;strong&gt;{{ <span class="var">$intern</span>-&gt;name }}&lt;/strong&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">24</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&gt;{{ <span class="var">$intern</span>-&gt;department-&gt;name }}&lt;/span&gt;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Accessing a relationship: <code>$intern->department->name</code>. Because we used <code>with('department')</code> in the controller, this doesn't fire extra queries. Without eager loading, each iteration would query the DB separately. <span class="ann-concept-tag laravel">Eager Loading (N+1)</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">25</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;span class=<span class="str">"badge-{{ $intern->status }}"</span>&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">26</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ <span class="fn">ucfirst</span>(<span class="var">$intern</span>-&gt;status) }}</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>ucfirst()</code> is a PHP string function that capitalises the first letter. You can use ANY PHP function inside <code>{{ }}</code>. Laravel doesn't restrict you — it's just PHP inside the template. <span class="ann-concept-tag">PHP String Functions</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">27</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/span&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">28</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;span&gt;{{ <span class="var">$intern</span>-&gt;start_date-&gt;<span class="fn">format</span>(<span class="str">'d M Y'</span>) }}&lt;/span&gt;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Because <code>start_date</code> is cast as <code>'date'</code> in the model, it becomes a Carbon object — a rich PHP date class. <code>->format('d M Y')</code> outputs "15 Jan 2024". Without the cast, it'd be a plain string. <span class="ann-concept-tag laravel">Carbon Dates</span> <span class="ann-concept-tag laravel">Eloquent Casts</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">29</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">30</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">{{-- Delete form (needs POST method override) --}}</span></td></tr>
+        <tr class="code-line"><td class="code-num">31</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;form method=<span class="str">"POST"</span> action=<span class="str">"{{ route('interns.destroy', $intern) }}"</span>&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">32</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">@csrf</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation warn"><span class="ann-icon">⚠️</span><span class="ann-text"><code>@csrf</code> generates a hidden input with a CSRF token: <code>&lt;input type="hidden" name="_token" value="..."&gt;</code>. Laravel validates this on every POST/PUT/DELETE — prevents Cross-Site Request Forgery attacks where another site tricks your browser into making requests. NEVER forget <code>@csrf</code> in forms. <span class="ann-concept-tag security">CSRF Protection</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">33</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">@method</span>(<span class="str">'DELETE'</span>)</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text">HTML forms only support GET and POST. <code>@method('DELETE')</code> adds a hidden <code>_method=DELETE</code> input. Laravel reads this and treats the request as a DELETE, routing it to the <code>destroy()</code> controller method. Same applies for PUT/PATCH. <span class="ann-concept-tag laravel">Method Spoofing</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">34</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button onclick=<span class="str">"return confirm('Delete?')"</span>&gt;Delete&lt;/button&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">35</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/form&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">36</td><td class="code-text">&lt;/div&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">37</td><td class="code-text"><span class="tag">@empty</span></td></tr>
+        <tr class="code-line"><td class="code-num">38</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;No interns found. &lt;a href=<span class="str">"{{ route('interns.create') }}"</span>&gt;Add one&lt;/a&gt;&lt;/p&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">39</td><td class="code-text"><span class="tag">@endforelse</span></td></tr>
+        <tr class="code-line"><td class="code-num">40</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">41</td><td class="code-text">{{ <span class="var">$interns</span>-&gt;<span class="fn">links</span>() }}</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>$interns->links()</code> renders pagination controls automatically — Previous/Next buttons and page numbers. It reads the current page from <code>?page=2</code> in the URL. Paginator is from <code>->paginate(15)</code> in the controller. <span class="ann-concept-tag laravel">Pagination</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">42</td><td class="code-text"><span class="tag">@endsection</span></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P1 · SECTION 7: Attendance Tracker -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section" id="p1-s7" data-project="p1">
+  <div class="section-header">
+    <div class="section-label">Step 7 — Feature</div>
+    <div class="section-title">Attendance Tracker — Pure PHP OOP</div>
+    <div class="section-subtitle">This section shows a plain PHP OOP approach to attendance logic — a service class that's then used inside the Laravel controller. Good for understanding PHP before relying on Laravel helpers.</div>
+  </div>
+
+  <div class="learn-list">
+    <span class="concept-badge php">PHP OOP</span>
+    <span class="concept-badge php">PHP Arrays</span>
+    <span class="concept-badge php">PHP Date Functions</span>
+    <span class="concept-badge laravel">Eloquent Queries</span>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">app/Services/<span>AttendanceService.php</span></span>
+      <span class="code-lang">PHP</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="kw">&lt;?php</span></td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text"><span class="kw">namespace</span> <span class="fn">App\Services</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text"><span class="kw">use</span> <span class="fn">App\Models\Attendance</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text"><span class="kw">use</span> <span class="fn">App\Models\Intern</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text"><span class="kw">class</span> <span class="fn">AttendanceService</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text">A Service class encapsulates business logic that doesn't belong in a Model or Controller. This is called the Single Responsibility Principle — controllers should be thin, services should hold the "how". <span class="ann-concept-tag">PHP OOP</span> <span class="ann-concept-tag">Service Layer</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text">{</td></tr>
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">markAttendance</span>(<span class="kw">int</span> <span class="var">$internId</span>, <span class="kw">string</span> <span class="var">$status</span>): <span class="fn">Attendance</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">PHP 7+ type hints on parameters (<code>int $internId</code>, <code>string $status</code>) and return type (<code>: Attendance</code>). PHP will throw a TypeError if the wrong type is passed. This makes code self-documenting and catches bugs early. <span class="ann-concept-tag">PHP Type Hints</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">10</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (!<span class="fn">in_array</span>(<span class="var">$status</span>, [<span class="str">'present'</span>, <span class="str">'absent'</span>, <span class="str">'late'</span>])) {</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>in_array()</code> checks if a value exists in a PHP array. Used here as a whitelist validator — only allow known status values. The <code>!</code> operator negates the boolean result. <span class="ann-concept-tag">PHP in_array()</span> <span class="ann-concept-tag">PHP Arrays</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">11</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">throw new</span> <span class="fn">\InvalidArgumentException</span>(<span class="str">"Invalid status: $status"</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>throw new Exception()</code> halts execution and sends an exception up the call stack. <code>\InvalidArgumentException</code> is a built-in PHP exception. The backslash means "global namespace" (not under App\Services). <span class="ann-concept-tag">PHP Exceptions</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">12</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">13</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">14</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">Attendance</span>::<span class="fn">updateOrCreate</span>(</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text"><code>updateOrCreate()</code> either updates an existing record (first array = where condition) or creates a new one (second array = values). Prevents duplicate attendance for the same intern+date. <span class="ann-concept-tag laravel">updateOrCreate</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">15</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="str">'intern_id'</span> =&gt; <span class="var">$internId</span>, <span class="str">'date'</span> =&gt; <span class="fn">today</span>()-&gt;<span class="fn">toDateString</span>()],</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>today()</code> is a Laravel helper that returns a Carbon instance for today. <code>->toDateString()</code> formats it as <code>YYYY-MM-DD</code>. PHP equivalent: <code>date('Y-m-d')</code>. <span class="ann-concept-tag laravel">Carbon / today()</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">16</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="str">'status'</span> =&gt; <span class="var">$status</span>]</td></tr>
+        <tr class="code-line"><td class="code-num">17</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);</td></tr>
+        <tr class="code-line"><td class="code-num">18</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">19</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">20</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">getMonthlyReport</span>(<span class="kw">int</span> <span class="var">$internId</span>, <span class="kw">int</span> <span class="var">$month</span>, <span class="kw">int</span> <span class="var">$year</span>): <span class="kw">array</span></td></tr>
+        <tr class="code-line"><td class="code-num">21</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">22</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$records</span> = <span class="fn">Attendance</span>::<span class="fn">where</span>(<span class="str">'intern_id'</span>, <span class="var">$internId</span>)</td></tr>
+        <tr class="code-line"><td class="code-num">23</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;<span class="fn">whereMonth</span>(<span class="str">'date'</span>, <span class="var">$month</span>)</td></tr>
+        <tr class="code-line"><td class="code-num">24</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;<span class="fn">whereYear</span>(<span class="str">'date'</span>, <span class="var">$year</span>)</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>whereMonth()</code> and <code>whereYear()</code> are Eloquent shortcuts that use MySQL's <code>MONTH()</code> and <code>YEAR()</code> functions on the column. Method chaining builds the query incrementally. <span class="ann-concept-tag laravel">Eloquent Queries</span> <span class="ann-concept-tag mysql">MySQL Date Functions</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">25</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;<span class="fn">get</span>();</td></tr>
+        <tr class="code-line"><td class="code-num">26</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">27</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$present</span>  = <span class="var">$records</span>-&gt;<span class="fn">where</span>(<span class="str">'status'</span>, <span class="str">'present'</span>)-&gt;<span class="fn">count</span>();</td></tr>
+        <tr class="code-line"><td class="code-num">28</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$absent</span>   = <span class="var">$records</span>-&gt;<span class="fn">where</span>(<span class="str">'status'</span>, <span class="str">'absent'</span>)-&gt;<span class="fn">count</span>();</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">After <code>->get()</code>, <code>$records</code> is a Laravel Collection (an array wrapper). Collections have <code>->where()</code>, <code>->count()</code>, <code>->sum()</code> etc. in PHP memory — NOT new DB queries. This is the difference between a Collection and a Query Builder. <span class="ann-concept-tag laravel">Laravel Collections</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">29</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$late</span>     = <span class="var">$records</span>-&gt;<span class="fn">where</span>(<span class="str">'status'</span>, <span class="str">'late'</span>)-&gt;<span class="fn">count</span>();</td></tr>
+        <tr class="code-line"><td class="code-num">30</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$total</span>    = <span class="var">$records</span>-&gt;<span class="fn">count</span>();</td></tr>
+        <tr class="code-line"><td class="code-num">31</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$pct</span>      = <span class="var">$total</span> &gt; <span class="num">0</span> ? <span class="fn">round</span>((<span class="var">$present</span> / <span class="var">$total</span>) * <span class="num">100</span>, <span class="num">1</span>) : <span class="num">0</span>;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Ternary prevents division by zero. <code>round($val, 1)</code> rounds to 1 decimal. PHP arithmetic: <code>/</code> is float division, <code>*</code> multiplication. Returns a PHP associative array with all stats. <span class="ann-concept-tag">PHP Math</span> <span class="ann-concept-tag">PHP Arrays</span> <span class="ann-concept-tag">PHP Ternary</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">32</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">33</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">compact</span>(<span class="str">'present'</span>, <span class="str">'absent'</span>, <span class="str">'late'</span>, <span class="str">'total'</span>, <span class="str">'pct'</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">34</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">35</td><td class="code-text">}</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PROJECT 2: TASK MANAGER -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P2 · SECTION 1: Setup -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section" id="p2-s1" data-project="p2">
+  <div class="section-header">
+    <div class="section-label">Step 1 — Foundation</div>
+    <div class="section-title">Task Manager — Project Setup</div>
+    <div class="section-subtitle">This project reinforces PHP fundamentals with a clean Task + Attendance system. We'll build it partly in plain PHP OOP (to learn core PHP) and wrap it in Laravel routing and Blade.</div>
+  </div>
+
+  <div class="phase-header">
+    <div class="phase-icon">🧱</div>
+    <div><div class="phase-title">Plain PHP First, Then Laravel</div><div class="phase-desc">For this project, we write the core logic as pure PHP classes. This teaches you PHP OOP deeply before relying on framework magic.</div></div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">terminal — <span>generate files</span></span>
+      <span class="code-lang sh">SHELL</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="cm"># In your Laravel project root:</span></td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text">php artisan make:model Task -m</td></tr>
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text">php artisan make:model AttendanceLog -m</td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text">php artisan make:controller TaskController --resource</td></tr>
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text">php artisan make:controller AttendanceLogController --resource</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">These 4 commands generate 6 files. The <code>-m</code> flag creates a migration alongside the model. <code>--resource</code> pre-fills the controller with all 7 CRUD methods. This is the Artisan scaffolding power of Laravel. <span class="ann-concept-tag laravel">Artisan Generators</span></span></div></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P2 · SECTION 2: PHP OOP Task Class -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section" id="p2-s2" data-project="p2">
+  <div class="section-header">
+    <div class="section-label">Step 2 — Pure PHP OOP</div>
+    <div class="section-title">Task Entity — PHP OOP Class</div>
+    <div class="section-subtitle">Before using Eloquent, let's build the Task as a plain PHP class. This teaches you PHP OOP: constructors, visibility, type hints, interfaces, and traits — the same patterns Laravel uses internally.</div>
+  </div>
+
+  <div class="learn-list">
+    <span class="concept-badge php">PHP Interfaces</span>
+    <span class="concept-badge php">PHP Traits</span>
+    <span class="concept-badge php">PHP Constructor Promotion</span>
+    <span class="concept-badge php">PHP Enums</span>
+    <span class="concept-badge php">PHP Match Expression</span>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">app/Domain/<span>Task.php</span></span>
+      <span class="code-lang">PHP</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="kw">&lt;?php</span></td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text"><span class="kw">namespace</span> <span class="fn">App\Domain</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text"><span class="cm">// ── PHP 8.1 Enum: type-safe status values ────────</span></td></tr>
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text"><span class="kw">enum</span> <span class="fn">TaskStatus</span>: <span class="kw">string</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text">PHP 8.1 Enums are type-safe value sets. <code>: string</code> makes it a "backed enum" — each case maps to a string. Before enums, developers used string constants or plain strings (bug-prone). Laravel 10+ supports casting model columns directly to Enums. <span class="ann-concept-tag">PHP 8.1 Enums</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text">{</td></tr>
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">case</span> Pending    = <span class="str">'pending'</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">case</span> InProgress = <span class="str">'in_progress'</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">case</span> Done       = <span class="str">'done'</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">10</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">11</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">label</span>(): <span class="kw">string</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Enums can have methods! This is powerful — behaviour lives with the data. <code>TaskStatus::Pending->label()</code> returns "Pending". No need for a separate helper function. <span class="ann-concept-tag">PHP Enum Methods</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">12</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">13</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return match</span>(<span class="var">$this</span>) {</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>match()</code> is PHP 8's switch replacement. It's strict (===), returns a value, no fallthrough, and throws an error if no case matches (unlike switch which silently falls to default). <span class="ann-concept-tag">PHP match()</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">14</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">TaskStatus</span>::Pending    =&gt; <span class="str">'Pending'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">15</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">TaskStatus</span>::InProgress =&gt; <span class="str">'In Progress'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">16</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">TaskStatus</span>::Done       =&gt; <span class="str">'Done'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">17</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};</td></tr>
+        <tr class="code-line"><td class="code-num">18</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">19</td><td class="code-text">}</td></tr>
+        <tr class="code-line"><td class="code-num">20</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">21</td><td class="code-text"><span class="cm">// ── Interface: forces consistent contract ────────</span></td></tr>
+        <tr class="code-line"><td class="code-num">22</td><td class="code-text"><span class="kw">interface</span> <span class="fn">Exportable</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">An interface defines a contract — any class that <code>implements Exportable</code> MUST provide these methods or PHP throws a fatal error. This enables polymorphism: your code can work with any Exportable without knowing the concrete class. <span class="ann-concept-tag">PHP Interface</span> <span class="ann-concept-tag">PHP OOP</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">23</td><td class="code-text">{</td></tr>
+        <tr class="code-line"><td class="code-num">24</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">toArray</span>(): <span class="kw">array</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">25</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">toJson</span>(): <span class="kw">string</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">26</td><td class="code-text">}</td></tr>
+        <tr class="code-line"><td class="code-num">27</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">28</td><td class="code-text"><span class="cm">// ── Trait: reusable timestamp logic ──────────────</span></td></tr>
+        <tr class="code-line"><td class="code-num">29</td><td class="code-text"><span class="kw">trait</span> <span class="fn">HasTimestamps</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">A Trait is a code mixin — copy-pasted into any class with <code>use HasTimestamps</code>. Unlike inheritance (single parent only), a class can use many traits. Laravel's Eloquent model uses traits extensively: <code>SoftDeletes</code>, <code>HasFactory</code>, <code>Notifiable</code>. <span class="ann-concept-tag">PHP Traits</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">30</td><td class="code-text">{</td></tr>
+        <tr class="code-line"><td class="code-num">31</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">private</span> <span class="kw">string</span> <span class="var">$createdAt</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">32</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">initTimestamps</span>(): <span class="kw">void</span></td></tr>
+        <tr class="code-line"><td class="code-num">33</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">34</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$this</span>-&gt;createdAt = <span class="fn">date</span>(<span class="str">'Y-m-d H:i:s'</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>date('Y-m-d H:i:s')</code> is PHP's built-in date function. Y=4-digit year, m=month, d=day, H=hours, i=minutes, s=seconds. Returns current server time as a string. <span class="ann-concept-tag">PHP date()</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">35</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">36</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">getCreatedAt</span>(): <span class="kw">string</span> { <span class="kw">return</span> <span class="var">$this</span>-&gt;createdAt; }</td></tr>
+        <tr class="code-line"><td class="code-num">37</td><td class="code-text">}</td></tr>
+        <tr class="code-line"><td class="code-num">38</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">39</td><td class="code-text"><span class="cm">// ── Main Task class ───────────────────────────────</span></td></tr>
+        <tr class="code-line"><td class="code-num">40</td><td class="code-text"><span class="kw">class</span> <span class="fn">TaskEntity</span> <span class="kw">implements</span> <span class="fn">Exportable</span></td></tr>
+        <tr class="code-line"><td class="code-num">41</td><td class="code-text">{</td></tr>
+        <tr class="code-line"><td class="code-num">42</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">use</span> <span class="fn">HasTimestamps</span>;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Using a trait AND implementing an interface simultaneously — PHP allows this. The class must satisfy the interface contract but gains the trait's code for free. <span class="ann-concept-tag">PHP Traits + Interfaces</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">43</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">44</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">__construct</span>(</td></tr>
+        <tr class="code-line"><td class="code-num">45</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">private</span> <span class="kw">string</span>     <span class="var">$title</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">46</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">private</span> <span class="fn">TaskStatus</span> <span class="var">$status</span> = <span class="fn">TaskStatus</span>::Pending,</td></tr>
+        <tr class="code-line"><td class="code-num">47</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">private</span> <span class="kw">string</span>     <span class="var">$priority</span> = <span class="str">'medium'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">48</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">private</span> <span class="kw">?string</span>    <span class="var">$dueDate</span> = <span class="kw">null</span>,</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text">Constructor Property Promotion (PHP 8.0+). Adding <code>private/public/protected</code> before the parameter in the constructor automatically declares the property AND assigns it. Without this you'd need 3 lines per property: declare, parameter, assign in body. <code>?string</code> = nullable string. <span class="ann-concept-tag">PHP 8 Constructor Promotion</span> <span class="ann-concept-tag">PHP Nullable Types</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">49</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;) {</td></tr>
+        <tr class="code-line"><td class="code-num">50</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$this</span>-&gt;<span class="fn">initTimestamps</span>();  <span class="cm">// call the trait method</span></td></tr>
+        <tr class="code-line"><td class="code-num">51</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">52</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">53</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">complete</span>(): <span class="kw">self</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Return type <code>self</code> means this method returns the same class instance. This enables method chaining: <code>$task->complete()->toArray()</code>. <span class="ann-concept-tag">PHP Method Chaining</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">54</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">55</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$this</span>-&gt;status = <span class="fn">TaskStatus</span>::Done;</td></tr>
+        <tr class="code-line"><td class="code-num">56</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="var">$this</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">57</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">58</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">59</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">toArray</span>(): <span class="kw">array</span></td></tr>
+        <tr class="code-line"><td class="code-num">60</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">61</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> [</td></tr>
+        <tr class="code-line"><td class="code-num">62</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'title'</span>      =&gt; <span class="var">$this</span>-&gt;title,</td></tr>
+        <tr class="code-line"><td class="code-num">63</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'status'</span>     =&gt; <span class="var">$this</span>-&gt;status-&gt;value,</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>$this->status->value</code> — backed enum's <code>->value</code> returns the string backing value (<code>'pending'</code>, <code>'done'</code>). Without <code>->value</code>, you'd get the enum object itself, not the string. <span class="ann-concept-tag">PHP Enum value</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">64</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'status_label'</span>=&gt; <span class="var">$this</span>-&gt;status-&gt;<span class="fn">label</span>(),</td></tr>
+        <tr class="code-line"><td class="code-num">65</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'priority'</span>   =&gt; <span class="var">$this</span>-&gt;priority,</td></tr>
+        <tr class="code-line"><td class="code-num">66</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'due_date'</span>   =&gt; <span class="var">$this</span>-&gt;dueDate,</td></tr>
+        <tr class="code-line"><td class="code-num">67</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'created_at'</span> =&gt; <span class="var">$this</span>-&gt;<span class="fn">getCreatedAt</span>(),</td></tr>
+        <tr class="code-line"><td class="code-num">68</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;];</td></tr>
+        <tr class="code-line"><td class="code-num">69</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">70</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">71</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">toJson</span>(): <span class="kw">string</span></td></tr>
+        <tr class="code-line"><td class="code-num">72</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">73</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">json_encode</span>(<span class="var">$this</span>-&gt;<span class="fn">toArray</span>(), <span class="fn">JSON_PRETTY_PRINT</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>json_encode()</code> converts a PHP array to a JSON string. <code>JSON_PRETTY_PRINT</code> is a PHP constant that adds indentation. This is how your PHP data becomes JSON for an API response or for passing to JavaScript. <span class="ann-concept-tag">PHP json_encode()</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">74</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">75</td><td class="code-text">}</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P2 · SECTION 3: Task Model + Migration -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section" id="p2-s3" data-project="p2">
+  <div class="section-header">
+    <div class="section-label">Step 3 — Eloquent Model</div>
+    <div class="section-title">Task Eloquent Model + Migration</div>
+    <div class="section-subtitle">Now we bring the Task concept into Laravel's Eloquent ORM. This is where the PHP OOP class from Step 2 maps to a real database table.</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">database/migrations/<span>xxxx_create_tasks_table.php</span></span>
+      <span class="code-lang">PHP</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">id</span>();</td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">foreignId</span>(<span class="str">'user_id'</span>)-&gt;<span class="fn">constrained</span>()-&gt;<span class="fn">onDelete</span>(<span class="str">'cascade'</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">🔗</span><span class="ann-text">Links tasks to users. <code>constrained()</code> looks up the <code>users</code> table (inferred from column name). If a user is deleted, all their tasks are auto-deleted (<code>cascade</code>). <span class="ann-concept-tag mysql">Foreign Key Cascade</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">string</span>(<span class="str">'title'</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">text</span>(<span class="str">'description'</span>)-&gt;<span class="fn">nullable</span>();</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>text()</code> = MySQL TEXT column (up to 65KB). Use for long content. <code>string()</code> = VARCHAR(255) for short strings. <span class="ann-concept-tag mysql">MySQL Column Types</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">string</span>(<span class="str">'status'</span>)-&gt;<span class="fn">default</span>(<span class="str">'pending'</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">string</span>(<span class="str">'priority'</span>)-&gt;<span class="fn">default</span>(<span class="str">'medium'</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">date</span>(<span class="str">'due_date'</span>)-&gt;<span class="fn">nullable</span>();</td></tr>
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">boolean</span>(<span class="str">'is_pinned'</span>)-&gt;<span class="fn">default</span>(<span class="kw">false</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">timestamps</span>();</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">app/Models/<span>Task.php</span></span>
+      <span class="code-lang">PHP</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="kw">class</span> <span class="fn">Task</span> <span class="kw">extends</span> <span class="fn">Model</span></td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text">{</td></tr>
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">use</span> <span class="fn">HasFactory</span>, <span class="fn">SoftDeletes</span>;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>SoftDeletes</code> trait: instead of permanently deleting rows, it sets a <code>deleted_at</code> timestamp. Queries auto-exclude soft-deleted rows. Use <code>withTrashed()</code> to include them. Add <code>$table->softDeletes()</code> to the migration. <span class="ann-concept-tag laravel">SoftDeletes Trait</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">protected</span> <span class="var">$fillable</span> = [<span class="str">'user_id'</span>,<span class="str">'title'</span>,<span class="str">'description'</span>,<span class="str">'status'</span>,<span class="str">'priority'</span>,<span class="str">'due_date'</span>,<span class="str">'is_pinned'</span>];</td></tr>
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">protected</span> <span class="var">$casts</span> = [<span class="str">'due_date'</span>=&gt;<span class="str">'date'</span>, <span class="str">'is_pinned'</span>=&gt;<span class="str">'boolean'</span>];</td></tr>
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Task belongs to a User</span></td></tr>
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">user</span>() { <span class="kw">return</span> <span class="var">$this</span>-&gt;<span class="fn">belongsTo</span>(<span class="fn">User</span>::<span class="kw">class</span>); }</td></tr>
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">10</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Scopes for filtering</span></td></tr>
+        <tr class="code-line"><td class="code-num">11</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">scopePending</span>(<span class="var">$q</span>)    { <span class="kw">return</span> <span class="var">$q</span>-&gt;<span class="fn">where</span>(<span class="str">'status'</span>, <span class="str">'pending'</span>); }</td></tr>
+        <tr class="code-line"><td class="code-num">12</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">scopeHighPriority</span>(<span class="var">$q</span>) { <span class="kw">return</span> <span class="var">$q</span>-&gt;<span class="fn">where</span>(<span class="str">'priority'</span>, <span class="str">'high'</span>); }</td></tr>
+        <tr class="code-line"><td class="code-num">13</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">scopeOverdue</span>(<span class="var">$q</span>) {</td></tr>
+        <tr class="code-line"><td class="code-num">14</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="var">$q</span>-&gt;<span class="fn">where</span>(<span class="str">'due_date'</span>, <span class="str">'&lt;'</span>, <span class="fn">today</span>())-&gt;<span class="fn">where</span>(<span class="str">'status'</span>, <span class="str">'!='</span>, <span class="str">'done'</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text">Chaining two <code>where()</code> calls adds AND conditions. Usage: <code>Task::overdue()->get()</code> — reads like English! Scopes make your query building expressive and reusable across multiple controllers. <span class="ann-concept-tag laravel">Eloquent Scopes</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">15</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">16</td><td class="code-text">}</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P2 · SECTION 4: TaskController -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section" id="p2-s4" data-project="p2">
+  <div class="section-header">
+    <div class="section-label">Step 4 — Controller</div>
+    <div class="section-title">TaskController — Full CRUD</div>
+    <div class="section-subtitle">A complete resource controller with all 7 CRUD operations, validation, authorization checks, and JSON API response support.</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">app/Http/Controllers/<span>TaskController.php</span></span>
+      <span class="code-lang">PHP</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="kw">class</span> <span class="fn">TaskController</span> <span class="kw">extends</span> <span class="fn">Controller</span></td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text">{</td></tr>
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">index</span>(<span class="fn">Request</span> <span class="var">$request</span>)</td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$tasks</span> = <span class="fn">Task</span>::<span class="fn">where</span>(<span class="str">'user_id'</span>, <span class="fn">auth</span>()-&gt;<span class="fn">id</span>())</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>auth()->id()</code> returns the logged-in user's ID from the session. Equivalent to <code>$_SESSION['user_id']</code> in plain PHP but managed by Laravel's Auth system. <span class="ann-concept-tag laravel">Laravel Auth</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;<span class="fn">when</span>(<span class="var">$request</span>-&gt;<span class="fn">status</span>, <span class="fn">fn</span>(<span class="var">$q</span>, <span class="var">$s</span>) =&gt; <span class="var">$q</span>-&gt;<span class="fn">where</span>(<span class="str">'status'</span>, <span class="var">$s</span>))</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text"><code>when($condition, $callback)</code> is a conditional query builder method. If <code>$condition</code> is truthy, the callback runs. Cleaner than: <code>if ($request->status) { $query->where('status', ...) }</code>. The callback receives the query and the condition value. <span class="ann-concept-tag laravel">Conditional Queries (when)</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;<span class="fn">when</span>(<span class="var">$request</span>-&gt;<span class="fn">priority</span>, <span class="fn">fn</span>(<span class="var">$q</span>, <span class="var">$p</span>) =&gt; <span class="var">$q</span>-&gt;<span class="fn">where</span>(<span class="str">'priority'</span>, <span class="var">$p</span>))</td></tr>
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;<span class="fn">orderByRaw</span>(<span class="str">'CASE priority WHEN "high" THEN 1 WHEN "medium" THEN 2 ELSE 3 END'</span>)</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>orderByRaw()</code> lets you pass raw SQL expressions when Eloquent doesn't have a helper. This custom ORDER BY sorts high→medium→low priority. <code>CASE WHEN</code> is standard MySQL. <span class="ann-concept-tag laravel">Raw SQL in Eloquent</span> <span class="ann-concept-tag mysql">CASE WHEN</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;<span class="fn">paginate</span>(<span class="num">20</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">10</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">11</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$stats</span> = [</td></tr>
+        <tr class="code-line"><td class="code-num">12</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'total'</span>   =&gt; <span class="fn">Task</span>::<span class="fn">where</span>(<span class="str">'user_id'</span>, <span class="fn">auth</span>()-&gt;<span class="fn">id</span>())-&gt;<span class="fn">count</span>(),</td></tr>
+        <tr class="code-line"><td class="code-num">13</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'pending'</span> =&gt; <span class="fn">Task</span>::<span class="fn">where</span>(<span class="str">'user_id'</span>, <span class="fn">auth</span>()-&gt;<span class="fn">id</span>())-&gt;<span class="fn">pending</span>()-&gt;<span class="fn">count</span>(),</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>->pending()</code> calls the <code>scopePending</code> method we defined in the model. Scopes make chaining feel like English: "Tasks where user_id is me, that are pending, count them." <span class="ann-concept-tag laravel">Query Scopes</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">14</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'overdue'</span> =&gt; <span class="fn">Task</span>::<span class="fn">where</span>(<span class="str">'user_id'</span>, <span class="fn">auth</span>()-&gt;<span class="fn">id</span>())-&gt;<span class="fn">overdue</span>()-&gt;<span class="fn">count</span>(),</td></tr>
+        <tr class="code-line"><td class="code-num">15</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;];</td></tr>
+        <tr class="code-line"><td class="code-num">16</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">17</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">view</span>(<span class="str">'tasks.index'</span>, <span class="fn">compact</span>(<span class="str">'tasks'</span>, <span class="str">'stats'</span>));</td></tr>
+        <tr class="code-line"><td class="code-num">18</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">19</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">20</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">store</span>(<span class="fn">Request</span> <span class="var">$request</span>)</td></tr>
+        <tr class="code-line"><td class="code-num">21</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">22</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$data</span> = <span class="var">$request</span>-&gt;<span class="fn">validate</span>([</td></tr>
+        <tr class="code-line"><td class="code-num">23</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'title'</span>       =&gt; <span class="str">'required|string|max:255'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">24</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'description'</span> =&gt; <span class="str">'nullable|string|max:1000'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">25</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'priority'</span>    =&gt; <span class="str">'required|in:low,medium,high'</span>,</td></tr>
+        <tr class="code-line"><td class="code-num">26</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">'due_date'</span>    =&gt; <span class="str">'nullable|date|after_or_equal:today'</span>,</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>after_or_equal:today</code> — Laravel validates that due_date is today or in the future. <code>today</code> is a dynamic rule keyword. This shows how expressive Laravel's validation DSL (Domain-Specific Language) is — all as PHP strings. <span class="ann-concept-tag laravel">Validation Rules</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">27</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]);</td></tr>
+        <tr class="code-line"><td class="code-num">28</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">29</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">auth</span>()-&gt;<span class="fn">user</span>()-&gt;<span class="fn">tasks</span>()-&gt;<span class="fn">create</span>(<span class="var">$data</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text">Creating via relationship: <code>auth()->user()->tasks()->create()</code>. This automatically sets <code>user_id</code> to the logged-in user's ID. Cleaner than setting <code>$data['user_id'] = auth()->id()</code> manually. <span class="ann-concept-tag laravel">Relationship Create</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">30</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">31</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Respond differently for API vs web requests</span></td></tr>
+        <tr class="code-line"><td class="code-num">32</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (<span class="var">$request</span>-&gt;<span class="fn">expectsJson</span>()) {</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text"><code>expectsJson()</code> returns true if the request has <code>Accept: application/json</code> header (API clients). This lets ONE controller serve both a web browser and an API — clean and DRY. <span class="ann-concept-tag laravel">API + Web Dual Response</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">33</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">response</span>()-&gt;<span class="fn">json</span>([<span class="str">'message'</span>=&gt;<span class="str">'Task created'</span>], <span class="num">201</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">34</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">35</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">redirect</span>()-&gt;<span class="fn">route</span>(<span class="str">'tasks.index'</span>)-&gt;<span class="fn">with</span>(<span class="str">'success'</span>, <span class="str">'Task added!'</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">36</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">37</td><td class="code-text">}</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P2 · SECTION 5: Attendance Migration -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section" id="p2-s5" data-project="p2">
+  <div class="section-header">
+    <div class="section-label">Step 5 — Attendance DB</div>
+    <div class="section-title">Attendance Log — Migration &amp; Model</div>
+    <div class="section-subtitle">Daily check-in/check-out tracking. Shows more complex migration column types, model relationship direction, and PHP date/time handling.</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">database/migrations/<span>xxxx_create_attendance_logs_table.php</span></span>
+      <span class="code-lang">PHP</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">id</span>();</td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">foreignId</span>(<span class="str">'user_id'</span>)-&gt;<span class="fn">constrained</span>()-&gt;<span class="fn">onDelete</span>(<span class="str">'cascade'</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">date</span>(<span class="str">'date'</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">time</span>(<span class="str">'check_in'</span>)-&gt;<span class="fn">nullable</span>();</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>time()</code> creates a MySQL TIME column (<code>HH:MM:SS</code>). Distinct from <code>timestamp()</code> (full datetime) or <code>date()</code> (date only). <span class="ann-concept-tag mysql">MySQL TIME Type</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">time</span>(<span class="str">'check_out'</span>)-&gt;<span class="fn">nullable</span>();</td></tr>
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">enum</span>(<span class="str">'status'</span>, [<span class="str">'present'</span>,<span class="str">'absent'</span>,<span class="str">'late'</span>,<span class="str">'half_day'</span>])-&gt;<span class="fn">default</span>(<span class="str">'present'</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">text</span>(<span class="str">'note'</span>)-&gt;<span class="fn">nullable</span>();</td></tr>
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">unique</span>([<span class="str">'user_id'</span>, <span class="str">'date'</span>]);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Composite unique constraint on two columns together. Prevents one user from having two attendance records for the same date. MySQL: <code>UNIQUE KEY (user_id, date)</code>. <span class="ann-concept-tag mysql">Composite Unique</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text"><span class="var">$table</span>-&gt;<span class="fn">timestamps</span>();</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">app/Models/<span>AttendanceLog.php</span> — selected methods</span>
+      <span class="code-lang">PHP</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">public function</span> <span class="fn">user</span>() { <span class="kw">return</span> <span class="var">$this</span>-&gt;<span class="fn">belongsTo</span>(<span class="fn">User</span>::<span class="kw">class</span>); }</td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm">// Computed: hours worked today</span></td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">protected function</span> <span class="fn">hoursWorked</span>(): <span class="fn">Attribute</span></td></tr>
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;{</td></tr>
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">Attribute</span>::<span class="fn">make</span>(</td></tr>
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">get</span>: <span class="fn">function</span>(<span class="var">$v</span>, <span class="var">$attrs</span>) {</td></tr>
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (!<span class="var">$attrs</span>[<span class="str">'check_in'</span>] || !<span class="var">$attrs</span>[<span class="str">'check_out'</span>]) <span class="kw">return null</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$in</span>  = <span class="fn">strtotime</span>(<span class="var">$attrs</span>[<span class="str">'check_in'</span>]);</td></tr>
+        <tr class="code-line"><td class="code-num">10</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$out</span> = <span class="fn">strtotime</span>(<span class="var">$attrs</span>[<span class="str">'check_out'</span>]);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>strtotime()</code> converts a time string like "09:00:00" into a Unix timestamp (seconds since 1970-01-01). You can then do arithmetic on seconds. <span class="ann-concept-tag">PHP strtotime()</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">11</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">round</span>((<span class="var">$out</span> - <span class="var">$in</span>) / <span class="num">3600</span>, <span class="num">1</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Divide by 3600 (seconds in an hour) to get hours. <code>round($val, 1)</code> rounds to 1 decimal. If check_in=9:00 and check_out=17:30, result = 8.5 hours. <span class="ann-concept-tag">PHP Math</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">12</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">13</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);</td></tr>
+        <tr class="code-line"><td class="code-num">14</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P2 · SECTION 6: API Routes -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section" id="p2-s6" data-project="p2">
+  <div class="section-header">
+    <div class="section-label">Step 6 — REST API</div>
+    <div class="section-title">API Routes &amp; JSON Responses</div>
+    <div class="section-subtitle">Building API endpoints is crucial for your AIML role. This section sets up token-authenticated API routes that your Python ML models can call.</div>
+  </div>
+
+  <div class="note-box warn">
+    <h4>⚠️ Setup Required First</h4>
+    Run: <code>php artisan install:api</code> (Laravel 11) — this creates <code>routes/api.php</code> and installs Sanctum (token auth). Then in your <code>User</code> model, add <code>use HasApiTokens</code>.
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">routes/<span>api.php</span></span>
+      <span class="code-lang">PHP</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="kw">&lt;?php</span></td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text"><span class="kw">use</span> <span class="fn">Illuminate\Support\Facades\Route</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text"><span class="kw">use</span> <span class="fn">App\Http\Controllers\Api\TaskApiController</span>;</td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text"><span class="cm">// Public: issue API token on login</span></td></tr>
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text"><span class="fn">Route</span>::<span class="fn">post</span>(<span class="str">'/auth/token'</span>, <span class="kw">function</span>(<span class="fn">Request</span> <span class="var">$req</span>) {</td></tr>
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$user</span> = <span class="fn">User</span>::<span class="fn">where</span>(<span class="str">'email'</span>, <span class="var">$req</span>-&gt;email)-&gt;<span class="fn">first</span>();</td></tr>
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">if</span> (!<span class="var">$user</span> || !<span class="fn">Hash</span>::<span class="fn">check</span>(<span class="var">$req</span>-&gt;password, <span class="var">$user</span>-&gt;password)) {</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>Hash::check($plain, $hashed)</code> uses <code>password_verify()</code> under the hood — the same PHP function you'd use manually. Laravel wraps it in a Facade for consistency. <span class="ann-concept-tag laravel">Hashing</span> <span class="ann-concept-tag security">Password Verification</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">response</span>()-&gt;<span class="fn">json</span>([<span class="str">'error'</span>=&gt;<span class="str">'Invalid credentials'</span>], <span class="num">401</span>);</td></tr>
+        <tr class="code-line"><td class="code-num">10</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;}</td></tr>
+        <tr class="code-line"><td class="code-num">11</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">$token</span> = <span class="var">$user</span>-&gt;<span class="fn">createToken</span>(<span class="str">'api-access'</span>)-&gt;plainTextToken;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text">Sanctum token creation. <code>createToken()</code> generates a random token, stores it hashed in <code>personal_access_tokens</code> table, returns the plain text (shown ONCE). The client stores this and sends it as <code>Authorization: Bearer TOKEN</code> on all API requests. <span class="ann-concept-tag laravel">Sanctum Tokens</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">12</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">response</span>()-&gt;<span class="fn">json</span>([<span class="str">'token'</span>=&gt;<span class="var">$token</span>]);</td></tr>
+        <tr class="code-line"><td class="code-num">13</td><td class="code-text">});</td></tr>
+        <tr class="code-line"><td class="code-num">14</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">15</td><td class="code-text"><span class="cm">// Protected: require Bearer token</span></td></tr>
+        <tr class="code-line"><td class="code-num">16</td><td class="code-text"><span class="fn">Route</span>::<span class="fn">middleware</span>(<span class="str">'auth:sanctum'</span>)-&gt;<span class="fn">group</span>(<span class="kw">function</span>() {</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>auth:sanctum</code> middleware validates the Bearer token from the Authorization header. If invalid or missing, returns 401 JSON automatically. <span class="ann-concept-tag laravel">Sanctum Middleware</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">17</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">Route</span>::<span class="fn">apiResource</span>(<span class="str">'tasks'</span>, <span class="fn">TaskApiController</span>::<span class="kw">class</span>);</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>apiResource()</code> creates the same 7 routes as <code>resource()</code> but excludes the <code>create</code> and <code>edit</code> routes (those show HTML forms — APIs don't need them). <span class="ann-concept-tag laravel">API Resource Routes</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">18</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">Route</span>::<span class="fn">get</span>(<span class="str">'/attendance/today'</span>, <span class="kw">function</span>() {</td></tr>
+        <tr class="code-line"><td class="code-num">19</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">return</span> <span class="fn">response</span>()-&gt;<span class="fn">json</span>(</td></tr>
+        <tr class="code-line"><td class="code-num">20</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="fn">AttendanceLog</span>::<span class="fn">where</span>(<span class="str">'user_id'</span>, <span class="fn">auth</span>()-&gt;<span class="fn">id</span>())</td></tr>
+        <tr class="code-line"><td class="code-num">21</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;<span class="fn">whereDate</span>(<span class="str">'date'</span>, <span class="fn">today</span>())</td></tr>
+        <tr class="code-line"><td class="code-num">22</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt;<span class="fn">first</span>()</td></tr>
+        <tr class="code-line"><td class="code-num">23</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);</td></tr>
+        <tr class="code-line"><td class="code-num">24</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;});</td></tr>
+        <tr class="code-line"><td class="code-num">25</td><td class="code-text">});</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="note-box info">
+    <h4>📌 Testing the API</h4>
+    Use Postman or curl:<br>
+    <code>POST /api/auth/token</code> with <code>{"email":"...", "password":"..."}</code><br>
+    Copy the token, then:<br>
+    <code>GET /api/tasks</code> with header <code>Authorization: Bearer YOUR_TOKEN</code><br><br>
+    Your Python ML model calls it the same way using Python's <code>requests</code> library: <code>requests.get('/api/tasks', headers={'Authorization': 'Bearer TOKEN'})</code>
+  </div>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<!-- P2 · SECTION 7: Blade View Tasks -->
+<!-- ─────────────────────────────────────────── -->
+<div class="section" id="p2-s7" data-project="p2">
+  <div class="section-header">
+    <div class="section-label">Step 7 — Blade View</div>
+    <div class="section-title">Tasks Blade View + Create Form</div>
+    <div class="section-subtitle">The Blade view for tasks — showing validation error display, form handling, conditional classes, and the @foreach loop with stats.</div>
+  </div>
+
+  <div class="code-wrap">
+    <div class="code-header">
+      <span class="code-filename">resources/views/tasks/<span>create.blade.php</span></span>
+      <span class="code-lang blade">BLADE</span>
+    </div>
+    <div class="code-body">
+      <table class="code-table">
+        <tr class="code-line"><td class="code-num">1</td><td class="code-text"><span class="tag">@extends</span>(<span class="str">'layouts.app'</span>)</td></tr>
+        <tr class="code-line"><td class="code-num">2</td><td class="code-text"><span class="tag">@section</span>(<span class="str">'content'</span>)</td></tr>
+        <tr class="code-line"><td class="code-num">3</td><td class="code-text">&lt;form method=<span class="str">"POST"</span> action=<span class="str">"{{ route('tasks.store') }}"</span>&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">4</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">@csrf</span></td></tr>
+        <tr class="code-line"><td class="code-num">5</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">6</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=<span class="str">"text"</span> name=<span class="str">"title"</span></td></tr>
+        <tr class="code-line"><td class="code-num">7</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value=<span class="str">"{{ old('title') }}"</span></td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text"><code>old('title')</code> — if validation failed and user was redirected back, this repopulates the field with what they typed. Without it, users lose all their input on validation errors. Laravel automatically flashes old input to the session. <span class="ann-concept-tag laravel">old() Helper</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">8</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;class=<span class="str">"{{ $errors->has('title') ? 'border-red-500' : '' }}"</span>&gt;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>$errors->has('title')</code> returns true if the title field failed validation. Used here in a Blade ternary to conditionally add a red border CSS class. <code>$errors</code> is automatically available in all views. <span class="ann-concept-tag laravel">$errors Bag</span> <span class="ann-concept-tag blade">Inline Ternary</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">9</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">10</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">@error</span>(<span class="str">'title'</span>)</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>@error('fieldname')</code> is Blade shorthand for <code>@if($errors->has('fieldname'))</code>. Inside it, <code>$message</code> contains the error text. Much cleaner than manual if checks. <span class="ann-concept-tag blade">@error Directive</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">11</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span class=<span class="str">"text-red-500"</span>&gt;{{ <span class="var">$message</span> }}&lt;/span&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">12</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">@enderror</span></td></tr>
+        <tr class="code-line"><td class="code-num">13</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">14</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;select name=<span class="str">"priority"</span>&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">15</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">@foreach</span>([<span class="str">'low'</span>=&gt;<span class="str">'Low'</span>, <span class="str">'medium'</span>=&gt;<span class="str">'Medium'</span>, <span class="str">'high'</span>=&gt;<span class="str">'High'</span>] <span class="kw">as</span> <span class="var">$val</span>=&gt;<span class="var">$label</span>)</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text">Looping over an inline PHP associative array directly in Blade. The array <code>['low'=>'Low', ...]</code> is defined right in the template. <code>$val</code>=the option value, <code>$label</code>=display text. <span class="ann-concept-tag">PHP Associative Arrays</span> <span class="ann-concept-tag blade">@foreach</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">16</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;option value=<span class="str">"{{ $val }}"</span> <span class="tag">@selected</span>(<span class="fn">old</span>(<span class="str">'priority'</span>) === <span class="var">$val</span>)&gt;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation concept"><span class="ann-icon">💡</span><span class="ann-text"><code>@selected($condition)</code> is a Blade directive that outputs <code>selected="selected"</code> when true. Similarly: <code>@checked($cond)</code> for checkboxes, <code>@disabled($cond)</code> for disabled state. New in Laravel 9+. <span class="ann-concept-tag blade">@selected / @checked</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">17</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ <span class="var">$label</span> }}</td></tr>
+        <tr class="code-line"><td class="code-num">18</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/option&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">19</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="tag">@endforeach</span></td></tr>
+        <tr class="code-line"><td class="code-num">20</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/select&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">21</td><td class="code-text">&nbsp;</td></tr>
+        <tr class="code-line"><td class="code-num">22</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;input type=<span class="str">"date"</span> name=<span class="str">"due_date"</span> min=<span class="str">"{{ today()->format('Y-m-d') }}"</span>&gt;</td></tr>
+        <tr class="annotation-row"><td></td><td class="annotation-cell"><div class="annotation"><span class="ann-icon">📘</span><span class="ann-text"><code>today()->format('Y-m-d')</code> — the HTML <code>min</code> attribute prevents selecting past dates in the date picker. <code>today()</code> is Laravel's Carbon helper, <code>format()</code> returns the string the browser needs. <span class="ann-concept-tag laravel">Carbon</span></span></div></td></tr>
+
+        <tr class="code-line"><td class="code-num">23</td><td class="code-text">&nbsp;&nbsp;&nbsp;&nbsp;&lt;button type=<span class="str">"submit"</span>&gt;Create Task&lt;/button&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">24</td><td class="code-text">&lt;/form&gt;</td></tr>
+        <tr class="code-line"><td class="code-num">25</td><td class="code-text"><span class="tag">@endsection</span></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT -->
+<!-- ═══════════════════════════════════════════════════ -->
+<script>
+const PROJECTS = {
+  p1: {
+    name: 'Internship Management',
+    sections: [
+      { id: 'p1-s1', label: 'Project Setup & Install' },
+      { id: 'p1-s2', label: 'DB Migrations' },
+      { id: 'p1-s3', label: 'Eloquent Model' },
+      { id: 'p1-s4', label: 'CRUD Controller' },
+      { id: 'p1-s5', label: 'Routing (web.php + API note)' },
+      { id: 'p1-s6', label: 'Blade Template (View)' },
+      { id: 'p1-s7', label: 'Attendance Service' },
+    ]
+  },
+  p2: {
+    name: 'Task Manager',
+    sections: [
+      { id: 'p2-s1', label: 'Project Setup' },
+      { id: 'p2-s2', label: 'PHP OOP Task Entity' },
+      { id: 'p2-s3', label: 'Task Model + Migration' },
+      { id: 'p2-s4', label: 'TaskController (Full CRUD)' },
+      { id: 'p2-s5', label: 'Attendance Log DB' },
+      { id: 'p2-s6', label: 'REST API Routes' },
+      { id: 'p2-s7', label: 'Blade Task Form' },
+    ]
+  }
+};
+
+let currentProject = 'p1';
+let activeSection  = 'p1-s1';
+let annotationsOn  = true;
+
+function buildSidebar(project) {
+  const sb = document.getElementById('sidebar');
+  const p  = PROJECTS[project];
+  sb.innerHTML = `
+    <div class="sidebar-section">
+      <div class="sidebar-heading">${p.name}</div>
+      ${p.sections.map((s, i) => `
+        <a class="sidebar-item ${project === 'p2' ? 'proj2-item' : ''} ${activeSection === s.id ? 'active' : ''}"
+           onclick="showSection('${s.id}')" href="javascript:void(0)">
+          <span class="sidebar-num">${i + 1}</span>${s.label}
+        </a>
+      `).join('')}
+    </div>
+  `;
+}
+
+function showSection(id) {
+  // Hide all sections
+  document.querySelectorAll('.section').forEach(el => el.classList.remove('visible'));
+  // Show target
+  const target = document.getElementById(id);
+  if (target) {
+    target.classList.add('visible');
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  activeSection = id;
+  buildSidebar(currentProject);
+  updateProgress();
+}
+
+function switchProject(project, btn) {
+  currentProject = project;
+  activeSection = project + '-s1';
+
+  // Update nav tabs
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Show project header
+  document.getElementById('ph-p1').classList.toggle('visible', project === 'p1');
+  document.getElementById('ph-p2').classList.toggle('visible', project === 'p2');
+
+  // Hide hero on project switch
+  document.getElementById('main-hero').style.display = 'none';
+
+  // Show first section
+  showSection(activeSection);
+  buildSidebar(project);
+}
+
+function updateProgress() {
+  const p = PROJECTS[currentProject];
+  const idx = p.sections.findIndex(s => s.id === activeSection) + 1;
+  const total = p.sections.length;
+  const pct = Math.round((idx / total) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${idx} / ${total} files`;
+}
+
+function toggleAnnotations() {
+  annotationsOn = !annotationsOn;
+  const btn = document.getElementById('ann-toggle');
+  btn.textContent = annotationsOn ? '💡 Notes ON' : '💡 Notes OFF';
+  btn.classList.toggle('active', annotationsOn);
+
+  document.querySelectorAll('.code-wrap').forEach(w => {
+    w.classList.toggle('annotations-hidden', !annotationsOn);
+  });
+}
+
+// Init
+buildSidebar('p1');
+updateProgress();
+</script>
+
+</body>
+</html>

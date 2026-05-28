@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operating Systems — GATE CSE 2027 | Simran Singh</title>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   DESIGN: Deep academic dark — ink on midnight
+   Mood: serious, dense, encyclopaedic but alive
+   ═══════════════════════════════════════════════ */
+:root {
+  --bg:        #06080f;
+  --bg1:       #0b0f1a;
+  --bg2:       #111827;
+  --bg3:       #162032;
+  --border:    #1c2a3f;
+  --border2:   #243450;
+
+  --ink:       #e8eef8;
+  --ink2:      #8fa3bc;
+  --ink3:      #4d6282;
+
+  --os:        #38bdf8;   /* sky blue — OS accent */
+  --os-dim:    rgba(56,189,248,.12);
+  --os-glow:   rgba(56,189,248,.25);
+
+  --gold:      #f0b429;
+  --gold-dim:  rgba(240,180,41,.1);
+  --green:     #34d399;
+  --green-dim: rgba(52,211,153,.1);
+  --red:       #f87171;
+  --red-dim:   rgba(248,113,113,.1);
+  --purple:    #c084fc;
+  --purple-dim:rgba(192,132,252,.1);
+
+  --mono:      'JetBrains Mono', monospace;
+  --serif:     'Playfair Display', serif;
+  --sans:      'Familjen Grotesk', sans-serif;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; font-size:16px; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── BACKGROUND GRID ── */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(56,189,248,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56,189,248,.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ══════════════════════════════════
+   HEADER / NAV
+══════════════════════════════════ */
+header {
+  position: sticky; top:0; z-index:900;
+  background: rgba(6,8,15,.94);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+  max-width: 1340px; margin: 0 auto;
+  display: flex; align-items: center; gap:1rem;
+  padding: .75rem 1.5rem;
+}
+
+.nav-logo {
+  font-family: var(--mono); font-size:.75rem; font-weight:700;
+  color: var(--os); letter-spacing:.08em; white-space:nowrap;
+  border: 1px solid var(--border2); border-radius:6px; padding:.25rem .7rem;
+}
+
+.nav-title {
+  font-family: var(--sans); font-size:.85rem; font-weight:600;
+  color: var(--ink2); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+/* progress ring */
+.progress-ring-wrap { display:flex; align-items:center; gap:.75rem; }
+.progress-ring-svg { width:42px; height:42px; transform:rotate(-90deg); }
+.ring-bg { fill:none; stroke:var(--border2); stroke-width:4; }
+.ring-fill {
+  fill:none; stroke:var(--os); stroke-width:4;
+  stroke-linecap:round; stroke-dasharray:113; stroke-dashoffset:113;
+  transition: stroke-dashoffset .6s ease;
+}
+.ring-label {
+  font-family:var(--mono); font-size:.65rem; color:var(--os);
+  white-space:nowrap;
+}
+
+.nav-chips { display:flex; gap:.5rem; flex-wrap:wrap; }
+.chip {
+  font-family:var(--mono); font-size:.62rem; padding:.2rem .55rem;
+  border:1px solid var(--border2); border-radius:100px; color:var(--ink3);
+  cursor:pointer; transition:all .2s; white-space:nowrap;
+}
+.chip:hover { border-color:var(--os); color:var(--os); }
+.chip.done { border-color:var(--green); color:var(--green); background:var(--green-dim); }
+
+/* ══════════════════════════════════
+   LAYOUT
+══════════════════════════════════ */
+.layout {
+  max-width:1340px; margin:0 auto;
+  display:grid; grid-template-columns:250px 1fr;
+  gap:0; padding:0;
+  position:relative; z-index:1;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position:sticky; top:57px; height:calc(100vh - 57px);
+  overflow-y:auto; padding:1.5rem 0;
+  border-right:1px solid var(--border);
+}
+.sidebar::-webkit-scrollbar { width:3px; }
+.sidebar::-webkit-scrollbar-thumb { background:var(--border2); }
+
+.toc-section { padding:.5rem 1rem .25rem; font-family:var(--mono); font-size:.6rem; color:var(--ink3); letter-spacing:.15em; text-transform:uppercase; }
+
+.toc-link {
+  display:flex; align-items:center; gap:.5rem;
+  padding:.45rem 1rem; color:var(--ink3);
+  text-decoration:none; font-size:.82rem;
+  transition:all .15s; border-left:2px solid transparent;
+  cursor:pointer; border:none; background:none; width:100%; text-align:left;
+}
+.toc-link:hover { color:var(--ink); background:var(--bg1); }
+.toc-link.active { color:var(--os); border-left-color:var(--os); background:var(--os-dim); }
+.toc-link.completed .toc-dot { background:var(--green); }
+.toc-dot { width:6px; height:6px; border-radius:50%; background:var(--border2); flex-shrink:0; transition:background .3s; }
+
+/* ── MAIN ── */
+.main-content { padding: 2.5rem 3rem 6rem; }
+
+/* ══════════════════════════════════
+   CHAPTER
+══════════════════════════════════ */
+.chapter {
+  max-width:860px;
+  margin-bottom:4rem;
+  scroll-margin-top:80px;
+}
+
+.ch-header {
+  display:flex; align-items:flex-start; gap:1rem;
+  margin-bottom:2rem; padding-bottom:1.25rem;
+  border-bottom:1px solid var(--border2);
+}
+
+.ch-num {
+  font-family:var(--mono); font-size:.65rem; color:var(--os);
+  background:var(--os-dim); border:1px solid rgba(56,189,248,.2);
+  padding:.3rem .6rem; border-radius:6px; white-space:nowrap; margin-top:.3rem;
+}
+
+.ch-title {
+  font-family:var(--serif); font-size:1.9rem; font-weight:700;
+  line-height:1.15; color:var(--ink);
+}
+.ch-title em { font-style:normal; color:var(--os); }
+
+.ch-mark-btn {
+  margin-left:auto; flex-shrink:0;
+  background:var(--bg2); border:1px solid var(--border2); color:var(--ink3);
+  font-family:var(--mono); font-size:.65rem; padding:.35rem .8rem; border-radius:6px;
+  cursor:pointer; transition:all .2s; white-space:nowrap;
+}
+.ch-mark-btn:hover { border-color:var(--green); color:var(--green); }
+.ch-mark-btn.done { border-color:var(--green); color:var(--green); background:var(--green-dim); }
+
+/* ── TYPOGRAPHY ── */
+h3 {
+  font-family:var(--sans); font-size:1.05rem; font-weight:700;
+  color:var(--ink); margin:2rem 0 .75rem;
+  display:flex; align-items:center; gap:.6rem;
+}
+h3::before { content:''; display:block; width:3px; height:1em; background:var(--os); border-radius:2px; flex-shrink:0; }
+
+h4 { font-family:var(--sans); font-size:.9rem; font-weight:700; color:var(--ink2); margin:1.25rem 0 .5rem; }
+
+p { margin-bottom:.85rem; color:var(--ink2); font-size:.95rem; }
+strong { color:var(--ink); font-weight:600; }
+em { color:var(--os); font-style:normal; }
+
+ul, ol { padding-left:1.4rem; margin-bottom:.85rem; }
+li { color:var(--ink2); font-size:.93rem; margin-bottom:.35rem; }
+li strong { color:var(--ink); }
+
+/* ── BOXES ── */
+.box {
+  border-radius:8px; padding:1rem 1.25rem; margin:1.25rem 0;
+  font-size:.9rem; border:1px solid;
+}
+.box-gate  { background:var(--gold-dim); border-color:rgba(240,180,41,.25); }
+.box-gate  strong { color:var(--gold); }
+.box-note  { background:var(--os-dim);  border-color:rgba(56,189,248,.2); }
+.box-note  strong { color:var(--os); }
+.box-tip   { background:var(--green-dim); border-color:rgba(52,211,153,.2); }
+.box-tip   strong { color:var(--green); }
+.box-warn  { background:var(--red-dim); border-color:rgba(248,113,113,.2); }
+.box-warn  strong { color:var(--red); }
+.box-purple{ background:var(--purple-dim); border-color:rgba(192,132,252,.2); }
+.box-purple strong { color:var(--purple); }
+
+.gate-label {
+  font-family:var(--mono); font-size:.6rem; color:var(--gold);
+  letter-spacing:.12em; text-transform:uppercase; margin-bottom:.35rem;
+}
+
+/* ── FORMULA BLOCK ── */
+.formula {
+  background:var(--bg); border:1px solid var(--border2);
+  border-left:3px solid var(--os);
+  border-radius:0 8px 8px 0;
+  padding:.85rem 1.25rem; margin:.85rem 0;
+  font-family:var(--mono); font-size:.88rem; color:#a5f3fc;
+  overflow-x:auto;
+}
+
+/* ── CODE ── */
+code {
+  font-family:var(--mono); background:var(--bg2);
+  border:1px solid var(--border); padding:.12rem .4rem;
+  border-radius:4px; font-size:.82em; color:#93c5fd;
+}
+pre {
+  background:var(--bg); border:1px solid var(--border2);
+  border-radius:8px; padding:1.25rem 1.5rem;
+  overflow-x:auto; margin:.85rem 0;
+  font-family:var(--mono); font-size:.84rem; color:#bfdbfe;
+  line-height:1.6;
+}
+
+/* ── TABLES ── */
+.tbl-wrap { overflow-x:auto; margin:.85rem 0; }
+table { width:100%; border-collapse:collapse; font-size:.88rem; }
+thead th {
+  background:var(--bg3); padding:.6rem .9rem;
+  font-family:var(--mono); font-size:.72rem; color:var(--os);
+  letter-spacing:.08em; text-transform:uppercase;
+  border:1px solid var(--border2); text-align:left;
+}
+tbody td {
+  padding:.55rem .9rem; border:1px solid var(--border);
+  color:var(--ink2); vertical-align:top;
+}
+tbody tr:hover td { background:var(--bg1); }
+.t-good { color:var(--green); } .t-bad { color:var(--red); } .t-mid { color:var(--gold); }
+
+/* ── SVG DIAGRAMS ── */
+.diagram-wrap {
+  background:var(--bg1); border:1px solid var(--border2);
+  border-radius:10px; padding:1.5rem; margin:1.25rem 0;
+  overflow-x:auto;
+}
+.diagram-caption {
+  font-family:var(--mono); font-size:.68rem; color:var(--ink3);
+  text-align:center; margin-top:.75rem; letter-spacing:.06em;
+}
+svg text { font-family:var(--mono); }
+
+/* ── NUMERICAL ── */
+.numerical {
+  background:var(--bg1); border:1px solid var(--border2);
+  border-radius:10px; padding:1.25rem 1.5rem; margin:1.25rem 0;
+}
+.numerical-header {
+  display:flex; align-items:center; gap:.75rem; margin-bottom:.85rem;
+}
+.num-badge {
+  font-family:var(--mono); font-size:.62rem; padding:.25rem .6rem;
+  border-radius:100px; background:var(--gold-dim); border:1px solid rgba(240,180,41,.3);
+  color:var(--gold); white-space:nowrap;
+}
+.num-title { font-weight:700; font-size:.95rem; color:var(--ink); }
+
+details.solved { margin:.6rem 0; }
+details.solved > summary {
+  cursor:pointer; list-style:none;
+  font-family:var(--mono); font-size:.78rem; color:var(--os);
+  padding:.5rem .85rem; background:var(--os-dim); border-radius:6px;
+  display:inline-flex; align-items:center; gap:.5rem; user-select:none;
+}
+details.solved > summary::-webkit-details-marker { display:none; }
+details.solved > summary::before { content:'▶'; font-size:.6rem; transition:transform .2s; }
+details.solved[open] > summary::before { transform:rotate(90deg); }
+.solved-body { padding:1rem 1rem 0; }
+.solved-step { display:flex; gap:.75rem; margin-bottom:.65rem; align-items:flex-start; }
+.step-n { font-family:var(--mono); font-size:.72rem; color:var(--os); padding:.15rem .4rem; background:var(--os-dim); border-radius:4px; flex-shrink:0; margin-top:.15rem; }
+.step-t { font-size:.88rem; color:var(--ink2); }
+.answer-tag { display:inline-block; background:var(--green-dim); border:1px solid rgba(52,211,153,.3); color:var(--green); font-family:var(--mono); font-size:.75rem; padding:.25rem .75rem; border-radius:100px; margin-top:.5rem; }
+
+/* ── QUIZ ── */
+.quiz {
+  background:var(--bg1); border:1px solid var(--border2);
+  border-radius:10px; padding:1.25rem 1.5rem; margin:1.25rem 0;
+}
+.quiz-header { display:flex; gap:.75rem; align-items:center; margin-bottom:.75rem; }
+.quiz-badge { font-family:var(--mono); font-size:.62rem; padding:.25rem .6rem; border-radius:100px; background:var(--purple-dim); border:1px solid rgba(192,132,252,.3); color:var(--purple); }
+.quiz-q { font-size:.92rem; color:var(--ink); margin-bottom:.85rem; font-weight:500; }
+.options { display:grid; gap:.45rem; }
+.opt {
+  background:var(--bg2); border:1px solid var(--border); border-radius:6px;
+  padding:.55rem 1rem; font-size:.88rem; color:var(--ink2);
+  cursor:pointer; transition:all .18s; display:flex; gap:.75rem; align-items:center;
+}
+.opt:hover { border-color:var(--border2); background:var(--bg3); }
+.opt.correct { border-color:var(--green); background:var(--green-dim); color:var(--green); }
+.opt.wrong   { border-color:var(--red);   background:var(--red-dim);   color:var(--red);   }
+.opt-key { font-family:var(--mono); font-size:.72rem; color:var(--ink3); min-width:1.2rem; }
+.quiz-explain {
+  margin-top:.75rem; padding:.75rem 1rem;
+  background:var(--bg2); border-radius:6px; font-size:.86rem;
+  color:var(--ink2); display:none; border-left:2px solid var(--green);
+}
+
+/* ── GATE YEAR TAG ── */
+.gate-year { font-family:var(--mono); font-size:.65rem; background:rgba(240,180,41,.12); border:1px solid rgba(240,180,41,.25); color:var(--gold); padding:.15rem .5rem; border-radius:100px; }
+
+/* ── GANTT CHART ── */
+.gantt-row { display:flex; align-items:center; gap:.5rem; margin-bottom:.35rem; font-family:var(--mono); font-size:.75rem; }
+.gantt-label { width:28px; color:var(--ink3); text-align:right; }
+.gantt-bar { height:22px; border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:.7rem; font-weight:700; color:#fff; min-width:8px; position:relative; }
+.gantt-time { color:var(--ink3); font-size:.68rem; padding:0 .25rem; }
+.gantt-axis { display:flex; gap:0; margin-top:.25rem; padding-left:33px; }
+.gantt-tick { font-size:.62rem; color:var(--ink3); min-width:24px; text-align:left; }
+
+/* ══════════════════════════════════
+   DASHBOARD HEADER
+══════════════════════════════════ */
+.dash-hero {
+  background: linear-gradient(135deg, var(--bg1) 0%, var(--bg) 100%);
+  border-bottom:1px solid var(--border2);
+  padding:2.5rem 3rem 2rem;
+  max-width:860px;
+  margin-bottom:0;
+}
+.dash-eyebrow { font-family:var(--mono); font-size:.65rem; color:var(--os); letter-spacing:.2em; text-transform:uppercase; margin-bottom:.75rem; }
+.dash-title { font-family:var(--serif); font-size:2.6rem; font-weight:800; line-height:1.1; margin-bottom:.85rem; }
+.dash-title span { color:var(--os); }
+.dash-meta { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+.dash-tag { font-family:var(--mono); font-size:.68rem; padding:.25rem .65rem; border:1px solid var(--border2); border-radius:100px; color:var(--ink3); }
+.dash-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:.85rem; margin-bottom:1.5rem; max-width:600px; }
+.stat-card { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:.85rem 1rem; }
+.stat-n { font-family:var(--serif); font-size:1.8rem; font-weight:700; color:var(--os); line-height:1; }
+.stat-l { font-size:.72rem; color:var(--ink3); margin-top:.2rem; font-family:var(--mono); }
+
+.topic-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(170px,1fr)); gap:.75rem; max-width:860px; margin-bottom:2rem; }
+.topic-pill {
+  background:var(--bg1); border:1px solid var(--border); border-radius:8px;
+  padding:.7rem .9rem; cursor:pointer; transition:all .2s; text-decoration:none;
+  display:block;
+}
+.topic-pill:hover { border-color:var(--border2); background:var(--bg2); transform:translateY(-2px); }
+.topic-pill.gate-core { border-color:rgba(240,180,41,.2); }
+.tp-icon { font-size:1.2rem; margin-bottom:.3rem; }
+.tp-name { font-size:.82rem; font-weight:600; color:var(--ink); }
+.tp-sub { font-family:var(--mono); font-size:.62rem; color:var(--ink3); margin-top:.15rem; }
+
+/* ── RESPONSIVE ── */
+@media (max-width:960px) {
+  .layout { grid-template-columns:1fr; }
+  .sidebar { display:none; }
+  .main-content { padding:1.5rem 1.25rem 4rem; }
+  .dash-hero { padding:1.5rem 1.25rem; }
+  .dash-title { font-size:1.9rem; }
+  .dash-stats { grid-template-columns:repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+  <div class="nav-inner">
+    <div class="nav-logo">OS · GATE 2027</div>
+    <div class="nav-title">Operating Systems — Simran Singh</div>
+
+    <div class="progress-ring-wrap">
+      <svg class="progress-ring-svg" viewBox="0 0 42 42">
+        <circle class="ring-bg" cx="21" cy="21" r="18"/>
+        <circle class="ring-fill" id="ringFill" cx="21" cy="21" r="18"/>
+      </svg>
+      <span class="ring-label" id="ringLabel">0 / 10</span>
+    </div>
+
+    <div class="nav-chips" id="navChips"></div>
+  </div>
+</header>
+
+<!-- ═══ LAYOUT ═══ -->
+<div class="layout">
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="toc-section">Core Topics</div>
+  <button class="toc-link" onclick="scrollTo('dash')"><span class="toc-dot"></span>Dashboard</button>
+  <button class="toc-link" onclick="scrollTo('ch1')" id="tl-1"><span class="toc-dot"></span>1 · Introduction & Basics</button>
+  <button class="toc-link" onclick="scrollTo('ch2')" id="tl-2"><span class="toc-dot"></span>2 · Process Management</button>
+  <button class="toc-link" onclick="scrollTo('ch3')" id="tl-3"><span class="toc-dot"></span>3 · CPU Scheduling</button>
+  <button class="toc-link" onclick="scrollTo('ch4')" id="tl-4"><span class="toc-dot"></span>4 · Synchronisation & Deadlock</button>
+  <button class="toc-link" onclick="scrollTo('ch5')" id="tl-5"><span class="toc-dot"></span>5 · Memory Management</button>
+  <button class="toc-link" onclick="scrollTo('ch6')" id="tl-6"><span class="toc-dot"></span>6 · Virtual Memory</button>
+  <button class="toc-link" onclick="scrollTo('ch7')" id="tl-7"><span class="toc-dot"></span>7 · File Systems</button>
+  <button class="toc-link" onclick="scrollTo('ch8')" id="tl-8"><span class="toc-dot"></span>8 · Disk Scheduling</button>
+  <button class="toc-link" onclick="scrollTo('ch9')" id="tl-9"><span class="toc-dot"></span>9 · Threads & Concurrency</button>
+  <button class="toc-link" onclick="scrollTo('ch10')" id="tl-10"><span class="toc-dot"></span>10 · I/O & Protection</button>
+  <div class="toc-section" style="margin-top:.75rem">Quick Nav</div>
+  <button class="toc-link" onclick="scrollTo('comparisons')"><span class="toc-dot" style="background:var(--purple)"></span>Comparison Tables</button>
+  <button class="toc-link" onclick="scrollTo('linux')"><span class="toc-dot" style="background:var(--green)"></span>Linux & Modern OS</button>
+  <button class="toc-link" onclick="scrollTo('numericals')"><span class="toc-dot" style="background:var(--gold)"></span>Numericals Bank</button>
+  <button class="toc-link" onclick="scrollTo('pyqs')"><span class="toc-dot" style="background:var(--purple)"></span>GATE PYQ Bank</button>
+</aside>
+
+<!-- ── MAIN ── -->
+<div class="main-content">
+
+<!-- ══════════════════════════════════
+  DASHBOARD HEADER
+══════════════════════════════════ -->
+<div id="dash" class="dash-hero chapter">
+  <div class="dash-eyebrow">✦ GATE CSE 2027 Preparation · Licensed to Simran Singh</div>
+  <h2 class="dash-title">Operating<br><span>Systems</span></h2>
+  <div class="dash-meta">
+    <span class="dash-tag">🎯 ~10–13 marks in GATE</span>
+    <span class="dash-tag">10 Chapters</span>
+    <span class="dash-tag">Numericals + PYQs Included</span>
+    <span class="dash-tag">SVG Diagrams</span>
+  </div>
+  <div class="dash-stats">
+    <div class="stat-card"><div class="stat-n">10</div><div class="stat-l">Chapters</div></div>
+    <div class="stat-card"><div class="stat-n">25+</div><div class="stat-l">Solved Numericals</div></div>
+    <div class="stat-card"><div class="stat-n">30+</div><div class="stat-l">GATE PYQs</div></div>
+    <div class="stat-card"><div class="stat-n" id="dashCompleted">0</div><div class="stat-l">Completed</div></div>
+  </div>
+  <div class="topic-grid">
+    <a class="topic-pill gate-core" onclick="scrollTo('ch1')"><div class="tp-icon">💻</div><div class="tp-name">OS Intro</div><div class="tp-sub">Basics · Types</div></a>
+    <a class="topic-pill gate-core" onclick="scrollTo('ch2')"><div class="tp-icon">⚙️</div><div class="tp-name">Processes</div><div class="tp-sub">PCB · States · IPC</div></a>
+    <a class="topic-pill gate-core" onclick="scrollTo('ch3')"><div class="tp-icon">📅</div><div class="tp-name">CPU Scheduling</div><div class="tp-sub">FCFS · SJF · RR · Priority</div></a>
+    <a class="topic-pill gate-core" onclick="scrollTo('ch4')"><div class="tp-icon">🔒</div><div class="tp-name">Sync & Deadlock</div><div class="tp-sub">Mutex · Banker's · RAG</div></a>
+    <a class="topic-pill gate-core" onclick="scrollTo('ch5')"><div class="tp-icon">🧩</div><div class="tp-name">Memory Mgmt</div><div class="tp-sub">Paging · Segmentation</div></a>
+    <a class="topic-pill gate-core" onclick="scrollTo('ch6')"><div class="tp-icon">📄</div><div class="tp-name">Virtual Memory</div><div class="tp-sub">Demand Paging · TLB · Page Faults</div></a>
+    <a class="topic-pill" onclick="scrollTo('ch7')"><div class="tp-icon">📁</div><div class="tp-name">File Systems</div><div class="tp-sub">Inode · FAT · Allocation</div></a>
+    <a class="topic-pill" onclick="scrollTo('ch8')"><div class="tp-icon">💿</div><div class="tp-name">Disk Scheduling</div><div class="tp-sub">SSTF · SCAN · C-SCAN</div></a>
+    <a class="topic-pill" onclick="scrollTo('ch9')"><div class="tp-icon">🧵</div><div class="tp-name">Threads</div><div class="tp-sub">User/Kernel · Models</div></a>
+    <a class="topic-pill" onclick="scrollTo('ch10')"><div class="tp-icon">🛡️</div><div class="tp-name">I/O & Protection</div><div class="tp-sub">DMA · Security · Kernels</div></a>
+  </div>
+  <div class="box box-gate">
+    <div class="gate-label">🎯 GATE weightage pattern</div>
+    OS typically contributes <strong>2–4 questions worth 10–13 marks</strong>. Highest-yield: CPU Scheduling numericals, Page Replacement, Deadlock (Banker's), Semaphores, and Disk Scheduling. Master these first.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  CHAPTER 1 — INTRODUCTION
+══════════════════════════════════ -->
+<div id="ch1" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num">CH 01</span>
+    <h2 class="ch-title">Introduction &amp; <em>Basics</em></h2>
+    <button class="ch-mark-btn" id="btn-1" onclick="markDone(1)">Mark Done ✓</button>
+  </div>
+
+  <h3>What is an Operating System?</h3>
+  <p>An OS is a <strong>resource manager</strong> and <strong>hardware abstraction layer</strong> — it manages CPU, memory, I/O devices and provides a clean interface so user programs need not deal with hardware directly.</p>
+
+  <div class="box box-note"><strong>Key roles:</strong> Resource manager · Process scheduler · Memory manager · File system manager · Security enforcer · User interface provider</div>
+
+  <h3>OS Structure Types</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Type</th><th>Description</th><th>Example</th><th>GATE</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Monolithic</strong></td><td>All OS services in single large kernel. Fast but hard to maintain.</td><td>Linux, Unix</td><td></td></tr>
+      <tr><td><strong>Microkernel</strong></td><td>Minimal kernel; services run in user space. More stable, slower IPC.</td><td>Mach, QNX</td><td>⭐</td></tr>
+      <tr><td><strong>Layered</strong></td><td>OS divided into layers (hardware → user). Each layer uses layer below.</td><td>THE system</td><td></td></tr>
+      <tr><td><strong>Virtual Machine</strong></td><td>Provides illusion of multiple OS instances over single hardware.</td><td>VMware, JVM</td><td></td></tr>
+      <tr><td><strong>Exokernel</strong></td><td>Exposes raw hardware to apps. Minimal abstraction.</td><td>Research</td><td></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>System Calls</h3>
+  <p>The interface between a <strong>user process and the OS kernel</strong>. User programs trap into kernel mode via system calls. Categories:</p>
+  <ul>
+    <li><strong>Process control:</strong> <code>fork()</code>, <code>exec()</code>, <code>exit()</code>, <code>wait()</code></li>
+    <li><strong>File management:</strong> <code>open()</code>, <code>read()</code>, <code>write()</code>, <code>close()</code></li>
+    <li><strong>Device management:</strong> <code>ioctl()</code>, <code>read()</code>, <code>write()</code></li>
+    <li><strong>Memory management:</strong> <code>mmap()</code>, <code>brk()</code></li>
+    <li><strong>Communication:</strong> <code>pipe()</code>, <code>socket()</code></li>
+  </ul>
+
+  <h3>Privileged vs User Mode</h3>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 540 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:540px;display:block;margin:auto">
+      <rect x="10" y="10" width="520" height="60" rx="8" fill="#162032" stroke="#243450" stroke-width="1"/>
+      <text x="270" y="30" text-anchor="middle" font-size="10" fill="#8fa3bc">USER SPACE</text>
+      <rect x="30" y="38" width="100" height="24" rx="4" fill="#1c2a3f" stroke="#243450"/>
+      <text x="80" y="54" text-anchor="middle" font-size="9" fill="#93c5fd">User Program</text>
+      <rect x="155" y="38" width="100" height="24" rx="4" fill="#1c2a3f" stroke="#243450"/>
+      <text x="205" y="54" text-anchor="middle" font-size="9" fill="#93c5fd">Shell / CLI</text>
+      <rect x="280" y="38" width="100" height="24" rx="4" fill="#1c2a3f" stroke="#243450"/>
+      <text x="330" y="54" text-anchor="middle" font-size="9" fill="#93c5fd">System Library</text>
+      <!-- arrow down -->
+      <line x1="270" y1="75" x2="270" y2="92" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#arr)"/>
+      <text x="295" y="87" font-size="8" fill="#38bdf8">TRAP / system call</text>
+      <!-- kernel -->
+      <rect x="10" y="96" width="520" height="54" rx="8" fill="#0f1d2e" stroke="#38bdf8" stroke-width="1" stroke-dasharray="4 3"/>
+      <text x="270" y="114" text-anchor="middle" font-size="10" fill="#38bdf8">KERNEL SPACE (Privileged Mode)</text>
+      <rect x="30" y="120" width="90" height="22" rx="4" fill="#162032" stroke="#243450"/>
+      <text x="75" y="135" text-anchor="middle" font-size="8" fill="#a5f3fc">Process Mgr</text>
+      <rect x="140" y="120" width="90" height="22" rx="4" fill="#162032" stroke="#243450"/>
+      <text x="185" y="135" text-anchor="middle" font-size="8" fill="#a5f3fc">Memory Mgr</text>
+      <rect x="250" y="120" width="90" height="22" rx="4" fill="#162032" stroke="#243450"/>
+      <text x="295" y="135" text-anchor="middle" font-size="8" fill="#a5f3fc">File System</text>
+      <rect x="360" y="120" width="90" height="22" rx="4" fill="#162032" stroke="#243450"/>
+      <text x="405" y="135" text-anchor="middle" font-size="8" fill="#a5f3fc">I/O Drivers</text>
+      <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4 z" fill="#38bdf8"/></marker></defs>
+    </svg>
+    <div class="diagram-caption">FIG 1.1 — User space / Kernel space separation</div>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2019</span></div>
+    <div class="quiz-q">Which of the following is NOT a function of the OS kernel?</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">A</span>CPU scheduling</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">B</span>Memory management</div>
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">C</span>Compiling user programs</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>I/O management</div>
+    </div>
+    <div class="quiz-explain">Compilation is done by the compiler (user-space tool), not the OS kernel. The OS manages resources; it does not compile code.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  CHAPTER 2 — PROCESS MANAGEMENT
+══════════════════════════════════ -->
+<div id="ch2" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num">CH 02</span>
+    <h2 class="ch-title">Process <em>Management</em></h2>
+    <button class="ch-mark-btn" id="btn-2" onclick="markDone(2)">Mark Done ✓</button>
+  </div>
+
+  <h3>Process State Diagram</h3>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;display:block;margin:auto">
+      <defs>
+        <marker id="a2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4z" fill="#38bdf8"/></marker>
+        <marker id="a2g" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4z" fill="#34d399"/></marker>
+        <marker id="a2r" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4z" fill="#f87171"/></marker>
+      </defs>
+      <!-- boxes -->
+      <rect x="20"  y="75" width="80" height="30" rx="6" fill="#162032" stroke="#34d399" stroke-width="1.5"/>
+      <text x="60"  y="95" text-anchor="middle" font-size="10" fill="#34d399">NEW</text>
+      <rect x="155" y="75" width="80" height="30" rx="6" fill="#162032" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="195" y="95" text-anchor="middle" font-size="10" fill="#38bdf8">READY</text>
+      <rect x="300" y="75" width="80" height="30" rx="6" fill="#1a2f1a" stroke="#4ade80" stroke-width="1.5"/>
+      <text x="340" y="95" text-anchor="middle" font-size="10" fill="#4ade80">RUNNING</text>
+      <rect x="445" y="75" width="80" height="30" rx="6" fill="#2a1515" stroke="#f87171" stroke-width="1.5"/>
+      <text x="485" y="95" text-anchor="middle" font-size="10" fill="#f87171">TERMINATED</text>
+      <rect x="280" y="145" width="100" height="28" rx="6" fill="#1e1a2e" stroke="#c084fc" stroke-width="1.5"/>
+      <text x="330" y="163" text-anchor="middle" font-size="10" fill="#c084fc">WAITING</text>
+      <!-- arrows -->
+      <line x1="100" y1="90" x2="152" y2="90" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#a2)"/>
+      <text x="126" y="83" text-anchor="middle" font-size="8" fill="#8fa3bc">admitted</text>
+      <line x1="235" y1="90" x2="297" y2="90" stroke="#4ade80" stroke-width="1.5" marker-end="url(#a2g)"/>
+      <text x="266" y="83" text-anchor="middle" font-size="8" fill="#8fa3bc">dispatch</text>
+      <line x1="383" y1="90" x2="442" y2="90" stroke="#f87171" stroke-width="1.5" marker-end="url(#a2r)"/>
+      <text x="413" y="83" text-anchor="middle" font-size="8" fill="#8fa3bc">exit</text>
+      <!-- preempt back -->
+      <path d="M300,103 Q265,125 235,103" stroke="#f0b429" stroke-width="1.5" fill="none" marker-end="url(#a2)"/>
+      <text x="265" y="124" text-anchor="middle" font-size="8" fill="#f0b429">preempt/timeout</text>
+      <!-- to waiting -->
+      <line x1="340" y1="108" x2="330" y2="142" stroke="#c084fc" stroke-width="1.5" marker-end="url(#a2)"/>
+      <text x="362" y="130" font-size="8" fill="#c084fc">I/O wait</text>
+      <!-- from waiting to ready -->
+      <path d="M280,159 Q200,175 195,108" stroke="#38bdf8" stroke-width="1.5" fill="none" marker-end="url(#a2)"/>
+      <text x="205" y="175" font-size="8" fill="#38bdf8">I/O done</text>
+    </svg>
+    <div class="diagram-caption">FIG 2.1 — Process State Transition Diagram (5-state model)</div>
+  </div>
+
+  <h3>Process Control Block (PCB)</h3>
+  <p>The kernel's per-process data structure — the "identity card" of a process:</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>PCB Field</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><strong>PID</strong></td><td>Unique process identifier</td></tr>
+      <tr><td><strong>Process State</strong></td><td>New / Ready / Running / Waiting / Terminated</td></tr>
+      <tr><td><strong>Program Counter (PC)</strong></td><td>Address of next instruction to execute</td></tr>
+      <tr><td><strong>CPU Registers</strong></td><td>Saved during context switch (AX, BX, SP, …)</td></tr>
+      <tr><td><strong>Memory limits</strong></td><td>Base register + Limit register (or page table pointer)</td></tr>
+      <tr><td><strong>Scheduling info</strong></td><td>Priority, quantum used, arrival time</td></tr>
+      <tr><td><strong>I/O status</strong></td><td>List of open files, pending I/O requests</td></tr>
+      <tr><td><strong>Accounting</strong></td><td>CPU time used, wall clock time</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box box-gate"><div class="gate-label">🎯 GATE Favourite</div><strong>Context Switch:</strong> Saving state of old process (into PCB) and loading state of new process (from PCB). Pure overhead — no useful work during a context switch.</div>
+
+  <h3>Inter-Process Communication (IPC)</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Method</th><th>How</th><th>Speed</th><th>Sync needed?</th></tr></thead>
+    <tbody>
+      <tr><td>Shared Memory</td><td>Processes map same physical page</td><td class="t-good">Fast</td><td>Yes (mutex/semaphore)</td></tr>
+      <tr><td>Message Passing</td><td>OS copies message between processes</td><td class="t-mid">Moderate</td><td>Built-in</td></tr>
+      <tr><td>Pipe (anonymous)</td><td>Unidirectional byte stream (parent↔child)</td><td class="t-mid">Moderate</td><td>Blocking I/O</td></tr>
+      <tr><td>Named Pipe (FIFO)</td><td>Pipe with a name in filesystem</td><td class="t-mid">Moderate</td><td>Blocking I/O</td></tr>
+      <tr><td>Socket</td><td>Network endpoint, works across machines</td><td class="t-bad">Slowest</td><td>Protocol</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2021</span></div>
+    <div class="quiz-q">Which information is NOT stored in the PCB?</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">A</span>Program Counter</div>
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">B</span>The actual executable program code</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">C</span>CPU scheduling information</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>Memory management information</div>
+    </div>
+    <div class="quiz-explain">PCB stores metadata (state, registers, scheduling info, memory limits), NOT the program code itself. Code lives in the process's address space (text segment).</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  CHAPTER 3 — CPU SCHEDULING
+══════════════════════════════════ -->
+<div id="ch3" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num">CH 03</span>
+    <h2 class="ch-title">CPU <em>Scheduling</em></h2>
+    <button class="ch-mark-btn" id="btn-3" onclick="markDone(3)">Mark Done ✓</button>
+  </div>
+
+  <div class="box box-gate">
+    <div class="gate-label">🎯 GATE Formulae — Memorise These</div>
+    <div class="formula">Turnaround Time (TAT) = Completion Time − Arrival Time</div>
+    <div class="formula">Waiting Time (WT) = TAT − Burst Time</div>
+    <div class="formula">Response Time = Time of first CPU allocation − Arrival Time</div>
+    <div class="formula">CPU Utilisation = (CPU busy time / Total time) × 100 %</div>
+    <div class="formula">Throughput = Processes completed / Unit time</div>
+  </div>
+
+  <h3>Algorithm Comparison</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Algorithm</th><th>Preemptive?</th><th>Avg WT</th><th>Issue</th><th>GATE Weight</th></tr></thead>
+    <tbody>
+      <tr><td><strong>FCFS</strong></td><td>No</td><td class="t-bad">High</td><td>Convoy effect</td><td>⭐⭐</td></tr>
+      <tr><td><strong>SJF (non-preemptive)</strong></td><td>No</td><td class="t-good">Optimal</td><td>Starvation; needs burst-time knowledge</td><td>⭐⭐⭐</td></tr>
+      <tr><td><strong>SRTF (preemptive SJF)</strong></td><td>Yes</td><td class="t-good">Best</td><td>High overhead; starvation</td><td>⭐⭐⭐</td></tr>
+      <tr><td><strong>Round Robin</strong></td><td>Yes</td><td class="t-mid">Medium</td><td>Context switch overhead; TQ sensitivity</td><td>⭐⭐⭐⭐</td></tr>
+      <tr><td><strong>Priority (non-preemptive)</strong></td><td>No</td><td class="t-mid">Varies</td><td>Starvation → fix with Aging</td><td>⭐⭐⭐</td></tr>
+      <tr><td><strong>Priority (preemptive)</strong></td><td>Yes</td><td class="t-mid">Varies</td><td>Starvation; priority inversion</td><td>⭐⭐⭐</td></tr>
+      <tr><td><strong>MLQS / MLFQS</strong></td><td>Both</td><td class="t-good">Good</td><td>Complex; Linux uses CFS</td><td>⭐⭐</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- NUMERICAL 1 -->
+  <div class="numerical">
+    <div class="numerical-header">
+      <span class="num-badge">GATE 2023 Style · Numerical</span>
+      <span class="num-title">Round Robin Scheduling (TQ = 3)</span>
+    </div>
+    <p style="font-size:.9rem;color:var(--ink2)">Four processes arrive at time 0: P1 (burst=6), P2 (burst=4), P3 (burst=2), P4 (burst=8). Time quantum = 3. Find average waiting time and average TAT.</p>
+    <details class="solved"><summary>▶ Show full step-by-step solution</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">1</span><span class="step-t">Build Gantt chart with TQ=3, FCFS order of arrivals:</span></div>
+      <div class="gantt-row">
+        <span class="gantt-label">P1</span><div class="gantt-bar" style="background:#38bdf8;width:72px">6ms</div>
+        <span class="gantt-time">0–3</span>
+        <div class="gantt-bar" style="background:#38bdf8;width:36px">3ms</div>
+        <span class="gantt-time">13–16</span>
+      </div>
+      <div class="gantt-row">
+        <span class="gantt-label">P2</span><div class="gantt-bar" style="background:#34d399;width:72px">4ms</div>
+        <span class="gantt-time">3–6</span>
+        <div class="gantt-bar" style="background:#34d399;width:24px">1ms</div>
+        <span class="gantt-time">16–17</span>
+      </div>
+      <div class="gantt-row">
+        <span class="gantt-label">P3</span><div class="gantt-bar" style="background:#c084fc;width:48px">2ms</div>
+        <span class="gantt-time">6–8</span>
+      </div>
+      <div class="gantt-row">
+        <span class="gantt-label">P4</span><div class="gantt-bar" style="background:#f0b429;width:72px">3ms</div>
+        <span class="gantt-time">8–11</span>
+        <div class="gantt-bar" style="background:#f0b429;width:60px">5ms</div>
+        <span class="gantt-time">17–22</span>
+      </div>
+      <div class="solved-step"><span class="step-n">2</span><span class="step-t">Completion times: P1=16, P2=17, P3=8, P4=22 (all arrived at 0)</span></div>
+      <div class="solved-step"><span class="step-n">3</span><span class="step-t">TAT = CT − AT: P1=16, P2=17, P3=8, P4=22 &nbsp;|&nbsp; Avg TAT = (16+17+8+22)/4 = <strong>63/4 = 15.75 ms</strong></span></div>
+      <div class="solved-step"><span class="step-n">4</span><span class="step-t">WT = TAT − BT: P1=10, P2=13, P3=6, P4=14 &nbsp;|&nbsp; Avg WT = (10+13+6+14)/4 = <strong>43/4 = 10.75 ms</strong></span></div>
+      <span class="answer-tag">✓ Avg WT = 10.75 ms · Avg TAT = 15.75 ms</span>
+    </div></details>
+  </div>
+
+  <!-- NUMERICAL 2 -->
+  <div class="numerical">
+    <div class="numerical-header">
+      <span class="num-badge">GATE 2018 · Numerical</span>
+      <span class="num-title">SJF Non-Preemptive</span>
+    </div>
+    <p style="font-size:.9rem;color:var(--ink2)">Processes: P1 (AT=0, BT=8), P2 (AT=1, BT=4), P3 (AT=2, BT=9), P4 (AT=3, BT=5). Find average waiting time under SJF non-preemptive.</p>
+    <details class="solved"><summary>▶ Show full step-by-step solution</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">1</span><span class="step-t">At t=0 only P1 ready → P1 runs 0→8.</span></div>
+      <div class="solved-step"><span class="step-n">2</span><span class="step-t">At t=8: ready queue = {P2(BT=4), P3(BT=9), P4(BT=5)}. SJF picks shortest → P2 runs 8→12.</span></div>
+      <div class="solved-step"><span class="step-n">3</span><span class="step-t">At t=12: ready = {P4(BT=5), P3(BT=9)}. Pick P4 → runs 12→17.</span></div>
+      <div class="solved-step"><span class="step-n">4</span><span class="step-t">At t=17: only P3 left → runs 17→26.</span></div>
+      <div class="solved-step"><span class="step-n">5</span><span class="step-t">TAT: P1=8-0=8, P2=12-1=11, P3=26-2=24, P4=17-3=14</span></div>
+      <div class="solved-step"><span class="step-n">6</span><span class="step-t">WT = TAT−BT: P1=0, P2=7, P3=15, P4=9 &nbsp;|&nbsp; Avg WT = (0+7+15+9)/4 = <strong>31/4 = 7.75 ms</strong></span></div>
+      <span class="answer-tag">✓ Avg WT = 7.75 ms</span>
+    </div></details>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2020</span></div>
+    <div class="quiz-q">Consider 3 processes: P1(AT=0,BT=5), P2(AT=1,BT=3), P3(AT=2,BT=1). Under SRTF, at time t=2, which process is running?</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">A</span>P1 (remaining=3)</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">B</span>P2 (remaining=2)</div>
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">C</span>P3 (burst=1, shortest remaining)</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>All suspended</div>
+    </div>
+    <div class="quiz-explain">At t=2: P1 remaining=3, P2 remaining=2, P3 remaining=1. SRTF always picks shortest remaining → P3 (burst=1) preempts P2.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  CHAPTER 4 — SYNCHRONISATION & DEADLOCK
+══════════════════════════════════ -->
+<div id="ch4" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num">CH 04</span>
+    <h2 class="ch-title">Synchronisation &amp; <em>Deadlock</em></h2>
+    <button class="ch-mark-btn" id="btn-4" onclick="markDone(4)">Mark Done ✓</button>
+  </div>
+
+  <h3>Critical Section Requirements</h3>
+  <div class="box box-note">
+    A correct critical-section solution must satisfy all three:<br>
+    <strong>1. Mutual Exclusion</strong> — At most one process in CS at a time.<br>
+    <strong>2. Progress</strong> — If no one is in CS and some want to enter, one must eventually enter.<br>
+    <strong>3. Bounded Waiting</strong> — A process must enter CS within finite time after requesting.
+  </div>
+
+  <h3>Semaphores</h3>
+  <pre>// Binary semaphore (mutex): value ∈ {0,1}
+wait(S):   if (S > 0) S-- else block process
+signal(S): S++; if (blocked) wake one up
+
+// Counting semaphore: for managing n resources
+// Classic problems:
+// Producer-Consumer → sem full=0, empty=N, mutex=1
+// Readers-Writers   → sem rw_mutex=1, mutex=1
+// Dining Philosophers → tricky! (asymmetry solution)</pre>
+
+  <div class="box box-warn"><strong>Spinlock vs Block:</strong> Spinlocks waste CPU (busy-wait) but are fast for very short waits. Blocking semaphores use OS sleep/wake — better for longer waits.</div>
+
+  <h3>Peterson's Solution <span style="font-size:.75rem;color:var(--gold);font-family:var(--mono);font-weight:400">⭐⭐⭐⭐ GATE Favourite</span></h3>
+  <div class="box box-gate"><div class="gate-label">🎯 GATE Loves This</div>Peterson's solution is a <strong>software-only</strong> mutual exclusion algorithm for 2 processes. GATE frequently asks which conditions it satisfies and how the turn/flag variables work.</div>
+  <pre>// Peterson's Solution for 2 processes (Pi and Pj)
+boolean flag[2] = {false, false};  // flag[i] = "I want to enter CS"
+int turn;                           // turn = whose turn it is
+
+// Code for process Pi:
+do {
+    flag[i] = true;          // I want to enter
+    turn = j;                // Give turn to other process (generous!)
+    while (flag[j] &amp;&amp; turn == j)
+        ;   // Busy wait — only blocked if OTHER wants in AND it's their turn
+
+    // CRITICAL SECTION
+
+    flag[i] = false;         // I'm done
+    // REMAINDER SECTION
+} while (true);</pre>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Property</th><th>Satisfied?</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Mutual Exclusion</strong></td><td class="t-good">✓ Yes</td><td>If both in CS, turn = i AND turn = j simultaneously — impossible</td></tr>
+      <tr><td><strong>Progress</strong></td><td class="t-good">✓ Yes</td><td>If one doesn't want to enter (flag=false), the other proceeds immediately</td></tr>
+      <tr><td><strong>Bounded Waiting</strong></td><td class="t-good">✓ Yes</td><td>After Pi sets turn=j, Pi enters CS before Pj gets a second chance</td></tr>
+      <tr><td><strong>Busy Waiting</strong></td><td class="t-bad">✗ Yes (bad)</td><td>Wastes CPU cycles in the while loop — not ideal for long waits</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Classical Synchronization Problems <span style="font-size:.75rem;color:var(--gold);font-family:var(--mono);font-weight:400">⭐⭐⭐⭐</span></h3>
+
+  <h4>1. Producer-Consumer (Bounded Buffer)</h4>
+  <pre>// Semaphores:
+semaphore mutex = 1;    // mutual exclusion on buffer
+semaphore full  = 0;    // count of full slots
+semaphore empty = N;    // count of empty slots (N = buffer size)
+
+Producer:                      Consumer:
+do {                           do {
+  produce item;                  wait(full);
+  wait(empty);                   wait(mutex);
+  wait(mutex);                   remove item from buffer;
+  add item to buffer;            signal(mutex);
+  signal(mutex);                 signal(empty);
+  signal(full);                  consume item;
+} while(true);               } while(true);</pre>
+  <div class="box box-tip"><strong>Key insight:</strong> The order of wait() calls matters. <code>wait(mutex)</code> must come AFTER <code>wait(full)</code> / <code>wait(empty)</code>, otherwise deadlock can occur if buffer is full/empty.</div>
+
+  <h4>2. Readers-Writers Problem</h4>
+  <pre>// Semaphores:
+semaphore rw_mutex = 1;  // exclusive access for writers
+semaphore mutex    = 1;  // protects read_count
+int read_count     = 0;
+
+Writer:                        Reader:
+wait(rw_mutex);                wait(mutex);
+  ... write ...                  read_count++;
+signal(rw_mutex);                if (read_count == 1)
+                                   wait(rw_mutex);  // first reader blocks writers
+                               signal(mutex);
+                               ... read ...
+                               wait(mutex);
+                                 read_count--;
+                                 if (read_count == 0)
+                                   signal(rw_mutex); // last reader releases
+                               signal(mutex);</pre>
+  <div class="box box-warn"><strong>Issue:</strong> This solution favours readers. Writers can starve if readers keep arriving. Second Readers-Writers problem inverts this — writers get priority.</div>
+
+  <h4>3. Dining Philosophers Problem</h4>
+  <p>5 philosophers sit at a round table. Each needs 2 forks (left + right) to eat. Naive solution deadlocks if all pick up left fork simultaneously.</p>
+  <pre>// Asymmetric Solution (avoids deadlock):
+// Even philosopher picks LEFT then RIGHT
+// Odd philosopher picks RIGHT then LEFT
+semaphore fork[5] = {1,1,1,1,1};
+philosopher(i):
+  if (i % 2 == 0):
+    wait(fork[i]);         // left
+    wait(fork[(i+1)%5]);   // right
+  else:
+    wait(fork[(i+1)%5]);   // right first
+    wait(fork[i]);         // left
+  ... eat ...
+  signal(fork[i]);
+  signal(fork[(i+1)%5]);</pre>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Solution Strategy</th><th>How</th><th>Deadlock-free?</th></tr></thead>
+    <tbody>
+      <tr><td>Allow max 4 philosophers to sit</td><td>Semaphore initialized to 4</td><td class="t-good">Yes</td></tr>
+      <tr><td>Asymmetric pickup (even/odd)</td><td>Even: L then R; Odd: R then L</td><td class="t-good">Yes</td></tr>
+      <tr><td>Pick both or none</td><td>Use mutex to check both available</td><td class="t-good">Yes</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Deadlock — Coffman's Conditions</h3>
+  <p>All four must hold simultaneously for deadlock:</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>#</th><th>Condition</th><th>Prevention strategy</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><strong>Mutual Exclusion</strong> — resource not shareable</td><td>Make resources shareable (not always possible)</td></tr>
+      <tr><td>2</td><td><strong>Hold &amp; Wait</strong> — holds ≥1, waits for more</td><td>Request all resources at once before start</td></tr>
+      <tr><td>3</td><td><strong>No Preemption</strong> — can't force-take resource</td><td>Allow preemption (rollback)</td></tr>
+      <tr><td>4</td><td><strong>Circular Wait</strong> — P1→R1→P2→R2→P1</td><td>Total ordering of resource types</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Resource Allocation Graph (RAG)</h3>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px;display:block;margin:auto">
+      <defs>
+        <marker id="ar4" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0L0,7L7,3.5z" fill="#38bdf8"/></marker>
+        <marker id="ar4r" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0L0,7L7,3.5z" fill="#f87171"/></marker>
+      </defs>
+      <!-- Processes (circles) -->
+      <circle cx="80" cy="80" r="26" fill="#0f1d2e" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="80" y="84" text-anchor="middle" font-size="11" fill="#38bdf8">P1</text>
+      <circle cx="240" cy="80" r="26" fill="#0f1d2e" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="240" y="84" text-anchor="middle" font-size="11" fill="#38bdf8">P2</text>
+      <circle cx="400" cy="80" r="26" fill="#0f1d2e" stroke="#38bdf8" stroke-width="1.5"/>
+      <text x="400" y="84" text-anchor="middle" font-size="11" fill="#38bdf8">P3</text>
+      <!-- Resources (squares) -->
+      <rect x="135" y="55" width="30" height="50" rx="4" fill="#1e1a10" stroke="#f0b429" stroke-width="1.5"/>
+      <text x="150" y="85" text-anchor="middle" font-size="10" fill="#f0b429">R1</text>
+      <rect x="295" y="55" width="30" height="50" rx="4" fill="#1e1a10" stroke="#f0b429" stroke-width="1.5"/>
+      <text x="310" y="85" text-anchor="middle" font-size="10" fill="#f0b429">R2</text>
+      <!-- Arrows: Request P→R (blue) -->
+      <line x1="106" y1="80" x2="133" y2="80" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#ar4)"/>
+      <text x="119" y="74" font-size="8" fill="#38bdf8" text-anchor="middle">req</text>
+      <line x1="266" y1="80" x2="293" y2="80" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#ar4)"/>
+      <text x="279" y="74" font-size="8" fill="#38bdf8" text-anchor="middle">req</text>
+      <!-- Assign R→P (red) -->
+      <line x1="165" y1="72" x2="214" y2="72" stroke="#f87171" stroke-width="1.5" marker-end="url(#ar4r)"/>
+      <text x="190" y="66" font-size="8" fill="#f87171" text-anchor="middle">assign</text>
+      <line x1="325" y1="72" x2="374" y2="72" stroke="#f87171" stroke-width="1.5" marker-end="url(#ar4r)"/>
+      <text x="349" y="66" font-size="8" fill="#f87171" text-anchor="middle">assign</text>
+      <text x="240" y="150" text-anchor="middle" font-size="9" fill="#8fa3bc">Cycle exists → Deadlock (single-instance resources)</text>
+    </svg>
+    <div class="diagram-caption">FIG 4.1 — Resource Allocation Graph with cycle (P1→R1→P2→R2→P3 forms a cycle)</div>
+  </div>
+
+  <h3>Banker's Algorithm — Deadlock Avoidance</h3>
+  <div class="formula">Need[i][j] = Max[i][j] − Allocation[i][j]</div>
+  <p>A state is <strong>SAFE</strong> if there exists at least one safe sequence where all processes can finish using available resources.</p>
+
+  <!-- NUMERICAL 3 — BANKER'S -->
+  <div class="numerical">
+    <div class="numerical-header">
+      <span class="num-badge">GATE 2022 Style · Banker's Algorithm</span>
+      <span class="num-title">Find Safe Sequence</span>
+    </div>
+    <p style="font-size:.9rem;color:var(--ink2)">3 resources (A=10, B=5, C=7). Allocation and Max for 5 processes:</p>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Process</th><th>Alloc A,B,C</th><th>Max A,B,C</th><th>Need A,B,C</th></tr></thead>
+      <tbody>
+        <tr><td>P0</td><td>0,1,0</td><td>7,5,3</td><td>7,4,3</td></tr>
+        <tr><td>P1</td><td>2,0,0</td><td>3,2,2</td><td>1,2,2</td></tr>
+        <tr><td>P2</td><td>3,0,2</td><td>9,0,2</td><td>6,0,0</td></tr>
+        <tr><td>P3</td><td>2,1,1</td><td>2,2,2</td><td>0,1,1</td></tr>
+        <tr><td>P4</td><td>0,0,2</td><td>4,3,3</td><td>4,3,1</td></tr>
+      </tbody>
+    </table></div>
+    <p style="font-size:.88rem;color:var(--ink2)"><strong>Available</strong> = Total − Σ Alloc = (10−7, 5−2, 7−5) = <strong>3,3,2</strong></p>
+    <details class="solved"><summary>▶ Show safety algorithm trace</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">1</span><span class="step-t">Work=(3,3,2). Check each P's Need ≤ Work:<br>P1 Need=(1,2,2) ≤ (3,3,2) ✓ → run P1. Work = (3,3,2)+(2,0,0) = (5,3,2)</span></div>
+      <div class="solved-step"><span class="step-n">2</span><span class="step-t">P3 Need=(0,1,1) ≤ (5,3,2) ✓ → run P3. Work = (5,3,2)+(2,1,1) = (7,4,3)</span></div>
+      <div class="solved-step"><span class="step-n">3</span><span class="step-t">P4 Need=(4,3,1) ≤ (7,4,3) ✓ → run P4. Work = (7,4,3)+(0,0,2) = (7,4,5)</span></div>
+      <div class="solved-step"><span class="step-n">4</span><span class="step-t">P0 Need=(7,4,3) ≤ (7,4,5) ✓ → run P0. Work = (7,4,5)+(0,1,0) = (7,5,5)</span></div>
+      <div class="solved-step"><span class="step-n">5</span><span class="step-t">P2 Need=(6,0,0) ≤ (7,5,5) ✓ → run P2.</span></div>
+      <span class="answer-tag">✓ Safe Sequence: P1 → P3 → P4 → P0 → P2</span>
+    </div></details>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2019</span></div>
+    <div class="quiz-q">A system has 4 processes (P1–P4) each requiring 3 instances of a resource type. Currently 2 instances are available. Minimum total instances needed to GUARANTEE no deadlock?</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">A</span>9</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">B</span>10</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">C</span>13</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>12</div>
+    </div>
+    <div class="quiz-explain"><strong>Formula:</strong> Minimum instances to guarantee no deadlock = n × (m − 1) + 1, where n = number of processes, m = max instances each needs. Here: 4 × (3 − 1) + 1 = 4 × 2 + 1 = <strong>9</strong>. Intuition: worst case every process holds (m−1)=2 instances without finishing. With 1 extra, at least one process can complete, release its resources, and unblock others. Option C (13) is incorrect and was an error in this resource.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  CHAPTER 5 — MEMORY MANAGEMENT
+══════════════════════════════════ -->
+<div id="ch5" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num">CH 05</span>
+    <h2 class="ch-title">Memory <em>Management</em></h2>
+    <button class="ch-mark-btn" id="btn-5" onclick="markDone(5)">Mark Done ✓</button>
+  </div>
+
+  <h3>Address Translation — Paging</h3>
+  <div class="formula">Physical Address = Frame Number × Page Size + Offset
+Logical Address split: [Page Number | Offset]
+Page Number bits = log₂(Logical Address Space / Page Size)
+Offset bits = log₂(Page Size)</div>
+
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 520 170" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:520px;display:block;margin:auto">
+      <defs><marker id="am" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0L0,7L7,3.5z" fill="#38bdf8"/></marker></defs>
+      <!-- CPU -->
+      <rect x="10" y="65" width="80" height="40" rx="5" fill="#0f1d2e" stroke="#38bdf8"/>
+      <text x="50" y="88" text-anchor="middle" font-size="9" fill="#38bdf8">CPU</text>
+      <text x="50" y="99" text-anchor="middle" font-size="8" fill="#8fa3bc">Logical Addr</text>
+      <!-- Split -->
+      <rect x="115" y="55" width="48" height="18" rx="3" fill="#162032" stroke="#f0b429"/>
+      <text x="139" y="68" text-anchor="middle" font-size="9" fill="#f0b429">Page#</text>
+      <rect x="115" y="77" width="48" height="18" rx="3" fill="#162032" stroke="#c084fc"/>
+      <text x="139" y="90" text-anchor="middle" font-size="9" fill="#c084fc">Offset</text>
+      <!-- TLB -->
+      <rect x="195" y="45" width="80" height="40" rx="5" fill="#1a1a0f" stroke="#f0b429" stroke-dasharray="3 2"/>
+      <text x="235" y="65" text-anchor="middle" font-size="9" fill="#f0b429">TLB</text>
+      <text x="235" y="78" text-anchor="middle" font-size="8" fill="#8fa3bc">fast cache</text>
+      <!-- Page Table -->
+      <rect x="195" y="100" width="80" height="40" rx="5" fill="#0f1d2e" stroke="#38bdf8"/>
+      <text x="235" y="122" text-anchor="middle" font-size="9" fill="#38bdf8">Page Table</text>
+      <text x="235" y="134" text-anchor="middle" font-size="8" fill="#8fa3bc">in memory</text>
+      <!-- Physical -->
+      <rect x="415" y="65" width="80" height="40" rx="5" fill="#0f2010" stroke="#34d399"/>
+      <text x="455" y="88" text-anchor="middle" font-size="9" fill="#34d399">Physical</text>
+      <text x="455" y="99" text-anchor="middle" font-size="8" fill="#8fa3bc">Memory</text>
+      <!-- arrows -->
+      <line x1="90" y1="85" x2="113" y2="74" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#am)"/>
+      <line x1="163" y1="64" x2="193" y2="60" stroke="#f0b429" stroke-width="1.5" marker-end="url(#am)"/>
+      <text x="178" y="56" font-size="7" fill="#f0b429">TLB hit</text>
+      <line x1="163" y1="86" x2="193" y2="112" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#am)"/>
+      <text x="173" y="104" font-size="7" fill="#8fa3bc">TLB miss</text>
+      <line x1="275" y1="65" x2="413" y2="80" stroke="#34d399" stroke-width="1.5" marker-end="url(#am)"/>
+      <line x1="275" y1="120" x2="340" y2="90" stroke="#34d399" stroke-width="1" stroke-dasharray="3 2" marker-end="url(#am)"/>
+      <text x="330" y="72" font-size="8" fill="#34d399">Frame# + Offset</text>
+    </svg>
+    <div class="diagram-caption">FIG 5.1 — Paging with TLB (Translation Lookaside Buffer)</div>
+  </div>
+
+  <!-- NUMERICAL 4 — PAGING -->
+  <div class="numerical">
+    <div class="numerical-header">
+      <span class="num-badge">GATE 2021 · Paging Numerical</span>
+      <span class="num-title">Physical Address Calculation</span>
+    </div>
+    <p style="font-size:.9rem;color:var(--ink2)">A system has 32-bit logical address space, page size = 4 KB. Physical memory = 16 MB. (a) How many pages? (b) How many frames? (c) Number of bits for page number and offset?</p>
+    <details class="solved"><summary>▶ Show solution</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">1</span><span class="step-t">Page size = 4 KB = 2¹² bytes → Offset bits = <strong>12</strong></span></div>
+      <div class="solved-step"><span class="step-n">2</span><span class="step-t">Logical address = 32 bits → Page number bits = 32−12 = <strong>20 bits</strong> → Number of pages = 2²⁰ = <strong>1,048,576 pages</strong></span></div>
+      <div class="solved-step"><span class="step-n">3</span><span class="step-t">Physical memory = 16 MB = 2²⁴ bytes → Frame bits = 24−12 = <strong>12 bits</strong> → Number of frames = 2¹² = <strong>4,096 frames</strong></span></div>
+      <div class="solved-step"><span class="step-n">4</span><span class="step-t">Page table size = 2²⁰ entries × 12 bits/entry = 12 MB (large → use multi-level paging)</span></div>
+      <span class="answer-tag">✓ Pages=2²⁰, Frames=2¹², Page# bits=20, Offset bits=12</span>
+    </div></details>
+  </div>
+
+  <!-- NUMERICAL 5 — EAT -->
+  <div class="numerical">
+    <div class="numerical-header">
+      <span class="num-badge">GATE Classic · EAT with TLB</span>
+      <span class="num-title">Effective Memory Access Time</span>
+    </div>
+    <p style="font-size:.9rem;color:var(--ink2)">TLB access time = 20 ns. Memory access time = 100 ns. TLB hit ratio = 90%. Find EAT.</p>
+    <details class="solved"><summary>▶ Show solution</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">1</span><span class="step-t">On TLB <strong>hit</strong> (90%): TLB lookup + 1 memory access = 20 + 100 = 120 ns</span></div>
+      <div class="solved-step"><span class="step-n">2</span><span class="step-t">On TLB <strong>miss</strong> (10%): TLB lookup + 1 page table access + 1 data access = 20 + 100 + 100 = 220 ns</span></div>
+      <div class="solved-step"><span class="step-n">3</span><span class="step-t">EAT = 0.90 × 120 + 0.10 × 220 = 108 + 22 = <strong>130 ns</strong></span></div>
+      <span class="answer-tag">✓ EAT = 130 ns</span>
+    </div></details>
+  </div>
+
+  <h3>Fragmentation Comparison</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Type</th><th>Cause</th><th>Occurs In</th><th>Solution</th></tr></thead>
+    <tbody>
+      <tr><td><strong class="t-bad">Internal</strong></td><td>Allocated block > needed (wasted inside)</td><td>Paging, fixed-size partitions</td><td>Smaller page size</td></tr>
+      <tr><td><strong class="t-bad">External</strong></td><td>Free holes not contiguous (wasted outside)</td><td>Segmentation, variable partitions</td><td>Compaction, paging</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2022</span></div>
+    <div class="quiz-q">A process has logical address space of 64 pages, each page 1 KB. Physical memory has 32 frames. What is the size of the page table entry (minimum bits for frame number)?</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">A</span>5 bits</div>
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">B</span>5 bits for frame (32 frames = 2⁵)</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">C</span>6 bits</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>10 bits</div>
+    </div>
+    <div class="quiz-explain">Page table maps logical pages → physical frames. 32 frames = 2⁵ → 5 bits needed for frame number. Page number bits = log₂(64) = 6 bits (but that's for logical, not the entry size).</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  CHAPTER 6 — VIRTUAL MEMORY
+══════════════════════════════════ -->
+<div id="ch6" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num">CH 06</span>
+    <h2 class="ch-title">Virtual <em>Memory</em></h2>
+    <button class="ch-mark-btn" id="btn-6" onclick="markDone(6)">Mark Done ✓</button>
+  </div>
+
+  <h3>Page Replacement Algorithms</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Algorithm</th><th>Strategy</th><th>Belady's Anomaly?</th><th>Optimal?</th><th>GATE</th></tr></thead>
+    <tbody>
+      <tr><td><strong>FIFO</strong></td><td>Evict oldest loaded page</td><td class="t-bad">Yes ⚠️</td><td>No</td><td>⭐⭐⭐</td></tr>
+      <tr><td><strong>LRU</strong></td><td>Evict least recently used</td><td class="t-good">No</td><td>Close to OPT</td><td>⭐⭐⭐⭐</td></tr>
+      <tr><td><strong>Optimal (OPT/MIN)</strong></td><td>Evict page not used for longest future time</td><td class="t-good">No</td><td>Yes (theoretical)</td><td>⭐⭐⭐</td></tr>
+      <tr><td><strong>Clock (2nd chance)</strong></td><td>FIFO + reference bit; give page a 2nd chance</td><td class="t-good">No</td><td>LRU approximation</td><td>⭐⭐</td></tr>
+      <tr><td><strong>MFU/LFU</strong></td><td>Most/Least frequently used</td><td class="t-good">No</td><td>Poor in practice</td><td>⭐</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- NUMERICAL 6 — PAGE FAULTS -->
+  <div class="numerical">
+    <div class="numerical-header">
+      <span class="num-badge">GATE 2023 · Page Replacement</span>
+      <span class="num-title">FIFO vs LRU Page Faults</span>
+    </div>
+    <p style="font-size:.9rem;color:var(--ink2)">Reference string: <strong>7 0 1 2 0 3 0 4 2 3 0 3 2 1 2</strong>. Number of frames = 3. Find page faults for FIFO and LRU.</p>
+    <details class="solved"><summary>▶ Show FIFO trace</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">F</span><span class="step-t">Frames(3): | 7 | F | 0 | F | 1 | F | 2 | F | 0→hit | 3 | F | 0 | F | 4 | F | 2→hit | 3→hit | 0 | F | 3→hit | 2→hit | 1 | F | 2→hit</span></div>
+      <div class="solved-step"><span class="step-n">1</span><span class="step-t">Detailed: 7(F),0(F),1(F) → frames={7,0,1}. Ref 2: evict 7(oldest)→{0,1,2} F. Ref 0: hit. Ref 3: evict 0→{1,2,3} F. Ref 0: evict 1→{2,3,0} F. Ref 4: evict 2→{3,0,4} F. Ref 2: evict 3→{0,4,2} F. Ref 3: evict 0→{4,2,3} F. Ref 0: evict 4→{2,3,0} F. Ref 3:hit. Ref 2:hit. Ref 1: evict 2→{3,0,1} F. Ref 2: evict 3→{0,1,2} F.</span></div>
+      <span class="answer-tag">✓ FIFO: 9 page faults</span>
+    </div></details>
+    <details class="solved"><summary>▶ Show LRU trace</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">1</span><span class="step-t">7(F),0(F),1(F)→{7,0,1}. Ref 2: evict LRU=7→{0,1,2} F. Ref 0: hit→{1,2,0}. Ref 3: evict LRU=1→{2,0,3} F. Ref 0: hit→{2,3,0}. Ref 4: evict LRU=2→{3,0,4} F. Ref 2: evict LRU=3→{0,4,2} F. Ref 3: evict LRU=4→{0,2,3} F. Ref 0: hit. Ref 3:hit. Ref 2:hit. Ref 1: evict LRU=0→{2,3,1} F. Ref 2:hit.</span></div>
+      <span class="answer-tag">✓ LRU: 8 page faults (better than FIFO)</span>
+    </div></details>
+  </div>
+
+  <h3>Demand Paging Internals <span style="font-size:.75rem;color:var(--gold);font-family:var(--mono);font-weight:400">⭐⭐⭐⭐ GATE Essential</span></h3>
+  <p>In demand paging, pages are loaded into memory only when referenced. Each page table entry contains control bits:</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Bit</th><th>Name</th><th>Value 0</th><th>Value 1</th><th>Use</th></tr></thead>
+    <tbody>
+      <tr><td><code>V</code></td><td><strong>Valid/Invalid bit</strong></td><td>Page not in memory → Page Fault</td><td>Page in memory (valid)</td><td>Set to 0 at load, 1 when loaded into frame</td></tr>
+      <tr><td><code>D</code></td><td><strong>Dirty/Modified bit</strong></td><td>Page unchanged since load</td><td>Page was written to</td><td>If D=0, eviction is free (no write-back). If D=1, must write to disk first.</td></tr>
+      <tr><td><code>R</code></td><td><strong>Reference/Access bit</strong></td><td>Not recently used</td><td>Recently accessed</td><td>Used by Clock algorithm for LRU approximation; OS periodically clears it</td></tr>
+    </tbody>
+  </table></div>
+  <div class="formula">Page Table Entry: | Frame Number | V | D | R | Protection bits |</div>
+  <div class="box box-gate"><div class="gate-label">🎯 GATE Tip</div>When a <strong>page fault</strong> occurs: (1) Trap to OS, (2) Find a free frame, (3) Load page from disk, (4) Update page table (set valid bit = 1), (5) Restart the faulting instruction. If no free frame exists, a page replacement algorithm selects a victim (check dirty bit to decide if write-back is needed).</div>
+
+  <!-- TLB EMAT Numerical -->
+  <div class="numerical">
+    <div class="numerical-header">
+      <span class="num-badge">GATE Classic · TLB EMAT</span>
+      <span class="num-title">Effective Memory Access Time with TLB — Two Scenarios</span>
+    </div>
+    <p style="font-size:.9rem;color:var(--ink2)"><strong>Scenario A:</strong> TLB access = 10 ns, Memory access = 100 ns, TLB hit ratio h = 80%. <strong>Scenario B:</strong> Same but with demand paging — page fault rate = 1%, page fault service = 8 ms.</p>
+    <div class="formula">EMAT = h × (t_TLB + t_M) + (1−h) × (t_TLB + 2×t_M)</div>
+    <details class="solved"><summary>▶ Show both solutions</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">A1</span><span class="step-t">TLB hit (80%): TLB + 1 memory = 10 + 100 = <strong>110 ns</strong></span></div>
+      <div class="solved-step"><span class="step-n">A2</span><span class="step-t">TLB miss (20%): TLB + page table access + data access = 10 + 100 + 100 = <strong>210 ns</strong></span></div>
+      <div class="solved-step"><span class="step-n">A3</span><span class="step-t">EMAT = 0.8 × 110 + 0.2 × 210 = 88 + 42 = <strong>130 ns</strong></span></div>
+      <div class="solved-step"><span class="step-n">B1</span><span class="step-t">With page faults: EMAT = (1 − p) × 130 ns + p × 8,000,000 ns (p = 0.01)</span></div>
+      <div class="solved-step"><span class="step-n">B2</span><span class="step-t">= 0.99 × 130 + 0.01 × 8,000,000 = 128.7 + 80,000 ≈ <strong>80,129 ns ≈ 80 μs</strong></span></div>
+      <div class="solved-step"><span class="step-n">Key</span><span class="step-t">Even 1% page fault rate increases access time by ~615×! This shows why minimizing page faults is critical.</span></div>
+      <span class="answer-tag">✓ EMAT (no fault) = 130 ns | EMAT (with faults) ≈ 80 μs</span>
+    </div></details>
+  </div>
+
+  <h3>Belady's Anomaly — Explained <span style="font-size:.75rem;color:var(--gold);font-family:var(--mono);font-weight:400">⭐⭐⭐ GATE Favourite</span></h3>
+  <div class="box box-warn"><div class="gate-label">⚠️ COUNTER-INTUITIVE</div><strong>Belady's Anomaly:</strong> For FIFO page replacement, adding MORE frames can actually cause MORE page faults. This violates intuition — more resources should always help, but FIFO doesn't have the stack property.</div>
+  <p><strong>Classic example:</strong> Reference string: <code>1 2 3 4 1 2 5 1 2 3 4 5</code></p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Frames</th><th>Algorithm</th><th>Page Faults</th><th>Anomaly?</th></tr></thead>
+    <tbody>
+      <tr><td>3</td><td>FIFO</td><td class="t-bad"><strong>9</strong></td><td>—</td></tr>
+      <tr><td>4</td><td>FIFO</td><td class="t-bad"><strong>10</strong> ← MORE!</td><td class="t-bad">✓ Anomaly occurs!</td></tr>
+      <tr><td>3</td><td>LRU</td><td class="t-good">8</td><td class="t-good">No anomaly</td></tr>
+      <tr><td>4</td><td>LRU</td><td class="t-good">6 ← Fewer (correct)</td><td class="t-good">No anomaly</td></tr>
+    </tbody>
+  </table></div>
+  <div class="box box-tip"><strong>Why LRU/OPT are immune:</strong> They are <em>stack algorithms</em> — the set of pages in memory with n frames is always a subset of the pages with n+1 frames. This stack property guarantees that adding frames never hurts. FIFO lacks this property.</div>
+
+  <h3>Thrashing — Deep Dive <span style="font-size:.75rem;color:var(--gold);font-family:var(--mono);font-weight:400">⭐⭐⭐⭐</span></h3>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;display:block;margin:auto">
+      <line x1="50" y1="140" x2="380" y2="140" stroke="#243450" stroke-width="1.5"/>
+      <line x1="50" y1="20"  x2="50"  y2="140" stroke="#243450" stroke-width="1.5"/>
+      <text x="215" y="158" text-anchor="middle" font-size="9" fill="#8fa3bc">Degree of Multiprogramming</text>
+      <text x="18"  y="85" text-anchor="middle" font-size="9" fill="#8fa3bc" transform="rotate(-90,18,85)">CPU Utilization</text>
+      <path d="M55,130 Q100,70 180,38 Q220,25 255,35 Q290,50 360,120" stroke="#38bdf8" stroke-width="2" fill="none"/>
+      <rect x="255" y="20" width="105" height="120" fill="rgba(248,113,113,.08)" stroke="rgba(248,113,113,.2)" stroke-dasharray="3 2"/>
+      <text x="305" y="50" text-anchor="middle" font-size="8" fill="#f87171">THRASHING</text>
+      <text x="305" y="62" text-anchor="middle" font-size="8" fill="#f87171">ZONE</text>
+      <text x="190" y="18" text-anchor="middle" font-size="8" fill="#34d399">← Optimal →</text>
+    </svg>
+    <div class="diagram-caption">FIG 6.1 — CPU utilisation vs. degree of multiprogramming</div>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Concept</th><th>Definition</th><th>GATE angle</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Thrashing</strong></td><td>Process spends more time in paging (page-in/page-out) than actual CPU execution</td><td>Caused by too many processes competing for limited frames</td></tr>
+      <tr><td><strong>Locality of Reference</strong></td><td>Programs tend to access a small set of pages repeatedly in any phase of execution</td><td>Foundation of all page replacement algorithms; makes caching effective</td></tr>
+      <tr><td><strong>Working Set</strong></td><td>Set of pages a process actively uses in a time window Δ (e.g. last 10 references)</td><td>Working set size = frames process needs; if total WSS > available frames → thrashing</td></tr>
+      <tr><td><strong>Page Fault Frequency</strong></td><td>Rate at which page faults occur for a process</td><td>If PFF too high → give more frames. If too low → take frames away. Control loop for thrashing prevention.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="box box-gate"><div class="gate-label">🎯 Prevention Strategies</div>
+    <strong>1. Working Set Model:</strong> Track each process's working set; only allow multiprogramming if Σ(WSS) ≤ available frames.<br>
+    <strong>2. Page Fault Frequency Control:</strong> If PFF exceeds upper threshold → add frames. If below lower threshold → remove frames.<br>
+    <strong>3. Reduce Multiprogramming:</strong> Suspend processes and free their frames for remaining processes.
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2020</span></div>
+    <div class="quiz-q">Belady's anomaly states that for FIFO page replacement, increasing the number of frames can <u>increase</u> page faults. Which of the following is IMMUNE to Belady's anomaly?</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">A</span>FIFO</div>
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">B</span>LRU and OPT (stack algorithms)</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">C</span>Clock algorithm</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>Random replacement</div>
+    </div>
+    <div class="quiz-explain">Stack algorithms (LRU, OPT) have the property that the set of pages in memory with n frames is always a subset of the set with n+1 frames. This guarantees no Belady's anomaly. FIFO is NOT a stack algorithm.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  CHAPTER 7 — FILE SYSTEMS
+══════════════════════════════════ -->
+<div id="ch7" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num">CH 07</span>
+    <h2 class="ch-title">File <em>Systems</em></h2>
+    <button class="ch-mark-btn" id="btn-7" onclick="markDone(7)">Mark Done ✓</button>
+  </div>
+
+  <h3>File Allocation Methods</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Method</th><th>Sequential</th><th>Random</th><th>External Frag</th><th>Internal Frag</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Contiguous</strong></td><td class="t-good">Fast</td><td class="t-good">Fast</td><td class="t-bad">Yes</td><td class="t-bad">Yes</td></tr>
+      <tr><td><strong>Linked</strong></td><td class="t-good">OK</td><td class="t-bad">Slow</td><td class="t-good">No</td><td class="t-good">No</td></tr>
+      <tr><td><strong>FAT (linked variant)</strong></td><td class="t-good">OK</td><td class="t-mid">OK (FAT in RAM)</td><td class="t-good">No</td><td class="t-good">No</td></tr>
+      <tr><td><strong>Indexed (inode)</strong></td><td class="t-good">OK</td><td class="t-good">Fast</td><td class="t-good">No</td><td class="t-bad">Yes (small files)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Unix Inode Structure</h3>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:460px;display:block;margin:auto">
+      <defs><marker id="ai" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0L0,6L6,3z" fill="#38bdf8"/></marker></defs>
+      <!-- inode -->
+      <rect x="10" y="10" width="120" height="180" rx="6" fill="#0f1d2e" stroke="#38bdf8"/>
+      <text x="70" y="30" text-anchor="middle" font-size="9" fill="#38bdf8">INODE</text>
+      <text x="70" y="45" text-anchor="middle" font-size="8" fill="#8fa3bc">metadata</text>
+      <rect x="20" y="52" width="100" height="14" rx="2" fill="#162032"/>
+      <text x="70" y="63" text-anchor="middle" font-size="8" fill="#a5f3fc">Direct[0]</text>
+      <rect x="20" y="68" width="100" height="14" rx="2" fill="#162032"/>
+      <text x="70" y="79" text-anchor="middle" font-size="8" fill="#a5f3fc">Direct[1]</text>
+      <rect x="20" y="84" width="100" height="14" rx="2" fill="#162032"/>
+      <text x="70" y="95" text-anchor="middle" font-size="8" fill="#a5f3fc">…Direct[11]</text>
+      <rect x="20" y="100" width="100" height="14" rx="2" fill="#1a1f10"/>
+      <text x="70" y="111" text-anchor="middle" font-size="8" fill="#f0b429">Single Indirect</text>
+      <rect x="20" y="116" width="100" height="14" rx="2" fill="#1a1510"/>
+      <text x="70" y="127" text-anchor="middle" font-size="8" fill="#f87171">Double Indirect</text>
+      <rect x="20" y="132" width="100" height="14" rx="2" fill="#1a0f1a"/>
+      <text x="70" y="143" text-anchor="middle" font-size="8" fill="#c084fc">Triple Indirect</text>
+      <!-- arrows -->
+      <line x1="120" y1="60" x2="180" y2="60" stroke="#a5f3fc" stroke-width="1" marker-end="url(#ai)"/>
+      <rect x="182" y="52" width="60" height="16" rx="2" fill="#162032" stroke="#243450"/>
+      <text x="212" y="63" text-anchor="middle" font-size="8" fill="#a5f3fc">Data Block</text>
+      <line x1="120" y1="108" x2="180" y2="108" stroke="#f0b429" stroke-width="1" marker-end="url(#ai)"/>
+      <rect x="182" y="100" width="60" height="16" rx="2" fill="#1a1f10" stroke="#f0b429"/>
+      <text x="212" y="111" text-anchor="middle" font-size="8" fill="#f0b429">Index Block</text>
+      <line x1="242" y1="108" x2="302" y2="108" stroke="#f0b429" stroke-width="1" marker-end="url(#ai)"/>
+      <rect x="304" y="100" width="60" height="16" rx="2" fill="#162032" stroke="#243450"/>
+      <text x="334" y="111" text-anchor="middle" font-size="8" fill="#a5f3fc">Data Block</text>
+      <line x1="120" y1="124" x2="180" y2="124" stroke="#f87171" stroke-width="1" marker-end="url(#ai)"/>
+      <rect x="182" y="116" width="60" height="16" rx="2" fill="#1a1510" stroke="#f87171"/>
+      <text x="212" y="127" text-anchor="middle" font-size="8" fill="#f87171">Index L1</text>
+      <line x1="242" y1="124" x2="302" y2="140" stroke="#f87171" stroke-width="1" marker-end="url(#ai)"/>
+      <rect x="304" y="132" width="60" height="16" rx="2" fill="#1a1510" stroke="#f87171"/>
+      <text x="334" y="143" text-anchor="middle" font-size="8" fill="#f87171">Index L2</text>
+    </svg>
+    <div class="diagram-caption">FIG 7.1 — Unix Inode structure (12 direct + single/double/triple indirect blocks)</div>
+  </div>
+
+  <!-- NUMERICAL 7 — inode -->
+  <div class="numerical">
+    <div class="numerical-header">
+      <span class="num-badge">GATE 2019 · File System Numerical</span>
+      <span class="num-title">Maximum File Size with Inode</span>
+    </div>
+    <p style="font-size:.9rem;color:var(--ink2)">Block size = 4 KB. Block address = 4 bytes. Inode has 12 direct, 1 single indirect, 1 double indirect block pointer. Find maximum file size.</p>
+    <details class="solved"><summary>▶ Show solution</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">1</span><span class="step-t">Pointers per block = Block size / Address size = 4096 / 4 = <strong>1024 pointers</strong></span></div>
+      <div class="solved-step"><span class="step-n">2</span><span class="step-t">Direct: 12 × 4 KB = <strong>48 KB</strong></span></div>
+      <div class="solved-step"><span class="step-n">3</span><span class="step-t">Single indirect: 1024 × 4 KB = <strong>4 MB</strong></span></div>
+      <div class="solved-step"><span class="step-n">4</span><span class="step-t">Double indirect: 1024 × 1024 × 4 KB = <strong>4 GB</strong></span></div>
+      <div class="solved-step"><span class="step-n">5</span><span class="step-t">Max = 48 KB + 4 MB + 4 GB ≈ <strong>4 GB + ~4 MB + 48 KB</strong></span></div>
+      <span class="answer-tag">✓ Max file size ≈ 4 GB + 4 MB + 48 KB</span>
+    </div></details>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2018</span></div>
+    <div class="quiz-q">Which file allocation method suffers from BOTH external fragmentation AND requires knowing file size at creation time?</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">A</span>Contiguous allocation</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">B</span>Linked allocation</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">C</span>Indexed allocation</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>FAT allocation</div>
+    </div>
+    <div class="quiz-explain">Contiguous allocation: needs contiguous free blocks (external frag) and requires declaring file size upfront. Linked and indexed don't need contiguous blocks and grow dynamically.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  CHAPTER 8 — DISK SCHEDULING
+══════════════════════════════════ -->
+<div id="ch8" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num">CH 08</span>
+    <h2 class="ch-title">Disk <em>Scheduling</em></h2>
+    <button class="ch-mark-btn" id="btn-8" onclick="markDone(8)">Mark Done ✓</button>
+  </div>
+
+  <h3>Disk Scheduling Algorithms</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Algorithm</th><th>Strategy</th><th>Starvation?</th><th>Best for</th></tr></thead>
+    <tbody>
+      <tr><td><strong>FCFS</strong></td><td>Service in arrival order</td><td class="t-good">No</td><td>Light load; fairness</td></tr>
+      <tr><td><strong>SSTF</strong></td><td>Shortest seek time first</td><td class="t-bad">Yes</td><td>Throughput</td></tr>
+      <tr><td><strong>SCAN (Elevator)</strong></td><td>Go in one direction, reverse at end</td><td class="t-good">No</td><td>Moderate load</td></tr>
+      <tr><td><strong>C-SCAN</strong></td><td>One direction only, jump to start</td><td class="t-good">No</td><td>Uniform wait time</td></tr>
+      <tr><td><strong>LOOK</strong></td><td>Like SCAN but reverses at last request</td><td class="t-good">No</td><td>Better than SCAN</td></tr>
+      <tr><td><strong>C-LOOK</strong></td><td>Like C-SCAN but jumps at last request</td><td class="t-good">No</td><td>Best practical</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Head Movement Diagrams <span style="font-size:.75rem;color:var(--gold);font-family:var(--mono);font-weight:400">⭐⭐⭐⭐</span></h3>
+  <p style="font-size:.9rem;color:var(--ink2)">Requests: <strong>98, 183, 37, 122, 14, 124, 65, 67</strong> | Head starts at <strong>53</strong>, moving towards higher cylinders.</p>
+
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;display:block;margin:auto">
+      <!-- Title -->
+      <text x="170" y="16" text-anchor="middle" font-size="10" fill="#38bdf8" font-weight="700">FCFS (order: 53→98→183→37→122→14→124→65→67)</text>
+      <text x="510" y="16" text-anchor="middle" font-size="10" fill="#34d399" font-weight="700">SSTF (closest first)</text>
+      <!-- Axis FCFS -->
+      <line x1="20" y1="30" x2="340" y2="30" stroke="#243450" stroke-width="1"/>
+      <text x="20" y="26" font-size="7" fill="#4d6282">0</text>
+      <text x="166" y="26" font-size="7" fill="#4d6282">100</text>
+      <text x="316" y="26" font-size="7" fill="#4d6282">199</text>
+      <!-- FCFS head path: 53,98,183,37,122,14,124,65,67 → map 0-199 to x:20-340 = range 320px -->
+      <!-- x = 20 + (cyl/199)*320 -->
+      <!-- 53→88.8, 98→177.9, 183→314.8, 37→79.5, 122→216.4, 14→42.5, 124→219.7, 65→124.7, 67→127.8 -->
+      <polyline points="88,40 178,60 315,80 80,100 216,120 43,140 220,160 125,180 128,200" stroke="#38bdf8" stroke-width="1.5" fill="none"/>
+      <circle cx="88" cy="40" r="3" fill="#38bdf8"/>
+      <text x="92" y="44" font-size="7" fill="#8fa3bc">53</text>
+      <circle cx="178" cy="60" r="3" fill="#38bdf8"/>
+      <text x="182" y="64" font-size="7" fill="#8fa3bc">98</text>
+      <circle cx="315" cy="80" r="3" fill="#f87171"/>
+      <text x="319" y="84" font-size="7" fill="#f87171">183</text>
+      <circle cx="80" cy="100" r="3" fill="#38bdf8"/>
+      <text x="84" y="104" font-size="7" fill="#8fa3bc">37</text>
+      <circle cx="216" cy="120" r="3" fill="#38bdf8"/>
+      <text x="220" y="124" font-size="7" fill="#8fa3bc">122</text>
+      <circle cx="43" cy="140" r="3" fill="#38bdf8"/>
+      <text x="47" y="144" font-size="7" fill="#8fa3bc">14</text>
+      <circle cx="220" cy="160" r="3" fill="#38bdf8"/>
+      <text x="224" y="164" font-size="7" fill="#8fa3bc">124</text>
+      <circle cx="125" cy="180" r="3" fill="#38bdf8"/>
+      <text x="129" y="184" font-size="7" fill="#8fa3bc">65</text>
+      <circle cx="128" cy="200" r="3" fill="#38bdf8"/>
+      <text x="132" y="210" font-size="7" fill="#8fa3bc">67</text>
+      <text x="170" y="216" text-anchor="middle" font-size="8" fill="#f87171">Total = 640 cylinders (worst)</text>
+      <!-- Axis SSTF -->
+      <line x1="360" y1="30" x2="665" y2="30" stroke="#243450" stroke-width="1"/>
+      <text x="360" y="26" font-size="7" fill="#4d6282">0</text>
+      <text x="512" y="26" font-size="7" fill="#4d6282">100</text>
+      <text x="658" y="26" font-size="7" fill="#4d6282">199</text>
+      <!-- SSTF: 53→65→67→37→14→98→122→124→183 -->
+      <!-- map: x = 360 + (cyl/199)*305 -->
+      <!-- 53→441, 65→459, 67→462, 37→416, 14→381, 98→510, 122→547, 124→550, 183→640 -->
+      <polyline points="441,40 459,60 462,80 416,100 381,120 510,140 547,160 550,180 640,200" stroke="#34d399" stroke-width="1.5" fill="none"/>
+      <circle cx="441" cy="40" r="3" fill="#34d399"/>
+      <text x="445" y="44" font-size="7" fill="#8fa3bc">53</text>
+      <circle cx="459" cy="60" r="3" fill="#34d399"/>
+      <text x="463" y="64" font-size="7" fill="#8fa3bc">65</text>
+      <circle cx="462" cy="80" r="3" fill="#34d399"/>
+      <text x="466" y="84" font-size="7" fill="#8fa3bc">67</text>
+      <circle cx="416" cy="100" r="3" fill="#34d399"/>
+      <text x="420" y="104" font-size="7" fill="#8fa3bc">37</text>
+      <circle cx="381" cy="120" r="3" fill="#34d399"/>
+      <text x="385" y="124" font-size="7" fill="#8fa3bc">14</text>
+      <circle cx="510" cy="140" r="3" fill="#34d399"/>
+      <text x="514" y="144" font-size="7" fill="#8fa3bc">98</text>
+      <circle cx="547" cy="160" r="3" fill="#34d399"/>
+      <text x="551" y="164" font-size="7" fill="#8fa3bc">122</text>
+      <circle cx="550" cy="180" r="3" fill="#34d399"/>
+      <text x="554" y="184" font-size="7" fill="#8fa3bc">124</text>
+      <circle cx="640" cy="200" r="3" fill="#34d399"/>
+      <text x="644" y="210" font-size="7" fill="#8fa3bc">183</text>
+      <text x="512" y="216" text-anchor="middle" font-size="8" fill="#34d399">Total = 236 cylinders (much better)</text>
+    </svg>
+    <div class="diagram-caption">FIG 8.1 — Disk head movement: FCFS (left) vs SSTF (right). Head starts at cylinder 53 (▲)</div>
+  </div>
+
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 680 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:680px;display:block;margin:auto">
+      <text x="170" y="16" text-anchor="middle" font-size="10" fill="#c084fc" font-weight="700">SCAN — goes to end (199), then reverses</text>
+      <text x="510" y="16" text-anchor="middle" font-size="10" fill="#f0b429" font-weight="700">C-SCAN — jumps to start, goes one way only</text>
+      <!-- SCAN axis -->
+      <line x1="20" y1="30" x2="340" y2="30" stroke="#243450" stroke-width="1"/>
+      <text x="20" y="26" font-size="7" fill="#4d6282">0</text><text x="316" y="26" font-size="7" fill="#4d6282">199</text>
+      <!-- SCAN: 53→65→67→98→122→124→183→199→37→14 (x=20+(cyl/199)*320) -->
+      <polyline points="105,40 125,55 128,70 178,85 216,100 220,115 315,130 335,145 80,160 43,170" stroke="#c084fc" stroke-width="1.5" fill="none"/>
+      <circle cx="105" cy="40" r="3" fill="#c084fc"/><text x="109" y="44" font-size="7" fill="#8fa3bc">53</text>
+      <circle cx="125" cy="55" r="3" fill="#c084fc"/><text x="129" y="59" font-size="7" fill="#8fa3bc">65</text>
+      <circle cx="128" cy="70" r="3" fill="#c084fc"/><text x="132" y="74" font-size="7" fill="#8fa3bc">67</text>
+      <circle cx="178" cy="85" r="3" fill="#c084fc"/>
+      <circle cx="216" cy="100" r="3" fill="#c084fc"/>
+      <circle cx="220" cy="115" r="3" fill="#c084fc"/>
+      <circle cx="315" cy="130" r="3" fill="#c084fc"/><text x="319" y="134" font-size="7" fill="#8fa3bc">183</text>
+      <circle cx="335" cy="145" r="3" fill="#f87171"/><text x="339" y="149" font-size="7" fill="#f87171">199↩</text>
+      <circle cx="80" cy="160" r="3" fill="#c084fc"/><text x="84" y="164" font-size="7" fill="#8fa3bc">37</text>
+      <circle cx="43" cy="170" r="3" fill="#c084fc"/><text x="47" y="174" font-size="7" fill="#8fa3bc">14</text>
+      <text x="170" y="180" text-anchor="middle" font-size="8" fill="#c084fc">Total = 331 cylinders</text>
+      <!-- C-SCAN axis -->
+      <line x1="360" y1="30" x2="665" y2="30" stroke="#243450" stroke-width="1"/>
+      <text x="360" y="26" font-size="7" fill="#4d6282">0</text><text x="658" y="26" font-size="7" fill="#4d6282">199</text>
+      <!-- C-SCAN: 53→65→67→98→122→124→183→199→0→14→37 -->
+      <polyline points="441,40 459,55 462,70 510,85 547,100 550,115 640,130 665,140" stroke="#f0b429" stroke-width="1.5" fill="none" stroke-dasharray="4 2"/>
+      <polyline points="665,140 360,140 381,155 416,165" stroke="#f0b429" stroke-width="1.5" fill="none"/>
+      <circle cx="441" cy="40" r="3" fill="#f0b429"/><text x="445" y="44" font-size="7" fill="#8fa3bc">53</text>
+      <circle cx="640" cy="130" r="3" fill="#f0b429"/><text x="644" y="134" font-size="7" fill="#8fa3bc">183</text>
+      <circle cx="665" cy="140" r="3" fill="#f87171"/><text x="638" y="136" font-size="7" fill="#f87171">199</text>
+      <circle cx="360" cy="140" r="3" fill="#f87171"/><text x="364" y="136" font-size="7" fill="#f87171">0→</text>
+      <circle cx="381" cy="155" r="3" fill="#f0b429"/><text x="385" y="159" font-size="7" fill="#8fa3bc">14</text>
+      <circle cx="416" cy="165" r="3" fill="#f0b429"/><text x="420" y="169" font-size="7" fill="#8fa3bc">37</text>
+      <text x="512" y="180" text-anchor="middle" font-size="8" fill="#f0b429">Total = 382 cylinders (more uniform wait)</text>
+    </svg>
+    <div class="diagram-caption">FIG 8.2 — SCAN (left, reverses at 199) vs C-SCAN (right, jumps to 0 after 199). Dashed line = non-service jump.</div>
+  </div>
+
+  <!-- NUMERICAL 8 — DISK -->
+  <div class="numerical">
+    <div class="numerical-header">
+      <span class="num-badge">GATE Classic · Disk Scheduling Numerical</span>
+      <span class="num-title">SCAN Algorithm Total Head Movement</span>
+    </div>
+    <p style="font-size:.9rem;color:var(--ink2)">Disk has cylinders 0–199. Request queue: <strong>98, 183, 37, 122, 14, 124, 65, 67</strong>. Head at cylinder <strong>53</strong>, moving <strong>towards higher</strong> cylinders. Use SCAN. Find total head movement.</p>
+    <details class="solved"><summary>▶ Show solution</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">1</span><span class="step-t">Head at 53, moving right (increasing). Sort requests: 14, 37, 65, 67, 98, 122, 124, 183.</span></div>
+      <div class="solved-step"><span class="step-n">2</span><span class="step-t">Right pass (53→199): 65, 67, 98, 122, 124, 183, then reaches end (199).</span></div>
+      <div class="solved-step"><span class="step-n">3</span><span class="step-t">Then reverse left pass: 37, 14.</span></div>
+      <div class="solved-step"><span class="step-n">4</span><span class="step-t">Order: 53 → 65(+12) → 67(+2) → 98(+31) → 122(+24) → 124(+2) → 183(+59) → 199(+16) → 37(-162) → 14(-23)</span></div>
+      <div class="solved-step"><span class="step-n">5</span><span class="step-t">Total = 12+2+31+24+2+59+16+162+23 = <strong>331 cylinders</strong></span></div>
+      <span class="answer-tag">✓ SCAN Total Head Movement = 331 cylinders</span>
+    </div></details>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2021</span></div>
+    <div class="quiz-q">In C-SCAN disk scheduling, after reaching the highest numbered cylinder in the queue, the head:</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">A</span>Reverses direction and services requests back</div>
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">B</span>Immediately jumps to the lowest-numbered cylinder and services upward again</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">C</span>Stops and waits for new requests</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>Goes to cylinder 0 always (not just lowest request)</div>
+    </div>
+    <div class="quiz-explain">C-SCAN (Circular SCAN) wraps around — after reaching the highest request cylinder, it immediately jumps to the lowest-numbered requested cylinder (or 0 in some variants) and services upward again. This gives more uniform wait times than SCAN.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  CHAPTER 9 — THREADS & CONCURRENCY
+══════════════════════════════════ -->
+<div id="ch9" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num">CH 09</span>
+    <h2 class="ch-title">Threads &amp; <em>Concurrency</em></h2>
+    <button class="ch-mark-btn" id="btn-9" onclick="markDone(9)">Mark Done ✓</button>
+  </div>
+
+  <h3>Thread vs Process</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Aspect</th><th>Process</th><th>Thread</th></tr></thead>
+    <tbody>
+      <tr><td>Address space</td><td>Separate (own virtual memory)</td><td>Shared (within process)</td></tr>
+      <tr><td>Creation overhead</td><td class="t-bad">Heavy (fork, exec, copy)</td><td class="t-good">Light (new stack + TCB)</td></tr>
+      <tr><td>Communication</td><td>IPC (pipes, shared mem, msg)</td><td>Shared variables (need sync)</td></tr>
+      <tr><td>Context switch</td><td class="t-bad">Expensive (full address space)</td><td class="t-good">Cheap (same address space)</td></tr>
+      <tr><td>Crash isolation</td><td class="t-good">Yes (own memory)</td><td class="t-bad">No (crash affects all)</td></tr>
+      <tr><td>Data shared</td><td>Code, files (via IPC)</td><td>Code, data, heap, files</td></tr>
+      <tr><td>Private to thread</td><td>—</td><td>Stack, registers, TID, PC</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Multithreading Models</h3>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 500 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:500px;display:block;margin:auto">
+      <!-- M:1 -->
+      <text x="75" y="15" text-anchor="middle" font-size="9" fill="#38bdf8">Many-to-One</text>
+      <circle cx="45" cy="35" r="10" fill="#162032" stroke="#38bdf8"/>
+      <circle cx="75" cy="35" r="10" fill="#162032" stroke="#38bdf8"/>
+      <circle cx="105" cy="35" r="10" fill="#162032" stroke="#38bdf8"/>
+      <text x="45" y="39" text-anchor="middle" font-size="7" fill="#8fa3bc">UT</text>
+      <text x="75" y="39" text-anchor="middle" font-size="7" fill="#8fa3bc">UT</text>
+      <text x="105" y="39" text-anchor="middle" font-size="7" fill="#8fa3bc">UT</text>
+      <line x1="45" y1="45" x2="75" y2="65" stroke="#38bdf8" stroke-width="1"/>
+      <line x1="75" y1="45" x2="75" y2="65" stroke="#38bdf8" stroke-width="1"/>
+      <line x1="105" y1="45" x2="75" y2="65" stroke="#38bdf8" stroke-width="1"/>
+      <rect x="55" y="65" width="40" height="18" rx="3" fill="#0f1d2e" stroke="#38bdf8"/>
+      <text x="75" y="78" text-anchor="middle" font-size="8" fill="#38bdf8">KT</text>
+      <text x="75" y="112" text-anchor="middle" font-size="8" fill="#f87171">No parallelism</text>
+      <!-- 1:1 -->
+      <text x="245" y="15" text-anchor="middle" font-size="9" fill="#34d399">One-to-One</text>
+      <circle cx="195" cy="35" r="10" fill="#162032" stroke="#34d399"/>
+      <circle cx="245" cy="35" r="10" fill="#162032" stroke="#34d399"/>
+      <circle cx="295" cy="35" r="10" fill="#162032" stroke="#34d399"/>
+      <text x="195" y="39" text-anchor="middle" font-size="7" fill="#8fa3bc">UT</text>
+      <text x="245" y="39" text-anchor="middle" font-size="7" fill="#8fa3bc">UT</text>
+      <text x="295" y="39" text-anchor="middle" font-size="7" fill="#8fa3bc">UT</text>
+      <line x1="195" y1="45" x2="195" y2="65" stroke="#34d399" stroke-width="1"/>
+      <line x1="245" y1="45" x2="245" y2="65" stroke="#34d399" stroke-width="1"/>
+      <line x1="295" y1="45" x2="295" y2="65" stroke="#34d399" stroke-width="1"/>
+      <rect x="175" y="65" width="40" height="18" rx="3" fill="#0f1d2e" stroke="#34d399"/>
+      <text x="195" y="78" text-anchor="middle" font-size="8" fill="#34d399">KT</text>
+      <rect x="225" y="65" width="40" height="18" rx="3" fill="#0f1d2e" stroke="#34d399"/>
+      <text x="245" y="78" text-anchor="middle" font-size="8" fill="#34d399">KT</text>
+      <rect x="275" y="65" width="40" height="18" rx="3" fill="#0f1d2e" stroke="#34d399"/>
+      <text x="295" y="78" text-anchor="middle" font-size="8" fill="#34d399">KT</text>
+      <text x="245" y="112" text-anchor="middle" font-size="8" fill="#34d399">True parallelism (Linux)</text>
+      <!-- M:M -->
+      <text x="430" y="15" text-anchor="middle" font-size="9" fill="#c084fc">Many-to-Many</text>
+      <circle cx="400" cy="35" r="10" fill="#162032" stroke="#c084fc"/>
+      <circle cx="430" cy="35" r="10" fill="#162032" stroke="#c084fc"/>
+      <circle cx="460" cy="35" r="10" fill="#162032" stroke="#c084fc"/>
+      <text x="400" y="39" text-anchor="middle" font-size="7" fill="#8fa3bc">UT</text>
+      <text x="430" y="39" text-anchor="middle" font-size="7" fill="#8fa3bc">UT</text>
+      <text x="460" y="39" text-anchor="middle" font-size="7" fill="#8fa3bc">UT</text>
+      <line x1="400" y1="45" x2="410" y2="65" stroke="#c084fc" stroke-width="1"/>
+      <line x1="430" y1="45" x2="445" y2="65" stroke="#c084fc" stroke-width="1"/>
+      <line x1="460" y1="45" x2="445" y2="65" stroke="#c084fc" stroke-width="1"/>
+      <rect x="390" y="65" width="40" height="18" rx="3" fill="#0f1d2e" stroke="#c084fc"/>
+      <text x="410" y="78" text-anchor="middle" font-size="8" fill="#c084fc">KT</text>
+      <rect x="435" y="65" width="40" height="18" rx="3" fill="#0f1d2e" stroke="#c084fc"/>
+      <text x="455" y="78" text-anchor="middle" font-size="8" fill="#c084fc">KT</text>
+      <text x="430" y="112" text-anchor="middle" font-size="8" fill="#c084fc">Flexible (Solaris)</text>
+    </svg>
+    <div class="diagram-caption">FIG 9.1 — Multithreading models: UT = User Thread, KT = Kernel Thread</div>
+  </div>
+
+  <h3>Classic Synchronisation Problems</h3>
+  <div class="box box-purple">
+    <strong>Producer-Consumer:</strong> Buffer of size N. Producer adds, consumer removes. Use: full=0, empty=N, mutex=1.<br><br>
+    <strong>Reader-Writer:</strong> Multiple readers OK simultaneously; writer needs exclusive access.<br><br>
+    <strong>Dining Philosophers:</strong> 5 philosophers, 5 forks. Deadlock risk. Solution: asymmetry (one picks right first), limit to 4 at table, or semaphore array.
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2022</span></div>
+    <div class="quiz-q">In the context of threads, which of the following is shared among all threads of the same process?</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">A</span>Stack</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">B</span>Program Counter</div>
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">C</span>Heap and global variables</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>Register set</div>
+    </div>
+    <div class="quiz-explain">Each thread has its own: stack, program counter, registers, local variables. All threads in a process share: code (text), global data, heap, open file descriptors.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  CHAPTER 10 — I/O & PROTECTION
+══════════════════════════════════ -->
+<div id="ch10" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num">CH 10</span>
+    <h2 class="ch-title">I/O Systems &amp; <em>Protection</em></h2>
+    <button class="ch-mark-btn" id="btn-10" onclick="markDone(10)">Mark Done ✓</button>
+  </div>
+
+  <h3>I/O Techniques</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Technique</th><th>CPU Involvement</th><th>Use Case</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Programmed I/O (Polling)</strong></td><td class="t-bad">100% (busy wait)</td><td>Simple, low speed devices</td></tr>
+      <tr><td><strong>Interrupt-driven I/O</strong></td><td class="t-mid">CPU interrupted on completion</td><td>Keyboard, moderate I/O</td></tr>
+      <tr><td><strong>DMA (Direct Memory Access)</strong></td><td class="t-good">Minimal (only start+end)</td><td>Disk, network, high speed</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box box-note"><strong>DMA flow:</strong> CPU tells DMA controller (destination addr, source, size) → DMA transfers directly to/from RAM → DMA interrupts CPU when done. CPU is free to do other work during transfer.</div>
+
+  <h3>Protection Mechanisms</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Mechanism</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Dual Mode (User/Kernel)</strong></td><td>Privileged instructions only in kernel mode</td></tr>
+      <tr><td><strong>Base + Limit Registers</strong></td><td>Hardware bounds checking for memory access</td></tr>
+      <tr><td><strong>Timer</strong></td><td>Prevents indefinite CPU monopoly (used in preemptive scheduling)</td></tr>
+      <tr><td><strong>Access Matrix</strong></td><td>Defines what operations each domain can do on each object</td></tr>
+      <tr><td><strong>Capability Lists</strong></td><td>Per-process list of objects+rights (column of access matrix)</td></tr>
+      <tr><td><strong>ACL (Access Control List)</strong></td><td>Per-object list of who can access (row of access matrix)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Kernel Types Summary</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Kernel</th><th>Services in kernel?</th><th>Speed</th><th>Reliability</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Monolithic</strong></td><td>All (FS, drivers, scheduler, MM)</td><td class="t-good">Fast</td><td class="t-bad">Crash = full OS crash</td></tr>
+      <tr><td><strong>Microkernel</strong></td><td>Only IPC, memory, scheduling</td><td class="t-bad">Slower (IPC overhead)</td><td class="t-good">Service crash = isolated</td></tr>
+      <tr><td><strong>Hybrid</strong></td><td>Core in kernel, some in user (e.g., Windows NT)</td><td class="t-mid">Trade-off</td><td class="t-mid">Trade-off</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2020</span></div>
+    <div class="quiz-q">DMA (Direct Memory Access) is primarily used to:</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">A</span>Allow CPU to directly manage I/O registers</div>
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">B</span>Transfer data between I/O device and main memory without continuous CPU intervention</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">C</span>Cache recently used I/O data</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>Share memory between two CPUs</div>
+    </div>
+    <div class="quiz-explain">DMA controllers handle bulk data transfer directly between devices and RAM. CPU sets up the transfer (source, destination, size), then DMA handles it autonomously, interrupting the CPU only when complete.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  BONUS — COMPARISON TABLES
+══════════════════════════════════ -->
+<div id="comparisons" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num" style="background:var(--purple-dim);border-color:rgba(192,132,252,.3);color:var(--purple)">CMP</span>
+    <h2 class="ch-title">GATE <em>Comparison Tables</em></h2>
+  </div>
+  <div class="box box-gate"><div class="gate-label">🎯 GATE Insight</div>GATE loves direct comparison questions. These tables are high-yield for 1–2 mark MCQs. Memorise the key differentiators.</div>
+
+  <h3>Paging vs Segmentation</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Feature</th><th>Paging</th><th>Segmentation</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Division unit</strong></td><td>Fixed-size pages</td><td>Variable-size segments (logical units)</td></tr>
+      <tr><td><strong>Fragmentation</strong></td><td class="t-mid">Internal only (last page)</td><td class="t-bad">External only (holes)</td></tr>
+      <tr><td><strong>User visibility</strong></td><td class="t-bad">Transparent to user</td><td class="t-good">User-visible (code, stack, data…)</td></tr>
+      <tr><td><strong>Address format</strong></td><td>Page# + Offset</td><td>Segment# + Offset</td></tr>
+      <tr><td><strong>Sharing</strong></td><td class="t-mid">Possible (share frames)</td><td class="t-good">Easy (share whole segment)</td></tr>
+      <tr><td><strong>Hardware</strong></td><td>Page table + TLB</td><td>Segment table</td></tr>
+      <tr><td><strong>Protection</strong></td><td class="t-mid">Per-frame (limited)</td><td class="t-good">Per-segment (read/write/execute)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Internal vs External Fragmentation</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Type</th><th>Where</th><th>Cause</th><th>Occurs in</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Internal Fragmentation</strong></td><td>Inside allocated block</td><td>Block larger than needed</td><td>Fixed partition, Paging</td><td>Smaller block sizes</td></tr>
+      <tr><td><strong>External Fragmentation</strong></td><td>Between allocated blocks</td><td>Small scattered free holes</td><td>Variable partition, Segmentation</td><td>Compaction, Best-fit</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Mutex vs Semaphore</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Feature</th><th>Mutex</th><th>Binary Semaphore</th><th>Counting Semaphore</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Value range</strong></td><td>0 or 1</td><td>0 or 1</td><td>0 to N</td></tr>
+      <tr><td><strong>Ownership</strong></td><td class="t-good">Yes (only locker can unlock)</td><td class="t-bad">No (any process can signal)</td><td class="t-bad">No</td></tr>
+      <tr><td><strong>Use case</strong></td><td>Mutual exclusion (1 thread at a time)</td><td>Signaling between processes</td><td>Manage pool of N resources</td></tr>
+      <tr><td><strong>Priority inversion</strong></td><td>Handled (priority inheritance)</td><td class="t-bad">Not handled</td><td class="t-bad">Not handled</td></tr>
+      <tr><td><strong>Example</strong></td><td>Lock on a critical section</td><td>Signal-wait between threads</td><td>Producer-Consumer (full/empty)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>User Thread vs Kernel Thread</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Feature</th><th>User Thread</th><th>Kernel Thread</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Managed by</strong></td><td>User-space library (e.g., POSIX)</td><td>Operating System kernel</td></tr>
+      <tr><td><strong>Context switch</strong></td><td class="t-good">Fast (no kernel call)</td><td class="t-bad">Slow (mode switch required)</td></tr>
+      <tr><td><strong>I/O blocking</strong></td><td class="t-bad">Blocks entire process</td><td class="t-good">Only this thread blocks</td></tr>
+      <tr><td><strong>Parallelism</strong></td><td class="t-bad">No (1 kernel thread)</td><td class="t-good">Yes (multi-CPU)</td></tr>
+      <tr><td><strong>OS awareness</strong></td><td class="t-bad">OS sees 1 process</td><td class="t-good">OS knows each thread</td></tr>
+      <tr><td><strong>Example</strong></td><td>Green threads, Java pre-JDK1.3</td><td>Linux pthreads (1:1 model)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Deadlock Prevention vs Avoidance vs Detection</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Strategy</th><th>How</th><th>Cost</th><th>Deadlock possible?</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Prevention</strong></td><td>Eliminate one Coffman condition (e.g., no hold+wait, allow preemption)</td><td class="t-bad">High (restricts resource use)</td><td class="t-good">No</td></tr>
+      <tr><td><strong>Avoidance</strong></td><td>Banker's Algorithm — only grant if result is safe state</td><td class="t-mid">Medium (needs advance info)</td><td class="t-good">No</td></tr>
+      <tr><td><strong>Detection &amp; Recovery</strong></td><td>Allow deadlock, detect via wait-for graph, then recover (kill/rollback)</td><td class="t-good">Low overhead</td><td class="t-bad">Yes, but recovered</td></tr>
+      <tr><td><strong>Ignorance (Ostrich)</strong></td><td>Pretend deadlock won't happen (e.g., Linux, Windows)</td><td class="t-good">Zero</td><td class="t-bad">Yes, crash and reboot</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>FCFS vs SJF vs SRTF vs Round Robin</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Algorithm</th><th>Preemptive</th><th>Optimal avg WT?</th><th>Starvation?</th><th>Convoy effect?</th><th>GATE weight</th></tr></thead>
+    <tbody>
+      <tr><td><strong>FCFS</strong></td><td class="t-bad">No</td><td class="t-bad">No</td><td class="t-good">No</td><td class="t-bad">Yes</td><td>⭐⭐</td></tr>
+      <tr><td><strong>SJF</strong></td><td class="t-bad">No</td><td class="t-good">Optimal (non-preemptive)</td><td class="t-bad">Yes</td><td class="t-good">No</td><td>⭐⭐⭐</td></tr>
+      <tr><td><strong>SRTF</strong></td><td class="t-good">Yes</td><td class="t-good">Best overall</td><td class="t-bad">Yes</td><td class="t-good">No</td><td>⭐⭐⭐⭐</td></tr>
+      <tr><td><strong>Round Robin</strong></td><td class="t-good">Yes</td><td class="t-mid">No (TQ dependent)</td><td class="t-good">No</td><td class="t-good">No</td><td>⭐⭐⭐⭐</td></tr>
+      <tr><td><strong>Priority</strong></td><td>Both</td><td class="t-mid">No</td><td class="t-bad">Yes → fix: Aging</td><td class="t-good">No</td><td>⭐⭐⭐</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+<!-- ══════════════════════════════════
+  BONUS — LINUX & MODERN OS
+══════════════════════════════════ -->
+<div id="linux" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num" style="background:var(--green-dim);border-color:rgba(52,211,153,.3);color:var(--green)">LNX</span>
+    <h2 class="ch-title">Linux &amp; <em>Modern OS</em></h2>
+  </div>
+  <div class="box box-note"><strong>GATE relevance:</strong> These topics appear in conceptual MCQs. Not core numerical topics, but high-value 1-mark questions.</div>
+
+  <h3>Zombie and Orphan Processes</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Type</th><th>Definition</th><th>Parent alive?</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Zombie Process</strong></td><td>Child has terminated but parent hasn't called <code>wait()</code> to collect exit status. Entry stays in process table.</td><td class="t-good">Yes (but negligent)</td><td>Parent calls <code>wait()</code>; or use <code>SIGCHLD</code> handler</td></tr>
+      <tr><td><strong>Orphan Process</strong></td><td>Parent terminates before child. Child's parent becomes <strong>init (PID 1)</strong>, which periodically calls wait().</td><td class="t-bad">No (parent dead)</td><td>Init process adopts and cleans up automatically</td></tr>
+    </tbody>
+  </table></div>
+  <div class="box box-gate"><div class="gate-label">🎯 GATE Tip</div>A zombie consumes a <strong>process table entry</strong> but no CPU or significant memory. Too many zombies can exhaust the process table. A zombie is NOT the same as an orphan.</div>
+
+  <h3>fork() + exec() Relationship</h3>
+  <pre>// fork() creates a copy of the current process
+pid_t pid = fork();
+if (pid == 0) {
+    // Child process — runs concurrently
+    exec("new_program");  // Replace child's image with new program
+} else {
+    // Parent process — pid = child's PID
+    wait(NULL);           // Wait for child to finish
+}</pre>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Call</th><th>What it does</th><th>Returns</th></tr></thead>
+    <tbody>
+      <tr><td><strong>fork()</strong></td><td>Creates child process — exact copy of parent (code, data, heap, stack). Both resume after fork().</td><td>Parent: child PID | Child: 0 | Error: -1</td></tr>
+      <tr><td><strong>exec()</strong></td><td>Replaces current process image with a new program. Does NOT create a new process — same PID.</td><td>Never returns on success (new program takes over)</td></tr>
+      <tr><td><strong>Copy-on-Write (COW)</strong></td><td>fork() doesn't actually copy pages — marks them read-only/shared. Page is copied only when first written.</td><td>Huge performance win — exec() after fork() wastes no copy effort</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Linux Completely Fair Scheduler (CFS)</h3>
+  <p>Linux (kernel 2.6.23+) replaced the traditional O(1) scheduler with CFS — a fair-share scheduler based on virtual runtime.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Concept</th><th>Explanation</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Virtual Runtime (vruntime)</strong></td><td>Tracks how much CPU time each process has used (weighted by priority). CFS always picks the process with the <em>smallest vruntime</em>.</td></tr>
+      <tr><td><strong>Red-Black Tree</strong></td><td>Runnable processes sorted by vruntime in a self-balancing BST. O(log n) scheduling decisions.</td></tr>
+      <tr><td><strong>Nice value</strong></td><td>Adjusts weight: lower nice = more CPU (default nice=0). Range: -20 (highest priority) to +19 (lowest).</td></tr>
+      <tr><td><strong>No fixed quantum</strong></td><td>Target latency divided among runnable processes. Each gets time proportional to its weight.</td></tr>
+      <tr><td><strong>Preemption</strong></td><td>On wake-up, if new process has much smaller vruntime than running process, preemption occurs immediately.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="box box-tip"><strong>vs Traditional:</strong> Traditional priority scheduling can starve low-priority processes. CFS guarantees each process gets a fair share of CPU proportional to its weight — no starvation possible.</div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE Style</span><span style="font-size:.8rem;color:var(--ink2)">Linux Processes</span></div>
+    <div class="quiz-q">A process has finished execution but its entry still exists in the process table because its parent has not called wait(). This process is called:</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">A</span>Orphan</div>
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">B</span>Zombie</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">C</span>Daemon</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>Background process</div>
+    </div>
+    <div class="quiz-explain">A zombie process has exited but its entry persists in the process table until the parent reads its exit status via wait(). It uses no CPU/memory but occupies a process table slot. An orphan is a process whose parent died first — init adopts it.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  NUMERICALS BANK
+══════════════════════════════════ -->
+<div id="numericals" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num" style="background:var(--gold-dim);border-color:rgba(240,180,41,.3);color:var(--gold)">BANK</span>
+    <h2 class="ch-title">Numericals <em>Bank</em></h2>
+  </div>
+  <div class="box box-gate"><div class="gate-label">🎯 GATE Strategy</div>In GATE CSE, OS numericals account for <strong>60–70% of OS marks</strong>. Master CPU scheduling (FCFS, SJF, RR), page replacement, paging address calculation, Banker's algorithm, and disk scheduling. These appear every year.</div>
+
+  <div class="numerical">
+    <div class="numerical-header"><span class="num-badge">Extra · SRTF Numerical</span><span class="num-title">SRTF (Preemptive SJF) with Arrival Times</span></div>
+    <p style="font-size:.9rem;color:var(--ink2)">P1(AT=0,BT=8), P2(AT=1,BT=4), P3(AT=2,BT=2), P4(AT=3,BT=1). Find average waiting time under SRTF.</p>
+    <details class="solved"><summary>▶ Show solution</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">t=0</span><span class="step-t">Only P1 available → P1 runs (remaining=8→7)</span></div>
+      <div class="solved-step"><span class="step-n">t=1</span><span class="step-t">P2 arrives (BT=4). P1 remaining=7 > 4 → Preempt! P2 runs.</span></div>
+      <div class="solved-step"><span class="step-n">t=2</span><span class="step-t">P3 arrives (BT=2). P2 remaining=3 > 2 → Preempt! P3 runs.</span></div>
+      <div class="solved-step"><span class="step-n">t=3</span><span class="step-t">P4 arrives (BT=1). P3 remaining=1 = 1 → Tie, no preempt. P3 finishes at t=4.</span></div>
+      <div class="solved-step"><span class="step-n">t=4</span><span class="step-t">P4 (BT=1) shortest → runs t=4→5. P4 done.</span></div>
+      <div class="solved-step"><span class="step-n">t=5</span><span class="step-t">P2 remaining=3, P1 remaining=7. P2 runs t=5→8. P2 done (CT=8).</span></div>
+      <div class="solved-step"><span class="step-n">t=8</span><span class="step-t">Only P1 left (remaining=7). Runs t=8→15. P1 done (CT=15).</span></div>
+      <div class="solved-step"><span class="step-n">TAT</span><span class="step-t">P1=15-0=15, P2=8-1=7, P3=4-2=2, P4=5-3=2 | WT=TAT-BT: P1=7, P2=3, P3=0, P4=1</span></div>
+      <span class="answer-tag">✓ Avg WT = (7+3+0+1)/4 = 11/4 = 2.75 ms</span>
+    </div></details>
+  </div>
+
+  <div class="numerical">
+    <div class="numerical-header"><span class="num-badge">Extra · Paging Address</span><span class="num-title">Logical to Physical Address Translation</span></div>
+    <p style="font-size:.9rem;color:var(--ink2)">Page size = 512 bytes. Page table: P0→Frame 3, P1→Frame 7, P2→Frame 2. Logical address = 1026. Find physical address.</p>
+    <details class="solved"><summary>▶ Show solution</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">1</span><span class="step-t">Offset bits = log₂(512) = 9 bits. Page# bits = remaining.</span></div>
+      <div class="solved-step"><span class="step-n">2</span><span class="step-t">Logical 1026 in binary: 1026 = 10000000010₂ | Page# = 1026 / 512 = 2 (integer division). Offset = 1026 mod 512 = 2.</span></div>
+      <div class="solved-step"><span class="step-n">3</span><span class="step-t">Page 2 → Frame 2 (from page table).</span></div>
+      <div class="solved-step"><span class="step-n">4</span><span class="step-t">Physical = Frame × Page_size + Offset = 2 × 512 + 2 = <strong>1026</strong></span></div>
+      <span class="answer-tag">✓ Physical Address = 1026 (coincidence here — frame equals page number)</span>
+    </div></details>
+  </div>
+
+  <div class="numerical">
+    <div class="numerical-header"><span class="num-badge">Extra Practice · CPU Scheduling</span><span class="num-title">FCFS vs SJF Comparison</span></div>
+    <p style="font-size:.9rem;color:var(--ink2)">P1(AT=0,BT=10), P2(AT=2,BT=5), P3(AT=4,BT=1). Compare average WT under FCFS and SJF (non-preemptive).</p>
+    <details class="solved"><summary>▶ Show both solutions</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">FCFS</span><span class="step-t">Order: P1→P2→P3. CT: P1=10, P2=15, P3=16. TAT: 10,13,12. WT: 0,8,11. Avg WT = <strong>19/3 ≈ 6.33</strong></span></div>
+      <div class="solved-step"><span class="step-n">SJF</span><span class="step-t">At t=0: only P1. P1 runs to 10. At t=10: P3(BT=1) shorter → P3 runs 10–11. P2 runs 11–16. WT: P1=0, P2=9, P3=6. Avg WT = <strong>15/3 = 5</strong></span></div>
+      <span class="answer-tag">✓ FCFS avg WT = 6.33 ms | SJF avg WT = 5 ms</span>
+    </div></details>
+  </div>
+
+  <div class="numerical">
+    <div class="numerical-header"><span class="num-badge">Extra · Paging</span><span class="num-title">Two-Level Page Table Memory</span></div>
+    <p style="font-size:.9rem;color:var(--ink2)">32-bit address, page size = 4 KB, two-level paging: outer PT 10 bits, inner PT 10 bits, offset 12 bits. How many entries in outer page table? How much memory for a full outer PT (each entry = 4 bytes)?</p>
+    <details class="solved"><summary>▶ Show solution</summary>
+    <div class="solved-body">
+      <div class="solved-step"><span class="step-n">1</span><span class="step-t">Outer PT bits = 10 → entries = 2¹⁰ = <strong>1024 entries</strong></span></div>
+      <div class="solved-step"><span class="step-n">2</span><span class="step-t">Memory for outer PT = 1024 × 4 bytes = <strong>4 KB</strong> (fits in one page!)</span></div>
+      <div class="solved-step"><span class="step-n">3</span><span class="step-t">Each inner PT also has 2¹⁰ = 1024 entries × 4 bytes = 4 KB. Max inner PTs = 1024 → total PT space = 4 MB + 4 KB.</span></div>
+      <span class="answer-tag">✓ Outer PT: 1024 entries, 4 KB. Full 2-level PT ≈ 4 MB</span>
+    </div></details>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+  GATE PYQ BANK
+══════════════════════════════════ -->
+<div id="pyqs" class="chapter">
+  <div class="ch-header">
+    <span class="ch-num" style="background:var(--purple-dim);border-color:rgba(192,132,252,.3);color:var(--purple)">PYQ</span>
+    <h2 class="ch-title">GATE PYQ <em>Bank</em></h2>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2023</span><span style="font-size:.8rem;color:var(--ink2)">Semaphores</span></div>
+    <div class="quiz-q">The initial value of a semaphore used to allow at most 3 concurrent accesses to a shared resource should be:</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">A</span>0</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">B</span>1</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">C</span>2</div>
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">D</span>3</div>
+    </div>
+    <div class="quiz-explain">A counting semaphore initialised to N allows N concurrent accesses. Each wait() decrements by 1 (blocks at 0); each signal() increments. To allow 3 concurrent accesses: initialise to 3.</div>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2022</span><span style="font-size:.8rem;color:var(--ink2)">Virtual Memory</span></div>
+    <div class="quiz-q">A process has 5 pages and is given 3 frames. Reference string: 1 2 3 4 1 2 5 1 2 3 4 5. How many page faults occur using FIFO?</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">A</span>7</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">B</span>8</div>
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">C</span>9</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>10</div>
+    </div>
+    <div class="quiz-explain">FIFO trace (3 frames): 1(F),2(F),3(F),4(F→evict 1),1(F→evict 2),2(F→evict 3),5(F→evict 4),1(F→evict 1),2(F→evict 2),3(F→evict 5),4(F→evict 1),5(F→evict 2) = 9 faults. Demonstrates Belady's anomaly risk with FIFO.</div>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2019</span><span style="font-size:.8rem;color:var(--ink2)">Process States</span></div>
+    <div class="quiz-q">A process is moved from "Running" to "Ready" state due to:</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">A</span>I/O request</div>
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">B</span>Preemption / time quantum expiry</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">C</span>Process completion</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>Waiting for event</div>
+    </div>
+    <div class="quiz-explain">Running → Ready: preemption (higher priority process arrived) or time quantum expiry (in Round Robin). Running → Waiting: I/O or event wait. Running → Terminated: process exits.</div>
+  </div>
+
+  <div class="quiz">
+    <div class="quiz-header"><span class="quiz-badge">GATE 2018</span><span style="font-size:.8rem;color:var(--ink2)">Scheduling</span></div>
+    <div class="quiz-q">Which scheduling algorithm can cause "starvation" and what is the standard fix?</div>
+    <div class="options">
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">A</span>FCFS — fix: preemption</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">B</span>Round Robin — fix: larger quantum</div>
+      <div class="opt" onclick="ans(this,'correct')"><span class="opt-key">C</span>Priority Scheduling / SJF — fix: Aging</div>
+      <div class="opt" onclick="ans(this,'wrong')"><span class="opt-key">D</span>SCAN — fix: C-SCAN</div>
+    </div>
+    <div class="quiz-explain">Priority and SJF can cause starvation (low priority / long jobs never run). Solution: Aging — gradually increase the priority of waiting processes over time, ensuring they eventually get CPU.</div>
+  </div>
+</div>
+
+</div><!-- end main-content -->
+</div><!-- end layout -->
+
+<script>
+// ── COMPLETION SYSTEM ─────────────────────────────────────────────────────────
+const TOTAL = 10;
+function loadState() {
+  try { return JSON.parse(localStorage.getItem('os_done') || '[]'); } catch { return []; }
+}
+function saveState(arr) { localStorage.setItem('os_done', JSON.stringify(arr)); }
+
+function markDone(n) {
+  let done = loadState();
+  if (!done.includes(n)) done.push(n);
+  saveState(done);
+  refreshUI(done);
+}
+
+function refreshUI(done) {
+  // buttons
+  done.forEach(n => {
+    const btn = document.getElementById('btn-' + n);
+    if (btn) { btn.textContent = '✓ Done'; btn.classList.add('done'); }
+    const tl = document.getElementById('tl-' + n);
+    if (tl) { tl.classList.add('completed'); tl.querySelector('.toc-dot').style.background = 'var(--green)'; }
+  });
+
+  // ring
+  const pct = done.length / TOTAL;
+  const offset = 113 * (1 - pct);
+  document.getElementById('ringFill').style.strokeDashoffset = offset;
+  document.getElementById('ringLabel').textContent = done.length + ' / ' + TOTAL;
+
+  // chips
+  const chips = document.getElementById('navChips');
+  chips.innerHTML = '';
+  done.slice(0, 5).forEach(n => {
+    const c = document.createElement('span');
+    c.className = 'chip done';
+    c.textContent = 'CH' + n;
+    chips.appendChild(c);
+  });
+
+  // dashboard stat
+  const dc = document.getElementById('dashCompleted');
+  if (dc) dc.textContent = done.length;
+}
+
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── QUIZ HANDLER ──────────────────────────────────────────────────────────────
+function ans(el, result) {
+  const opts = el.closest('.options').querySelectorAll('.opt');
+  opts.forEach(o => o.onclick = null); // disable after answer
+  el.classList.add(result);
+  const explain = el.closest('.quiz').querySelector('.quiz-explain');
+  if (explain) explain.style.display = 'block';
+  // mark correct if wrong chosen
+  if (result === 'wrong') {
+    opts.forEach(o => { if (!o.classList.contains('wrong')) o.classList.add('correct'); });
+  }
+}
+
+// ── ACTIVE TOC ────────────────────────────────────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+      const match = document.querySelector(`.toc-link[onclick*="${id}"]`);
+      if (match) match.classList.add('active');
+    }
+  });
+}, { threshold: 0.2, rootMargin: '-64px 0px -60% 0px' });
+
+['dash','ch1','ch2','ch3','ch4','ch5','ch6','ch7','ch8','ch9','ch10','comparisons','linux','numericals','pyqs']
+  .forEach(id => { const el = document.getElementById(id); if (el) observer.observe(el); });
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  refreshUI(loadState());
+});
+</script>
+</body>
+</html>

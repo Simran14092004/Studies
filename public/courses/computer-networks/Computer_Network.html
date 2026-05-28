@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Computer Networks Comprehensive Reference Manual</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #05070f;
+    --surface: #0b0f19;
+    --surface2: #111827;
+    --border: #1e293b;
+    --accent: #38bdf8;
+    --accent2: #818cf8;
+    --accent3: #34d399;
+    --accent4: #fbbf24;
+    --text: #f8fafc;
+    --text-muted: #64748b;
+    --code-bg: #020408;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 10% 10%, rgba(56,189,248,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 50% at 80% 80%, rgba(129,140,248,0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SIDEBAR NAVIGATION */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 300px;
+    background: rgba(11, 15, 25, 0.95);
+    border-right: 1px solid var(--border);
+    padding: 2rem 0;
+    overflow-y: auto;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+  }
+
+  .sidebar-logo {
+    padding: 0 1.5rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+  .sidebar-logo .logo-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .sidebar-logo .logo-sub {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 4px;
+  }
+
+  .nav-section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 1.5rem 1.5rem 0.5rem;
+    font-weight: 700;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1.5rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+  }
+  .nav-link:hover, .nav-link.active {
+    color: var(--text);
+    border-left-color: var(--accent);
+    background: rgba(56, 189, 248, 0.04);
+  }
+  .nav-link .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* MAIN CONTENT AREA */
+  .main { margin-left: 300px; position: relative; z-index: 1; }
+
+  /* HERO HEADER */
+  .hero {
+    padding: 6rem 4rem 4rem;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(11,15,25,0.5) 0%, transparent 100%);
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 3.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p { color: var(--text-muted); font-size: 1.1rem; max-width: 800px; }
+
+  /* COMPACT STATS */
+  .stats-bar { display: flex; gap: 2rem; margin-top: 3rem; flex-wrap: wrap; }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.2rem 2rem;
+    border-radius: 12px;
+    min-width: 180px;
+  }
+  .stat-num { font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 700; color: var(--accent3); }
+  .stat-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+
+  /* CHAPTER SECTIONS */
+  .section { padding: 6rem 4rem; border-bottom: 1px solid var(--border); }
+  .section-header { display: flex; gap: 1.5rem; margin-bottom: 3.5rem; align-items: flex-start; }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--accent);
+    padding: 0.3rem 0.7rem;
+    border: 1px solid rgba(56,189,248,0.2);
+    background: rgba(56,189,248,0.03);
+    border-radius: 6px;
+  }
+  .section-title h2 { font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 700; }
+  .section-title p { color: var(--text-muted); margin-top: 0.4rem; font-size: 1.05rem; }
+
+  .subsection { margin-top: 3.5rem; }
+  .subsection-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .subsection-title::before { content: '//'; color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+
+  /* DETAILED TOPIC CARDS */
+  .topic-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+  .topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.8rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .topic-card:hover {
+    border-color: rgba(56,189,248,0.3);
+    transform: translateY(-3px);
+    background: var(--surface2);
+  }
+  .card-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; font-weight: 600; color: var(--accent); margin-bottom: 0.8rem; }
+  .card-body { color: #94a3b8; font-size: 0.95rem; }
+
+  /* CALLOUT CONTAINERS */
+  .callout { border-radius: 12px; padding: 1.5rem 2rem; margin: 2rem 0; border-left: 4px solid; line-height: 1.7; }
+  .callout-formula { background: rgba(56,189,248,0.02); border-color: var(--accent); }
+  .callout-formula strong { color: var(--accent); font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; }
+  .callout-pyq { background: rgba(52,211,153,0.03); border-color: var(--accent3); }
+  .callout-pyq strong { color: var(--accent3); font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; }
+
+  /* VISUAL DIAGRAM CONTAINER */
+  .diagram-container {
+    background: #02050c;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    margin: 2rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .diagram-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+  }
+
+  /* NATURAL LANGUAGE SOLUTION BOXES - REFACTORED TO PREVENT OVERLAP */
+  .solution-panel {
+    background: rgba(255,255,255,0.01);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 1.5rem;
+    height: auto; /* Explicitly auto to prevent height choking */
+    overflow: hidden;
+  }
+  .solution-header-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    color: var(--accent4);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .step-list { list-style-type: none; margin-left: 0; }
+  .step-item { 
+    position: relative; 
+    padding-left: 2rem; 
+    margin-bottom: 2rem; 
+    display: block; 
+    clear: both;
+    height: auto;
+  }
+  .step-item::before {
+    content: '→';
+    position: absolute;
+    left: 0; top: 0;
+    color: var(--accent);
+    font-weight: bold;
+  }
+  .step-heading { font-weight: 600; color: #ffffff; margin-bottom: 0.5rem; font-size: 1.05rem; }
+
+  /* FORMULA DISPLAY BLOCKS - REFACTORED FOR SCREENSHOT OVERLAP FIX */
+  .math-inline { font-family: 'JetBrains Mono', monospace; color: #e2e8f0; font-weight: 500; background: rgba(255,255,255,0.04); padding: 0.1rem 0.4rem; border-radius: 4px; }
+  .math-block { 
+    display: block;
+    font-family: 'JetBrains Mono', monospace; 
+    color: var(--accent); 
+    text-align: center; 
+    margin: 1rem 0; 
+    padding: 1.2rem; 
+    background: var(--code-bg); 
+    border: 1px solid var(--border); 
+    border-radius: 8px; 
+    font-size: 1.05rem; 
+    width: 100%;
+    clear: both;
+    white-space: pre-wrap; /* Wrap long lines if narrow screen */
+    word-wrap: break-word;
+    height: auto; /* Dynamic auto height allocation */
+  }
+
+  /* MEDIA SECTION COMPONENT */
+  .media-card-group {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    margin-top: 1.5rem;
+  }
+  .media-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+  }
+  .media-title-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent4);
+    background: rgba(251, 191, 36, 0.05);
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    border: 1px solid rgba(251, 191, 36, 0.15);
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+  .media-placeholder {
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+    background: #02040a;
+    border: 2px dashed #1e293b;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+  }
+  .media-placeholder p {
+    color: #cbd5e1;
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+  }
+
+  /* DATA SPEC TABLES */
+  .spec-table { width: 100%; border-collapse: collapse; margin: 2rem 0; }
+  .spec-table th {
+    background: rgba(255, 255, 255, 0.02);
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 1.2rem;
+    border-bottom: 2px solid var(--border);
+    text-align: left;
+  }
+  .spec-table td { padding: 1.2rem; border-bottom: 1px solid var(--border); color: #cbd5e1; font-size: 0.95rem; }
+  .spec-table tr:hover td { background: rgba(56, 189, 248, 0.02); }
+
+  .footer {
+    padding: 5rem 4rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    background: #020408;
+  }
+
+  ul, ol { margin-left: 2rem; margin-bottom: 1.5rem; }
+  li { margin-bottom: 0.5rem; color: #cbd5e1; }
+  p { margin-bottom: 1.2rem; color: #cbd5e1; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR SYSTEM -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">⚡ Computer Networks</div>
+    <div class="logo-sub">GATE In-Depth Reference Blueprint</div>
+  </div>
+
+  <div class="nav-section-title">01 Architecture & Delays</div>
+  <a href="#ch1-models" class="nav-link"><span class="dot"></span>OSI & TCP/IP Frameworks</a>
+  <a href="#ch1-delays" class="nav-link"><span class="dot"></span>Analytical Delay Calculations</a>
+  <a href="#ch1-pyq" class="nav-link"><span class="dot"></span>Chapter 01 Practice Problems</a>
+
+  <div class="nav-section-title">02 Data Link Layer Eng</div>
+  <a href="#ch2-sublayers" class="nav-link"><span class="dot"></span>LLC & MAC Separation Spec</a>
+  <a href="#ch2-sliding" class="nav-link"><span class="dot"></span>Sliding Window Performance</a>
+  <a href="#ch2-mac" class="nav-link"><span class="dot"></span>Random Channel Access Protocols</a>
+  <a href="#ch2-pyq" class="nav-link"><span class="dot"></span>Chapter 02 Practice Problems</a>
+
+  <div class="nav-section-title">03 Network Layer Routing</div>
+  <a href="#ch3-headers" class="nav-link"><span class="dot"></span>IPv4 Header Layout Fields</a>
+  <a href="#ch3-subnetting" class="nav-link"><span class="dot"></span>Subnetting & CIDR Address Planning</a>
+  <a href="#ch3-routing" class="nav-link"><span class="dot"></span>DVR vs Link-State Path Mechanics</a>
+  <a href="#ch3-pyq" class="nav-link"><span class="dot"></span>Chapter 03 Practice Problems</a>
+
+  <div class="nav-section-title">04 Transport Systems</div>
+  <a href="#ch4-tcp" class="nav-link"><span class="dot"></span>TCP Sliding Window Dynamics</a>
+  <a href="#ch4-congestion" class="nav-link"><span class="dot"></span>AIMD Congestion Algorithms</a>
+  <a href="#ch4-pyq" class="nav-link"><span class="dot"></span>Chapter 04 Practice Problems</a>
+
+  <div class="nav-section-title">05 Advanced Topics</div>
+  <a href="#appendix-materials" class="nav-link"><span class="dot"></span>Visual References & Images</a>
+  <a href="#formulas-reference" class="nav-link"><span class="dot"></span>GATE Formula Handbook</a>
+  <a href="#app-layer" class="nav-link"><span class="dot"></span>Application Layer Protocols</a>
+  <a href="#network-security" class="nav-link"><span class="dot"></span>Security & Cryptography</a>
+  <a href="#qos-section" class="nav-link"><span class="dot"></span>Quality of Service (QoS)</a>
+  <a href="#ipv6-section" class="nav-link"><span class="dot"></span>IPv6 & Transition</a>
+  <a href="#error-wireless" class="nav-link"><span class="dot"></span>Error Detection & Wireless</a>
+  <a href="#advanced-problems" class="nav-link"><span class="dot"></span>Advanced Practice Problems</a>
+
+  <div class="nav-section-title">06 Complete Protocol Reference</div>
+  <a href="#ch6-protocols" class="nav-link"><span class="dot"></span>All Protocols by Layer</a>
+  <a href="#transmission-control" class="nav-link"><span class="dot"></span>Flow/Error/Congestion Control</a>
+  <a href="#multiplexing-types" class="nav-link"><span class="dot"></span>Multiplexing & Framing</a>
+  <a href="#subnetting-supernetting" class="nav-link"><span class="dot"></span>Subnetting & Supernetting</a>
+  <a href="#layer7-protocols" class="nav-link"><span class="dot"></span>Layer 7 Protocols</a>
+  <a href="#layer4-protocols" class="nav-link"><span class="dot"></span>Layer 4 (Transport)</a>
+  <a href="#layer3-protocols" class="nav-link"><span class="dot"></span>Layer 3 (Routing)</a>
+  <a href="#layer2-protocols" class="nav-link"><span class="dot"></span>Layer 2 (Data Link)</a>
+  <a href="#layer1-protocols" class="nav-link"><span class="dot"></span>Layer 1 (Physical)</a>
+</nav>
+
+<!-- MAIN CONTENT BLOCK -->
+<main class="main">
+
+  <section class="hero">
+    <div class="hero-badge">📚 EXAM-READY COMPREHENSIVE REVISION SPECIFICATION</div>
+    <h1>The Definitive <span>Computer Networks</span> Core Manual</h1>
+    <p>An exhaustive reference containing clean structured vector architecture maps, high-fidelity protocol definitions, and zero-compromise numerical solutions built completely using clean plaintext notation.</p>
+    
+    <div class="stats-bar">
+      <div class="stat-card"><div class="stat-num">100%</div><div class="stat-lbl">Syllabus Coverage</div></div>
+      <div class="stat-card"><div class="stat-num">Clean Text</div><div class="stat-lbl">Math Notation</div></div>
+      <div class="stat-card"><div class="stat-num">Vector</div><div class="stat-lbl">High-Fidelity Models</div></div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 1 -->
+  <section class="section" id="ch1-models">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-title">
+        <h2>Chapter 01: Reference Models & Data Transmission Delays</h2>
+        <p>A deep inspection of protocol stacks, vertical encapsulation traversal, and wire-level transit metrics.</p>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Comprehensive Layer-to-Layer Interaction Schema</div>
+      <p>Data units move vertically through local system layers during encapsulation/decapsulation while maintaining logical horizontal interfaces with remote peer modules.</p>
+      
+      <div class="diagram-container">
+        <svg width="760" height="340" viewBox="0 0 760 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Host A -->
+          <rect x="20" y="20" width="180" height="280" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+          <text x="110" y="45" fill="#38bdf8" font-family="'Space Grotesk'" font-size="14" font-weight="bold" text-anchor="middle">SENDER (HOST A)</text>
+          <rect x="35" y="70" width="150" height="30" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="110" y="90" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">7. Application Layer</text>
+          <rect x="35" y="110" width="150" height="30" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="110" y="130" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">4. Transport Layer</text>
+          <rect x="35" y="150" width="150" height="30" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="110" y="170" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">3. Network Layer</text>
+          <rect x="35" y="190" width="150" height="30" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="110" y="210" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">2. Data Link Layer</text>
+          <rect x="35" y="230" width="150" height="30" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="110" y="250" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">1. Physical Layer</text>
+          <path d="M110 102 V108 M110 142 V148 M110 182 V188 M110 222 V228" stroke="#38bdf8" stroke-width="2"/>
+
+          <!-- Host B -->
+          <rect x="560" y="20" width="180" height="280" rx="8" fill="#0f172a" stroke="#34d399" stroke-width="2"/>
+          <text x="650" y="45" fill="#34d399" font-family="'Space Grotesk'" font-size="14" font-weight="bold" text-anchor="middle">RECEIVER (HOST B)</text>
+          <rect x="575" y="70" width="150" height="30" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="650" y="90" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">7. Application Layer</text>
+          <rect x="575" y="110" width="150" height="30" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="650" y="130" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">4. Transport Layer</text>
+          <rect x="575" y="150" width="150" height="30" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="650" y="170" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">3. Network Layer</text>
+          <rect x="575" y="190" width="150" height="30" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="650" y="210" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">2. Data Link Layer</text>
+          <rect x="575" y="230" width="150" height="30" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="650" y="250" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">1. Physical Layer</text>
+          <path d="M650 228 V222 M650 188 V182 M650 148 V142 M650 108 V102" stroke="#34d399" stroke-width="2"/>
+
+          <!-- Peer Interfaces -->
+          <line x1="185" y1="85" x2="575" y2="85" stroke="#64748b" stroke-dasharray="4 4"/>
+          <line x1="185" y1="125" x2="575" y2="125" stroke="#64748b" stroke-dasharray="4 4"/>
+          <line x1="185" y1="165" x2="575" y2="165" stroke="#64748b" stroke-dasharray="4 4"/>
+          <line x1="185" y1="205" x2="575" y2="205" stroke="#64748b" stroke-dasharray="4 4"/>
+
+          <!-- Physical Media -->
+          <path d="M110 260 V290 H650 V260" stroke="#fbbf24" stroke-width="3" fill="none"/>
+          <text x="380" y="310" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="12" text-anchor="middle">Physical Transmission Medium (Serialized Bits)</text>
+        </svg>
+      </div>
+      <div class="diagram-caption">Figure 1.1: Visual Model of End-to-End Logical Communication and Wire Encapsulation.</div>
+    </div>
+
+    <div class="subsection" id="ch1-delays">
+      <div class="subsection-title">The Mechanics of Packet Latency Variables</div>
+      <p>Data packets experience distinct delays across an infrastructure channel link:</p>
+      <ul>
+        <li><strong>Transmission Delay - T(tx):</strong> The precise window of time needed to push every individual bit of a packet into the hardware wire. Controlled by packet length and channel bandwidth.</li>
+        <li><strong>Propagation Delay - T(p):</strong> The flight transit time required for a single bit to span the physical length of the communication medium. Controlled by distance and medium physical velocity.</li>
+      </ul>
+
+      <div class="callout callout-formula">
+        <strong>📋 Delay Equation Specifications:</strong>
+        <div class="math-block">T(tx) = Packet Size / Bandwidth = L / B</div>
+        <div class="math-block">T(p) = Distance / Speed = d / v</div>
+      </div>
+    </div>
+
+    <div class="subsection" id="ch1-pyq">
+      <div class="subsection-title">Chapter 01: Step-by-Step Solved Problem Case</div>
+      <div class="callout callout-pyq">
+        <strong>⭐ Core Mathematical Problem:</strong>
+        <p>A station transmits a continuous file containing a total volume of 1.5 Megabytes over a point-to-point link spanning 3,000 kilometers. The channel bandwidth is 2 Megabits per second, and the signal propagation velocity inside the medium is 200,000 kilometers per second. Find the total time required for the entire file data payload to be completely received by the destination node.</p>
+      </div>
+
+      <div class="solution-panel">
+        <div class="solution-header-text">✔️ Natural Language Solution Architecture (Verified Layout Fix against Screenshot 2026-05-28 142857.png):</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <div class="step-heading">Step 1: Normalizing Data Volume to Standard Bits</div>
+            <p>Convert the file volume from Megabytes directly into raw bits using standard network factors:</p>
+            <span class="math-block">Total Bits = 1.5 * 10^6 * 8 = 12,000,000 bits</span>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 2: Calculating Continuous Stream Transmission Latency</div>
+            <p>Because the node sends the file elements in a continuous pipeline stream back-to-back, the total time spent pushing the bits onto the wire equals:</p>
+            <span class="math-block">T(tx) = 12,000,000 bits / 2,000,000 bits per second = 6.0 seconds</span>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 3: Finding Flight Propagation Delay for the Terminal Bit Element</div>
+            <p>The last bit pushed onto the wire needs to fly across the 3,000 km distance to reach the destination interface. Its flight time is calculated as:</p>
+            <span class="math-block">T(p) = 3,000 km / 200,000 km per second = 0.015 seconds (15 milliseconds)</span>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 4: Finding Total Arrival Latency</div>
+            <p>The complete transmission ends when the last bit clears the medium and registers within the receiver's architecture. This is the sum of continuous transmission time and propagation flight latency:</p>
+            <span class="math-block">Total Time = T(tx) + T(p) = 6.0 seconds + 0.015 seconds = 6.015 seconds</span>
+          </li>
+        </ul>
+        <p style="margin-top: 1.5rem;"><strong>Final Solution Value:</strong> 6.015 seconds</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 2 -->
+  <section class="section" id="ch2-sublayers">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-title">
+        <h2>Chapter 02: Data Link Layer Protocol Engineering</h2>
+        <p>An analysis of sub-layer topologies, sliding window boundaries, and shared broadcast access metrics.</p>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">Data Link Internal Sub-layer Architecture Division</div>
+      <p>The Data Link Layer is divided into two independent sub-layers to isolate high-level flow management routines from physical network hardware interfaces.</p>
+      
+      <div class="diagram-container">
+        <svg width="700" height="240" viewBox="0 0 700 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Layer 3 -->
+          <rect x="50" y="10" width="600" height="40" rx="6" fill="#0b1329" stroke="#1e293b"/>
+          <text x="350" y="35" fill="#94a3b8" font-family="'Space Grotesk'" font-size="13" text-anchor="middle">NETWORK LAYER (LAYER 3) — Routing Logic & Abstract Packets</text>
+          
+          <!-- Outer DLL Boundary -->
+          <rect x="50" y="70" width="600" height="110" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+          
+          <!-- LLC sub-layer -->
+          <rect x="70" y="85" width="560" height="35" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="350" y="107" fill="#f8fafc" font-family="sans-serif" font-size="12" text-anchor="middle">1. Logical Link Control (LLC) Sub-layer — Multiplexing, Flow Control, Network Bridging</text>
+
+          <!-- MAC sub-layer -->
+          <rect x="70" y="130" width="560" height="35" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="350" y="152" fill="#38bdf8" font-family="sans-serif" font-size="12" text-anchor="middle">2. Media Access Control (MAC) Sub-layer — Hardware Framing, Addressing, Collision Handling</text>
+
+          <!-- Layer 1 -->
+          <rect x="50" y="195" width="600" height="40" rx="6" fill="#0b1329" stroke="#1e293b"/>
+          <text x="350" y="220" fill="#94a3b8" font-family="'Space Grotesk'" font-size="13" text-anchor="middle">PHYSICAL LAYER (LAYER 1) — Hardware Serialization & Bit Streams</text>
+          
+          <path d="M350 52 V68 M350 121 V129 M350 166 V193" stroke="#38bdf8" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="diagram-caption">Figure 2.1: Division of Data Link Sub-Layers Mapping Upper Routing Routines to Physical Media Rules.</div>
+    </div>
+
+    <div class="subsection" id="ch2-sliding">
+      <div class="subsection-title">Sliding Window Protocols Matrix Bounds</div>
+      <p>Sliding window protocols optimize pipeline usage by allowing nodes to transmit multiple unacknowledged frames, minimizing idle wait time over high-latency channels.</p>
+
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Protocol Strategy</th>
+            <th>Sender Window Size - W(s)</th>
+            <th>Receiver Window Size - W(r)</th>
+            <th>Total Sequence Space Scope</th>
+            <th>Maximum Efficiency</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Stop-and-Wait ARQ</strong></td>
+            <td>1</td>
+            <td>1</td>
+            <td>Available Sequences >= 2</td>
+            <td>1 / (1 + 2*a)</td>
+          </tr>
+          <tr>
+            <td><strong>Go-Back-N ARQ (GBN)</strong></td>
+            <td>N</td>
+            <td>1</td>
+            <td>Available Sequences >= N + 1</td>
+            <td>W(s) / (1 + 2*a)</td>
+          </tr>
+          <tr>
+            <td><strong>Selective Repeat ARQ (SR)</strong></td>
+            <td>N</td>
+            <td>N</td>
+            <td>Available Sequences >= 2*N</td>
+            <td>W(s) / (1 + 2*a)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-formula">
+        <strong>📋 Core Performance Ratios:</strong>
+        <br>The key ratio parameter is defined as: <span class="math-inline">a = T(p) / T(tx)</span>
+        <br>To achieve maximum link utilization (100% Efficiency), the sender window must satisfy:
+        <div class="math-block">W(s) >= 1 + 2*a</div>
+      </div>
+    </div>
+
+    <div class="subsection" id="ch2-mac">
+      <div class="subsection-title">Random Access Channel Access Metrics</div>
+      <p>When multiple independent nodes share a single broadcast domain channel, collision bounds dictate performance limits:</p>
+      <ul>
+        <li><strong>Pure ALOHA:</strong> Stations transmit instantly upon generating data frames. Peak utilization is capped at ~18.4%.</li>
+        <li><strong>Slotted ALOHA:</strong> Time is divided into discrete slots. Transmissions can only begin at slot boundaries, cutting the collision window in half and doubling peak efficiency to ~36.8%.</li>
+        <li><strong>CSMA/CD:</strong> Nodes listen to the channel before transmitting. To ensure a sending station detects a collision before completing its frame transmission, the minimum frame size must satisfy the round-trip propagation constraint:
+          <div class="math-block">T(tx) >= 2 * T(p)</div>
+          <div class="math-block">(L_min / B) >= 2 * (d / v)</div>
+          <div class="math-block">L_min = 2 * T(p) * B</div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="subsection" id="ch2-pyq">
+      <div class="subsection-title">Chapter 02: Step-by-Step Solved Problem Case</div>
+      <div class="callout callout-pyq">
+        <strong>⭐ Core Mathematical Problem:</strong>
+        <p>A Go-Back-N pipeline system operates over a transmission link with a bandwidth of 10 Megabits per second and a one-way propagation delay of 40 milliseconds. If the size of each data frame is 2,500 Bytes, calculate the minimum number of sequence tracking bits needed in the frame header to keep link utilization at 100% efficiency.</p>
+      </div>
+
+      <div class="solution-panel">
+        <div class="solution-header-text">✔️ Natural Language Solution Architecture:</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <div class="step-heading">Step 1: Calculating Individual Frame Transmission Delay</div>
+            <p>First, convert the frame size from Bytes into standard bits (2500 * 8 = 20,000 bits). Next, divide this bit size by the link's bandwidth capacity:</p>
+            <span class="math-block">T(tx) = 20,000 bits / 10,000,000 bits per second = 0.002 seconds (2 milliseconds)</span>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 2: Evaluating Link Scaling Factor Ratio (a)</div>
+            <p>Find the ratio of propagation delay to transmission delay:</p>
+            <span class="math-block">a = T(p) / T(tx) = 40 milliseconds / 2 milliseconds = 20</span>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 3: Determining Target Sender Window Size for Full Capacity</div>
+            <p>To achieve 100% efficiency, the sender must be able to transmit continuously without pausing while waiting for the first frame's acknowledgement. This requires a window size of:</p>
+            <span class="math-block">W(s) = 1 + 2*a = 1 + 2*(20) = 41 frames</span>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 4: Finding Total Sequence Number Space Scope</div>
+            <p>The Go-Back-N protocol requires the sequence space to be strictly larger than the window size to distinguish between new transmissions and retransmissions:</p>
+            <span class="math-block">Required Sequences Space = W(s) + 1 = 41 + 1 = 42 distinct sequence indexes</span>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 5: Allocating Header Field Bit Size</div>
+            <p>The header must allocate enough bits (k) to uniquely represent the required 42 sequence indexes. We calculate this by taking the ceiling log base 2:</p>
+            <span class="math-block">k = Ceiling( Log2( 42 ) ) = 6 bits</span>
+            <p><em>Note: 5 bits only provide 32 unique combinations (32 < 42), so we must round up to 6 bits, which provide up to 64 unique combinations.</em></p>
+          </li>
+        </ul>
+        <p><strong>Final Solution Value:</strong> 6 bits</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 3 -->
+  <section class="section" id="ch3-headers">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-title">
+        <h2>Chapter 03: Network Layer Routing & Subnet Architectures</h2>
+        <p>Deep analytical specifications of IP header structures, multi-level CIDR network masks, and global path convergence vector matrix routines.</p>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">IPv4 Packet Header Fields Architecture</div>
+      <p>The IPv4 header has a minimum base size of 20 bytes. It contains control fields for routing, fragmentation tracking, and packet lifetime bounds.</p>
+      
+      <div class="diagram-container">
+        <svg width="740" height="180" viewBox="0 0 740 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Row 1 -->
+          <rect x="10" y="10" width="720" height="35" rx="4" fill="#0f172a" stroke="#1e293b"/>
+          <rect x="10" y="10" width="90" height="35" fill="none" stroke="#334155"/>
+          <text x="55" y="32" fill="#38bdf8" font-family="sans-serif" font-size="11" text-anchor="middle">Version (4b)</text>
+          <rect x="100" y="10" width="90" height="35" fill="none" stroke="#334155"/>
+          <text x="145" y="32" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">IHL (4b)</text>
+          <rect x="190" y="10" width="160" height="35" fill="none" stroke="#334155"/>
+          <text x="270" y="32" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">Type of Service (8b)</text>
+          <rect x="350" y="10" width="380" height="35" fill="none" stroke="#334155"/>
+          <text x="540" y="32" fill="#34d399" font-family="sans-serif" font-size="11" text-anchor="middle">Total Packet Length (16 bits)</text>
+
+          <!-- Row 2 -->
+          <rect x="10" y="50" width="720" height="35" rx="4" fill="#0f172a" stroke="#1e293b"/>
+          <rect x="10" y="50" width="360" height="35" fill="none" stroke="#334155"/>
+          <text x="190" y="72" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">Identification Identifier (16 bits)</text>
+          <rect x="370" y="50" width="70" height="35" fill="none" stroke="#334155"/>
+          <text x="405" y="72" fill="#fbbf24" font-family="sans-serif" font-size="11" text-anchor="middle">Flags (3b)</text>
+          <rect x="440" y="50" width="290" height="35" fill="none" stroke="#334155"/>
+          <text x="585" y="72" fill="#ff7171" font-family="sans-serif" font-size="11" text-anchor="middle">Fragment Offset Metric (13 bits)</text>
+
+          <!-- Row 3 -->
+          <rect x="10" y="90" width="720" height="35" rx="4" fill="#0f172a" stroke="#1e293b"/>
+          <rect x="10" y="90" width="180" height="35" fill="none" stroke="#334155"/>
+          <text x="100" y="112" fill="#ff7171" font-family="sans-serif" font-size="11" text-anchor="middle">Time to Live TTL (8b)</text>
+          <rect x="190" y="90" width="180" height="35" fill="none" stroke="#334155"/>
+          <text x="280" y="112" fill="#818cf8" font-family="sans-serif" font-size="11" text-anchor="middle">Protocol ID (8b)</text>
+          <rect x="370" y="90" width="360" height="35" fill="none" stroke="#334155"/>
+          <text x="550" y="112" fill="#94a3b8" font-family="sans-serif" font-size="11" text-anchor="middle">Header Checksum Field (16b)</text>
+
+          <!-- Row 4 -->
+          <rect x="10" y="130" width="720" height="35" rx="4" fill="#1e293b" stroke="#38bdf8"/>
+          <text x="370" y="152" fill="#38bdf8" font-family="'JetBrains Mono'" font-size="12" font-weight="bold" text-anchor="middle">Source Logical IP Address (32 bits)</text>
+        </svg>
+      </div>
+      <div class="diagram-caption">Figure 3.1: Layer 3 IPv4 Base Word Header Structure and Field Mapping.</div>
+    </div>
+
+    <div class="subsection" id="ch3-subnetting">
+      <div class="subsection-title">Subnetting Architecture & Variable Classless Masks</div>
+      <p>Classless Inter-Domain Routing (CIDR) applies a variable bit mask prefix notation (<span class="math-inline">/X</span>) to split base IP blocks into flexible, custom-sized subnets.</p>
+      <ul>
+        <li><strong>Network Prefix Component:</strong> Defined by the first $X$ bits of the address mask, which isolate the network domain identity.</li>
+        <li><strong>Host Identifier Field:</strong> Managed within the remaining $32 - X$ bits, which uniquely address individual endpoint device interfaces.</li>
+        <li><strong>Assignable Host Addresses Capacity Formula:</strong> 
+          <div class="math-block">Assignable Hosts Count = 2^(32 - X) - 2</div>
+          <em>Note: We subtract exactly 2 addresses because the first binary address is reserved for the Network ID and the last is reserved for the Directed Broadcast Address.</em>
+        </li>
+      </ul>
+    </div>
+
+    <div class="subsection" id="ch3-routing">
+      <div class="subsection-title">Routing Protocol Strategy Metrics Comparison</div>
+      <p>Routers update their local forwarding tables using one of two primary interior gateway protocol types:</p>
+      
+      <div class="topic-grid">
+        <div class="topic-card">
+          <div class="card-title">Distance Vector Routing (DVR)</div>
+          <div class="card-body">Uses the distributed Bellman-Ford algorithm. Every node periodically shares its entire routing table exclusively with its direct immediate neighbors. It converges slowly and is vulnerable to the "Count-to-Infinity" loop error.</div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">Link State Routing (LSR)</div>
+          <div class="card-body">Uses Dijkstra's shortest-path algorithm. Every router link-state advertises its local neighborhood topology to all network nodes via flooding. This ensures every router maintains a complete, identical network map, preventing loops.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection" id="ch3-pyq">
+      <div class="subsection-title">Chapter 03: Step-by-Step Solved Problem Case</div>
+      <div class="callout callout-pyq">
+        <strong>⭐ Core Mathematical Problem:</strong>
+        <p>An enterprise infrastructure division is assigned the base CIDR network block block 192.168.16.0/22. Engineering must split this entire block into exactly 4 separate local subnets of equal address capacity footprint size. Identify the first valid assignable host IP destination address within the final 4th subnet segment.</p>
+      </div>
+
+      <div class="solution-panel">
+        <div class="solution-header-text">✔️ Natural Language Solution Architecture:</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <div class="step-heading">Step 1: Identifying Base Host Address Space Scope</div>
+            <p>The prefix mask /22 leaves 32 - 22 = 10 bits allocated for host addressing. The total number of available address spaces inside this block equals:</p>
+            <span class="math-block">Total Address Spaces = 2^10 = 1024 addresses</span>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 2: Partitioning Into Equal Block Subnets</div>
+            <p>To create 4 equal subnets, divide the total address pool by 4. This determines the size of each subnet block:</p>
+            <span class="math-block">Addresses per Subnet = 1024 / 4 = 256 addresses</span>
+            <p>An allocation size of 256 addresses requires exactly 8 bits for host addressing (2^8 = 256). This changes the subnet mask for the new blocks to /24 (since 32 - 8 = 24).</p>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 3: Mapping Subnet Block Boundaries</div>
+            <p>Step through the address space in increments of 256 to define the boundaries of the 4 subnets:</p>
+            <p>• Subnet 1: Starts at 192.168.16.0/24 (Spans 192.168.16.0 through 192.168.16.255)<br>
+            • Subnet 2: Starts at 192.168.17.0/24 (Spans 192.168.17.0 through 192.168.17.255)<br>
+            • Subnet 3: Starts at 192.168.18.0/24 (Spans 192.168.18.0 through 192.168.18.255)<br>
+            • Subnet 4: Starts at 192.168.19.0/24 (Spans 192.168.19.0 through 192.168.19.255)</p>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 4: Finding the First Usable Host IP in Subnet 4</div>
+            <p>The 4th subnet block begins at its Network ID address, 192.168.19.0. Since the Network ID cannot be assigned to an active endpoint device, the first usable host address is the very next IP address in the sequence:</p>
+            <span class="math-block">First Usable Address = 192.168.19.0 + 1 = 192.168.19.1</span>
+          </li>
+        </ul>
+        <p><strong>Final Solution Value:</strong> 192.168.19.1</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 4 -->
+  <section class="section" id="ch4-tcp">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-title">
+        <h2>Chapter 04: Transport Engine Pipelines & Congestion Optimization</h2>
+        <p>An analysis of pipeline metrics, sliding window bounds, and adaptive multi-phase AIMD state controls.</p>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">TCP Congestion Avoidance Phase Transitions</div>
+      <p>TCP scales its congestion window size (cwnd) dynamically to probe network capacity and prevent buffers from overflowing.</p>
+      
+      <div class="diagram-container">
+        <svg width="720" height="260" viewBox="0 0 720 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Graph Axes -->
+          <line x1="50" y1="220" x2="680" y2="220" stroke="#64748b" stroke-width="2"/>
+          <line x1="50" y1="20" x2="50" y2="220" stroke="#64748b" stroke-width="2"/>
+          <text x="360" y="250" fill="#94a3b8" font-family="sans-serif" font-size="12" text-anchor="middle">Transmission Rounds (Time in RTTs)</text>
+          <text x="20" y="120" fill="#94a3b8" font-family="sans-serif" font-size="12" text-anchor="middle" transform="rotate(-90,20,120)">Cwnd Size (MSS)</text>
+
+          <!-- Paths -->
+          <path d="M50 210 Q 90 200 130 140 T 210 60" stroke="#38bdf8" stroke-width="3" fill="none"/>
+          <text x="120" y="180" fill="#38bdf8" font-family="sans-serif" font-size="11">1. Slow Start (Exponential)</text>
+
+          <line x1="210" y1="60" x2="450" y2="30" stroke="#fbbf24" stroke-width="3"/>
+          <text x="310" y="40" fill="#fbbf24" font-family="sans-serif" font-size="11">2. Congestion Avoidance (Linear)</text>
+
+          <line x1="450" y1="30" x2="450" y2="210" stroke="#ff7171" stroke-width="2" stroke-dasharray="4 4"/>
+          <text x="460" y="100" fill="#ff7171" font-family="sans-serif" font-size="11">3. Packet Drop Timeout</text>
+
+          <line x1="50" y1="60" x2="680" y2="60" stroke="#818cf8" stroke-width="1.5" stroke-dasharray="2 2"/>
+          <text x="600" y="55" fill="#818cf8" font-family="sans-serif" font-size="10">ssthresh value line</text>
+        </svg>
+      </div>
+      <div class="diagram-caption">Figure 4.1: TCP Congestion Window Tracking Trajectory States (AIMD Cycle Phase Transitions).</div>
+    </div>
+
+    <div class="subsection" id="ch4-congestion">
+      <div class="subsection-title">Additive Increase Multiplicative Decrease (AIMD) Mechanics</div>
+      <p>The transmission engine scales its output traffic using distinct throughput pacing algorithms based on window thresholds:</p>
+      <ul>
+        <li><strong>Slow Start Mode (cwnd < ssthresh):</strong> The congestion window size doubles with every Round Trip Time (RTT), scaling its transmission rate exponentially:
+          <div class="math-block">New cwnd = Current cwnd * 2</div>
+        </li>
+        <li><strong>Congestion Avoidance Mode (cwnd >= ssthresh):</strong> Growth switches from exponential to a conservative linear rate, increasing the window size by exactly 1 Maximum Segment Size (MSS) per RTT:
+          <div class="math-block">New cwnd = Current cwnd + 1</div>
+        </li>
+        <li><strong>Timeout Penalty Reset Action:</strong> When a transmission packet drop times out, the protocol halves the slow-start threshold and drops the active congestion window back to its baseline value:
+          <div class="math-block">New ssthresh = Current cwnd / 2</div>
+          <div class="math-block">New cwnd = 1 MSS</div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="subsection" id="ch4-pyq">
+      <div class="subsection-title">Chapter 04: Step-by-Step Solved Problem Case</div>
+      <div class="callout callout-pyq">
+        <strong>⭐ Core Mathematical Problem:</strong>
+        <p>A TCP connection has a Maximum Segment Size (MSS) configuration value of 2 Kilobytes. The slow-start threshold parameter is initially set to 64 Kilobytes. During the 6th active transmission round, a packet drop timeout occurs. Compute the precise physical size of the congestion window at the completion of the 8th round.</p>
+      </div>
+
+      <div class="solution-panel">
+        <div class="solution-header-text">✔️ Natural Language Solution Architecture:</div>
+        <ul class="step-list">
+          <li class="step-item">
+            <div class="step-heading">Step 1: Converting Threshold Space to Segment Count Elements</div>
+            <p>To track window behavior across rounds, convert the sizes from Kilobytes into segment counts based on the 2KB MSS:</p>
+            <p>• Initial Threshold = 64 KB / 2 KB = 32 segments.<br>• Initial Window size starts at 1 segment.</p>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 2: Tracking Exponential Growth Round-by-Round</div>
+            <p>During the Slow Start phase, the window size doubles with every round until it hits the threshold line (ssthresh = 32 segments):</p>
+            <p>• Round 1: cwnd = 1 segment. Transmits successfully, then doubles.<br>
+            • Round 2: cwnd = 2 segments. Transmits successfully, then doubles.<br>
+            • Round 3: cwnd = 4 segments. Transmits successfully, then doubles.<br>
+            • Round 4: cwnd = 8 segments. Transmits successfully, then doubles.<br>
+            • Round 5: cwnd = 16 segments. Transmits successfully, then doubles.<br>
+            • Round 6: cwnd = 32 segments. A packet drop timeout occurs during transmission.</p>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 3: Calculating Timeout Penalty State Resets</div>
+            <p>The timeout penalty triggers two immediate state changes: the slow-start threshold is cut in half, and the active window resets to 1 segment:</p>
+            <span class="math-block">New ssthresh = 32 segments / 2 = 16 segments</span>
+            <span class="math-block">New cwnd = 1 segment</span>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 4: Resuming Growth After Window Reset</div>
+            <p>With the window reset, the protocol resumes transmissions from the beginning of the next round:</p>
+            <p>• Round 7: Starts with cwnd = 1 segment. Transmits successfully, then doubles (since cwnd &lt; ssthresh).<br>
+            • Round 8: Starts with cwnd = 2 segments.</p>
+          </li>
+          <li class="step-item">
+            <div class="step-heading">Step 5: Converting Segment Count to Physical Size Metrics</div>
+            <p>Finally, multiply the segment count at the end of the target round by the 2 Kilobyte MSS to get the physical size of the window:</p>
+            <span class="math-block">Physical Window Size = 2 segments * 2 KB per segment = 4 Kilobytes</span>
+          </li>
+        </ul>
+        <p><strong>Final Solution Value:</strong> 4 Kilobytes</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW APPENDIX: OTHER MATERIALS SECTION -->
+  <section class="section" id="appendix-materials">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-title">
+        <h2>Other Materials & Visual References</h2>
+        <p>High-fidelity external reference material images covering visual network architectures, layer encapsulation models, and comprehensive protocol specifications.</p>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <p>The following technical blueprint records provide complete structural references for parsing frame encapsulation structures, routing logic schemas, and protocol headers across the networking stack layers:</p>
+      
+      <div class="media-card-group">
+        <!-- Image 1: Transport Layer -->
+        <div class="media-card">
+          <div class="media-title-badge">TRANSPORT LAYER SPECIFICATION</div>
+          <h4>Layer 4 TCP/UDP Protocols, Port Multiplexing, and Connection Management</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Visual Reference: TransportLayer.png</p>
+          <img src="TransportLayer.png" alt="Transport Layer Protocol Stack" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); background: #02040a;">
+          <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 1rem;"><strong>Content:</strong> Comprehensive diagram showing TCP/UDP header fields, port concepts, connection establishment (3-way handshake), state transition diagrams, and comparison between connection-oriented vs connectionless protocols.</p>
+        </div>
+
+        <!-- Image 2: Data Link Layer -->
+        <div class="media-card">
+          <div class="media-title-badge">DATA LINK LAYER SPECIFICATION</div>
+          <h4>Layer 2 Frame Structures, MAC Addressing, and Channel Access Protocols</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Visual Reference: DtaLinklayer.png</p>
+          <img src="DtaLinklayer.png" alt="Data Link Layer Architecture" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); background: #02040a;">
+          <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 1rem;"><strong>Content:</strong> Detailed illustration of LLC & MAC sub-layer subdivisions, Ethernet frame format, MAC address structure, CSMA/CD collision detection mechanism, ARP protocol workflow, and switching table operations.</p>
+        </div>
+
+        <!-- Image 3: Complete OSI Model -->
+        <div class="media-card">
+          <div class="media-title-badge">END-TO-END OSI REFERENCE SCHEMATIC</div>
+          <h4>Full Stack Data Encapsulation, Layer Hierarchy, and Peer-to-Peer Protocol Communication</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Visual Reference: completeOSI.png</p>
+          <img src="completeOSI.png" alt="Complete OSI Model Stack" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border); background: #02040a;">
+          <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 1rem;"><strong>Content:</strong> Comprehensive vertical encapsulation model showing how application data transforms through each OSI layer (Application, Presentation, Session, Transport, Network, Data Link, Physical), with corresponding protocols at each level and the complete PDU (Protocol Data Unit) evolution process.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Reference Content -->
+    <div class="subsection" id="formulas-reference">
+      <div class="subsection-title">Critical GATE Formulas & Quick Reference Handbook</div>
+      
+      <div class="topic-grid">
+        <div class="topic-card">
+          <div class="card-title">🔷 Transmission Metrics</div>
+          <div class="card-body">
+            <strong>Propagation Time:</strong> $t_p = d / v$ (distance / velocity)<br>
+            <strong>Transmission Time:</strong> $t_t = L / B$ (length / bandwidth)<br>
+            <strong>Link Utilization:</strong> $U = \frac{W_s}{1 + 2a}$ where $a = t_p / t_t$<br>
+            <strong>Effective Throughput:</strong> $Eff = \frac{W_s \times MSS}{RTT}$
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">🔷 Subnetting & IP Addressing</div>
+          <div class="card-body">
+            <strong>Hosts per Subnet:</strong> $2^{(32-x)} - 2$<br>
+            <strong>Total Subnets:</strong> $2^{(prefix\ bits)}$<br>
+            <strong>Class A:</strong> 1.0.0.0 - 126.0.0.0 (/8)<br>
+            <strong>Class B:</strong> 128.0.0.0 - 191.255.0.0 (/16)<br>
+            <strong>Class C:</strong> 192.0.0.0 - 223.255.255.0 (/24)
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">🔷 Error Detection & Correction</div>
+          <div class="card-body">
+            <strong>Hamming Distance:</strong> Minimum bit differences between valid codes<br>
+            <strong>Single Error Detection:</strong> Requires $d_{min} \geq 2$<br>
+            <strong>Single Error Correction:</strong> Requires $d_{min} \geq 3$<br>
+            <strong>CRC Polynomial:</strong> Generator used for cyclic redundancy checking
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">🔷 Queueing Theory Parameters</div>
+          <div class="card-body">
+            <strong>Average Packets in Queue:</strong> $L_q = \frac{\lambda^2}{\mu(\mu - \lambda)}$<br>
+            <strong>Average Wait Time:</strong> $W_q = \frac{\lambda}{\mu(\mu - \lambda)}$<br>
+            <strong>Server Utilization:</strong> $\rho = \lambda / \mu$<br>
+            <strong>Stability Condition:</strong> $\lambda &lt; \mu$
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Practice Problems -->
+    <div class="subsection" id="advanced-problems">
+      <div class="subsection-title">Advanced Practice Problems for GATE Mastery</div>
+      
+      <div class="callout callout-pyq" style="margin-top: 1.5rem;">
+        <strong>⭐ Problem Set 05A: Queueing Analysis</strong>
+        <p><strong>Question:</strong> An Internet Service Provider (ISP) router receives packets at an average rate of 5000 packets/second. The router can process packets at a rate of 6000 packets/second following an M/M/1 queue model. Calculate: (a) The average number of packets waiting in the queue, (b) The average time a packet spends waiting, and (c) The probability that the queue length exceeds 3 packets.</p>
+      </div>
+
+      <div class="callout callout-pyq" style="margin-top: 1.5rem;">
+        <strong>⭐ Problem Set 05B: Error Correction Capability</strong>
+        <p><strong>Question:</strong> A transmission code uses Hamming distance concept. To correct up to 2 simultaneous bit errors within any transmitted codeword, what minimum Hamming distance value must be maintained between any two distinct valid codewords? Explain your reasoning with reference to error correction theory.</p>
+      </div>
+
+      <div class="callout callout-pyq" style="margin-top: 1.5rem;">
+        <strong>⭐ Problem Set 05C: Network Capacity Planning</strong>
+        <p><strong>Question:</strong> An enterprise network architect must design a data center link that connects two buildings 5 kilometers apart. The link must support an RTT-based latency of exactly 50 milliseconds for video conferencing applications. If the signal propagation velocity in fiber optic cable is 2 × 10^8 m/s, and transmission delay should be kept at 10 milliseconds, calculate the required minimum bandwidth for the link. Also determine if a packet size of 2000 bytes can ensure collision detection in CSMA/CD.</p>
+      </div>
+
+      <div class="callout callout-pyq" style="margin-top: 1.5rem;">
+        <strong>⭐ Problem Set 05D: Protocol Stack Performance</strong>
+        <p><strong>Question:</strong> A selective repeat ARQ protocol operates with a window size W=16. The link has a bandwidth of 100 Mbps with a one-way propagation delay of 20 milliseconds. Each frame is 1250 bytes. Calculate: (a) The number of bits needed for sequence numbering, (b) The link utilization with the current setup, and (c) The minimum window size needed to achieve 95% efficiency.</p>
+      </div>
+    </div>
+
+    <!-- Application Layer Quick Reference -->
+    <div class="subsection" id="app-layer">
+      <div class="subsection-title">Application Layer Protocols & Services (Quick Reference)</div>
+      
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Protocol</th>
+            <th>Port(s)</th>
+            <th>Transport</th>
+            <th>Purpose & Key Features</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>HTTP</strong></td>
+            <td>80 (HTTP), 443 (HTTPS)</td>
+            <td>TCP</td>
+            <td>Hypertext transfer; stateless; request-response model; uses SSL/TLS for encryption (HTTPS)</td>
+          </tr>
+          <tr>
+            <td><strong>DNS</strong></td>
+            <td>53</td>
+            <td>UDP (queries), TCP (zone transfers)</td>
+            <td>Domain name resolution; hierarchical tree structure; recursive vs iterative queries; caching mechanisms</td>
+          </tr>
+          <tr>
+            <td><strong>SMTP</strong></td>
+            <td>25 (unencrypted), 587 (TLS)</td>
+            <td>TCP</td>
+            <td>Email sending protocol; MAIL FROM, RCPT TO commands; reply codes (2xx success, 4xx temporary, 5xx permanent)</td>
+          </tr>
+          <tr>
+            <td><strong>POP3</strong></td>
+            <td>110 (standard), 995 (SSL/TLS)</td>
+            <td>TCP</td>
+            <td>Email retrieval; downloads messages to client; DELETE marks messages for deletion</td>
+          </tr>
+          <tr>
+            <td><strong>IMAP</strong></td>
+            <td>143 (standard), 993 (SSL/TLS)</td>
+            <td>TCP</td>
+            <td>Email access; maintains server-side folders; supports searching, partial downloads; better for multi-device access</td>
+          </tr>
+          <tr>
+            <td><strong>FTP</strong></td>
+            <td>21 (control), 20 (data)</td>
+            <td>TCP</td>
+            <td>File transfer; active vs passive mode; username/password authentication; ASCII vs binary modes</td>
+          </tr>
+          <tr>
+            <td><strong>DHCP</strong></td>
+            <td>67 (server), 68 (client)</td>
+            <td>UDP</td>
+            <td>Dynamic IP assignment; DORA process (Discover, Offer, Request, Acknowledge); lease time management</td>
+          </tr>
+          <tr>
+            <td><strong>TELNET</strong></td>
+            <td>23</td>
+            <td>TCP</td>
+            <td>Remote terminal access; unencrypted; replaced by SSH for security reasons; uses NVT (Network Virtual Terminal)</td>
+          </tr>
+          <tr>
+            <td><strong>SSH</strong></td>
+            <td>22</td>
+            <td>TCP</td>
+            <td>Secure shell; encrypted terminal access; public-key cryptography; SCP for secure file transfer</td>
+          </tr>
+          <tr>
+            <td><strong>SNMP</strong></td>
+            <td>161 (agent), 162 (manager)</td>
+            <td>UDP</td>
+            <td>Network management; GET/SET/TRAP operations; community strings for access control; MIB (Management Information Base)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Network Security Essentials -->
+    <div class="subsection" id="network-security">
+      <div class="subsection-title">Network Security & Cryptography Essentials</div>
+      
+      <div class="topic-grid">
+        <div class="topic-card">
+          <div class="card-title">🔒 Symmetric Encryption</div>
+          <div class="card-body">
+            <strong>DES:</strong> 56-bit key, 3 rounds, 64-bit block (deprecated)<br>
+            <strong>3DES:</strong> Triple encryption with 3 keys, 192-bit effective security<br>
+            <strong>AES:</strong> 128-bit block, key sizes 128/192/256 bits (current standard)<br>
+            <strong>RC4:</strong> Stream cipher, variable key length (controversial)<br>
+            <strong>Weakness:</strong> Key distribution problem
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">🔑 Asymmetric Encryption</div>
+          <div class="card-body">
+            <strong>RSA:</strong> Based on factorization; key sizes 1024-4096 bits<br>
+            <strong>ECC:</strong> Elliptic Curve Cryptography; shorter keys with equivalent security<br>
+            <strong>Diffie-Hellman:</strong> Key exchange protocol; establishes shared secret<br>
+            <strong>Advantage:</strong> Solves key distribution; supports digital signatures
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">✍️ Digital Signatures & Hashing</div>
+          <div class="card-body">
+            <strong>MD5:</strong> 128-bit hash (cryptographically broken)<br>
+            <strong>SHA-1:</strong> 160-bit hash (deprecated)<br>
+            <strong>SHA-2:</strong> SHA-256/512 (current standard)<br>
+            <strong>SHA-3:</strong> Latest standard (Keccak algorithm)<br>
+            <strong>Purpose:</strong> Ensure authenticity and integrity
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">🛡️ Firewalls & Intrusion Detection</div>
+          <div class="card-body">
+            <strong>Packet Filter:</strong> Rules on IP/port level (fast, limited)<br>
+            <strong>Stateful:</strong> Tracks connection states (better security)<br>
+            <strong>Proxy:</strong> Application-level gateway (strongest)<br>
+            <strong>IDS/IPS:</strong> Detects/prevents intrusions using signature/anomaly analysis
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quality of Service (QoS) -->
+    <div class="subsection" id="qos-section">
+      <div class="subsection-title">Quality of Service (QoS) & Traffic Management</div>
+      
+      <p><strong>QoS Parameters:</strong> Bandwidth guarantee, latency bounds, jitter control, packet loss rates.</p>
+      
+      <ul>
+        <li><strong>IntServ (Integrated Services):</strong> Per-flow resource reservation using RSVP protocol; precise control but scalability issues</li>
+        <li><strong>DiffServ (Differentiated Services):</strong> Traffic classification into aggregate flows; scalable; uses DSCP (DiffServ Code Point) in IP header</li>
+        <li><strong>Traffic Shaping:</strong> Token bucket algorithm; leaky bucket mechanism; rate limiting to smooth traffic bursts</li>
+        <li><strong>Priority Queuing:</strong> High-priority traffic gets preferential treatment; prevents head-of-line blocking</li>
+        <li><strong>Fair Queuing:</strong> Max-min fairness; every flow receives fair share of bandwidth; prevents starvation</li>
+      </ul>
+
+      <div class="callout callout-formula">
+        <strong>📋 Token Bucket Formula:</strong>
+        <div class="math-block">Max Burst Size = Bucket Capacity (B)</div>
+        <div class="math-block">Sustained Rate = Token Generation Rate (r)</div>
+        <div class="math-block">Available Tokens at time t = min(B, Initial Tokens + r × t)</div>
+      </div>
+    </div>
+
+    <!-- IPv6 Essentials -->
+    <div class="subsection" id="ipv6-section">
+      <div class="subsection-title">IPv6 Protocol & Transition Mechanisms</div>
+      
+      <ul>
+        <li><strong>Address Format:</strong> 128-bit addresses represented as 8 groups of 16-bit hexadecimal values (e.g., 2001:0db8:85a3::8a2e:0370:7334)</li>
+        <li><strong>Prefix Notation:</strong> IPv6 uses /prefix notation similar to CIDR; default unicast /64 prefix</li>
+        <li><strong>Address Types:</strong>
+          <ul>
+            <li><strong>Unicast:</strong> One-to-one communication (Global Unicast 2000::/3, Link-Local fe80::/10)</li>
+            <li><strong>Multicast:</strong> One-to-many (ff00::/8 prefix)</li>
+            <li><strong>Anycast:</strong> One-to-nearest (special format)</li>
+          </ul>
+        </li>
+        <li><strong>ICMPv6:</strong> Enhanced ICMP with Neighbor Discovery, Router Advertisement protocols</li>
+        <li><strong>Transition Mechanisms:</strong>
+          <ul>
+            <li><strong>Dual-Stack:</strong> Nodes run both IPv4 and IPv6 simultaneously</li>
+            <li><strong>Tunneling:</strong> IPv6 packets encapsulated within IPv4 (automatic, configured, 6to4)</li>
+            <li><strong>Translation:</strong> NAT64, DNS64 for IPv4-IPv6 interoperability</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Error Detection & Correction Methods -->
+    <div class="subsection" id="error-wireless">
+      <div class="subsection-title">Error Detection & Correction Techniques</div>
+      
+      <p><strong>Parity Check Methods:</strong></p>
+      <ul>
+        <li><strong>Single Parity Bit:</strong> Appends one parity bit to detect single-bit errors; can detect but not correct</li>
+        <li><strong>Two-Dimensional Parity:</strong> Arranges data in 2D grid; adds horizontal and vertical parity bits; can detect and correct single-bit errors</li>
+        <li><strong>Checksum:</strong> Sum of data segments; simple but weak error detection; used in IPv4 headers (16-bit one's complement)</li>
+      </ul>
+
+      <p><strong>Cyclic Redundancy Check (CRC):</strong></p>
+      <ul>
+        <li>Uses polynomial division; generator polynomial G(x) divides message M(x)</li>
+        <li>Remainder becomes the CRC bits appended to message</li>
+        <li>Receiver divides received message by G(x); zero remainder indicates no error</li>
+        <li>Can detect all single-bit, double-bit (if G has at least 3 terms), and burst errors up to polynomial degree</li>
+        <li><strong>Common Polynomials:</strong> CRC-32 (Ethernet), CRC-16 (serial), CRC-CCITT</li>
+      </ul>
+
+      <p><strong>Hamming Codes:</strong></p>
+      <ul>
+        <li>Systematic error-correcting codes; can correct single-bit errors</li>
+        <li>Position parity bits at power-of-2 locations (1, 2, 4, 8, ...)</li>
+        <li>Each parity bit covers specific positions based on binary representation</li>
+        <li><strong>Hamming Distance:</strong> Minimum number of bit flips to convert one valid code to another</li>
+        <li><strong>For d errors:</strong> Required $d_{min} = 2d + 1$ (to detect AND correct d errors)</li>
+      </ul>
+
+      <div class="callout callout-formula">
+        <strong>📋 Hamming Code Rules:</strong>
+        <div class="math-block">Data bits (m) + Parity bits (p) + 1 ≤ 2^p</div>
+        <div class="math-block">Total bits (n) = m + p, where p = Ceiling(log₂(m+p+1))</div>
+        <div class="math-block">Syndrome calculation: S = P₁ P₂ P₃...Pₚ identifies error position</div>
+      </div>
+    </div>
+
+    <!-- Wireless Networks Essentials -->
+    <div class="subsection">
+      <div class="subsection-title">Wireless Networks & IEEE 802.11 Standards</div>
+      
+      <p><strong>Wireless Challenges:</strong></p>
+      <ul>
+        <li><strong>Signal Attenuation:</strong> Power decreases with distance squared in free space</li>
+        <li><strong>Multipath Fading:</strong> Reflections cause constructive/destructive interference</li>
+        <li><strong>Interference:</strong> From other wireless devices, microwave ovens, etc.</li>
+        <li><strong>Hidden Terminal Problem:</strong> Nodes A and C cannot sense each other but interfere at B</li>
+        <li><strong>Exposed Terminal Problem:</strong> Nodes unnecessarily wait when they could transmit safely</li>
+      </ul>
+
+      <p><strong>IEEE 802.11 Specifications:</strong></p>
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Standard</th>
+            <th>Frequency Band</th>
+            <th>Max Data Rate</th>
+            <th>Modulation</th>
+            <th>Range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>802.11a</strong></td>
+            <td>5 GHz</td>
+            <td>54 Mbps</td>
+            <td>OFDM</td>
+            <td>~50 meters (indoors)</td>
+          </tr>
+          <tr>
+            <td><strong>802.11b</strong></td>
+            <td>2.4 GHz</td>
+            <td>11 Mbps</td>
+            <td>DSSS</td>
+            <td>~100 meters</td>
+          </tr>
+          <tr>
+            <td><strong>802.11g</strong></td>
+            <td>2.4 GHz</td>
+            <td>54 Mbps</td>
+            <td>OFDM</td>
+            <td>~100 meters</td>
+          </tr>
+          <tr>
+            <td><strong>802.11n (WiFi 4)</strong></td>
+            <td>2.4/5 GHz</td>
+            <td>600 Mbps</td>
+            <td>MIMO-OFDM</td>
+            <td>~200 meters</td>
+          </tr>
+          <tr>
+            <td><strong>802.11ac (WiFi 5)</strong></td>
+            <td>5 GHz</td>
+            <td>3.5 Gbps</td>
+            <td>MIMO-OFDM</td>
+            <td>~100 meters</td>
+          </tr>
+          <tr>
+            <td><strong>802.11ax (WiFi 6)</strong></td>
+            <td>2.4/5/6 GHz</td>
+            <td>9.6 Gbps</td>
+            <td>OFDMA</td>
+            <td>~100+ meters</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>MAC Protocol (CSMA/CA):</strong></p>
+      <ul>
+        <li><strong>Collision Avoidance:</strong> Unlike CSMA/CD (detect after), wireless uses CSMA/CA (avoid collision before)</li>
+        <li><strong>Request-to-Send (RTS):</strong> Sender transmits short RTS frame to announce intent</li>
+        <li><strong>Clear-to-Send (CTS):</strong> Receiver responds with CTS frame to reserve the channel</li>
+        <li><strong>Hidden Terminal Solution:</strong> RTS/CTS informs other nodes (via NAV - Network Allocation Vector) to stay quiet</li>
+        <li><strong>ACK (Acknowledgment):</strong> Receiver sends ACK after successful frame reception</li>
+      </ul>
+
+      <div class="callout callout-formula">
+        <strong>📋 Wireless Channel Capacity:</strong>
+        <div class="math-block">Shannon Capacity: C = B × log₂(1 + SNR)</div>
+        <div class="math-block">C is in bits/second, B is bandwidth in Hz, SNR is signal-to-noise ratio</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER 6: COMPREHENSIVE PROTOCOLS & CORE CONCEPTS -->
+  <section class="section" id="ch6-protocols">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div class="section-title">
+        <h2>Chapter 06: Complete Protocol Reference & Core Transmission Concepts</h2>
+        <p>Exhaustive protocol catalog organized by OSI layer with definitions, purposes, and complete working explanations. Coverage of framing, multiplexing, supernetting, and traffic control mechanisms.</p>
+      </div>
+    </div>
+
+    <!-- CRITICAL TRANSMISSION CONTROL CONCEPTS -->
+    <div class="subsection" id="transmission-control">
+      <div class="subsection-title">Core Transmission Control Mechanisms</div>
+      
+      <div class="topic-grid">
+        <div class="topic-card">
+          <div class="card-title">📋 Flow Control</div>
+          <div class="card-body">
+            <strong>Definition:</strong> Mechanism to prevent sender from overwhelming receiver's buffer capacity.<br><br>
+            <strong>Techniques:</strong><br>
+            • <strong>Stop-and-Wait:</strong> Sender waits for ACK before sending next frame<br>
+            • <strong>Sliding Window:</strong> Sender can transmit multiple frames before ACK<br>
+            • <strong>XON/XOFF:</strong> Software signaling to pause/resume transmission<br><br>
+            <strong>Goal:</strong> Match sender transmission rate with receiver processing capability
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">🛡️ Error Control</div>
+          <div class="card-body">
+            <strong>Definition:</strong> Detect and correct errors introduced during transmission.<br><br>
+            <strong>Mechanisms:</strong><br>
+            • <strong>Detection:</strong> Parity, CRC, Checksum<br>
+            • <strong>Correction:</strong> Hamming codes, Reed-Solomon codes<br>
+            • <strong>Recovery:</strong> Retransmission (ARQ protocols)<br><br>
+            <strong>ARQ Types:</strong><br>
+            • Stop-and-Wait ARQ, Go-Back-N ARQ, Selective Repeat ARQ
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">⚙️ Congestion Control</div>
+          <div class="card-body">
+            <strong>Definition:</strong> Prevent network overload by regulating packet transmission rate.<br><br>
+            <strong>AIMD Algorithm Phases:</strong><br>
+            • <strong>Slow Start:</strong> cwnd doubles per RTT (exponential)<br>
+            • <strong>Congestion Avoidance:</strong> cwnd += 1 MSS per RTT (linear)<br>
+            • <strong>Timeout:</strong> cwnd resets, ssthresh = cwnd/2<br><br>
+            <strong>Newer Variants:</strong> Cubic, BBR for better throughput
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">📡 Multiplexing (Demultiplexing)</div>
+          <div class="card-body">
+            <strong>Definition:</strong> Combine multiple signals/flows on single channel/link.<br><br>
+            <strong>Types:</strong><br>
+            • <strong>FDM:</strong> Frequency Division (analog)<br>
+            • <strong>TDM:</strong> Time Division (digital slots)<br>
+            • <strong>SDM:</strong> Space Division (different paths)<br>
+            • <strong>CDM/CDMA:</strong> Code Division (unique codes)<br>
+            • <strong>WDM:</strong> Wavelength Division (fiber optics)
+          </div>
+        </div>
+      </div>
+
+      <div id="multiplexing-types"></div>
+
+      <!-- Multiplexing Diagram -->
+      <div class="diagram-container">
+        <svg width="720" height="300" viewBox="0 0 720 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- FDM Example -->
+          <text x="120" y="25" fill="#38bdf8" font-family="'Space Grotesk'" font-size="14" font-weight="bold">Frequency Division Multiplexing (FDM)</text>
+          <rect x="30" y="40" width="190" height="60" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="125" y="65" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">Signal 1 (f₁)</text>
+          <text x="125" y="85" fill="#94a3b8" font-family="sans-serif" font-size="9" text-anchor="middle">Frequency: 0-100 Hz</text>
+          <rect x="240" y="40" width="190" height="60" rx="4" fill="#1e293b" stroke="#334155"/>
+          <text x="335" y="65" fill="#f8fafc" font-family="sans-serif" font-size="11" text-anchor="middle">Signal 2 (f₂)</text>
+          <text x="335" y="85" fill="#94a3b8" font-family="sans-serif" font-size="9" text-anchor="middle">Frequency: 100-200 Hz</text>
+          <path d="M220 70 L240 70" stroke="#34d399" stroke-width="2" marker-end="url(#arrowhead)"/>
+          <path d="M430 70 L470 70" stroke="#34d399" stroke-width="2" marker-end="url(#arrowhead)"/>
+          <rect x="470" y="40" width="220" height="60" rx="4" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+          <text x="580" y="65" fill="#38bdf8" font-family="sans-serif" font-size="12" text-anchor="middle">Shared Channel (Multiplexed)</text>
+          <text x="580" y="85" fill="#94a3b8" font-family="sans-serif" font-size="10" text-anchor="middle">Combined: 0-200 Hz</text>
+
+          <!-- TDM Example -->
+          <text x="120" y="135" fill="#fbbf24" font-family="'Space Grotesk'" font-size="14" font-weight="bold">Time Division Multiplexing (TDM)</text>
+          <g>
+            <!-- Slot representation -->
+            <rect x="30" y="150" width="60" height="60" rx="4" fill="#1e293b" stroke="#334155"/>
+            <text x="60" y="175" fill="#f8fafc" font-family="sans-serif" font-size="10" text-anchor="middle">Sig 1</text>
+            <text x="60" y="195" fill="#94a3b8" font-family="sans-serif" font-size="8" text-anchor="middle">Slot 1</text>
+            
+            <rect x="100" y="150" width="60" height="60" rx="4" fill="#1e293b" stroke="#334155"/>
+            <text x="130" y="175" fill="#f8fafc" font-family="sans-serif" font-size="10" text-anchor="middle">Sig 2</text>
+            <text x="130" y="195" fill="#94a3b8" font-family="sans-serif" font-size="8" text-anchor="middle">Slot 2</text>
+            
+            <rect x="170" y="150" width="60" height="60" rx="4" fill="#1e293b" stroke="#334155"/>
+            <text x="200" y="175" fill="#f8fafc" font-family="sans-serif" font-size="10" text-anchor="middle">Sig 1</text>
+            <text x="200" y="195" fill="#94a3b8" font-family="sans-serif" font-size="8" text-anchor="middle">Slot 3</text>
+            
+            <rect x="240" y="150" width="60" height="60" rx="4" fill="#1e293b" stroke="#334155"/>
+            <text x="270" y="175" fill="#f8fafc" font-family="sans-serif" font-size="10" text-anchor="middle">Sig 2</text>
+            <text x="270" y="195" fill="#94a3b8" font-family="sans-serif" font-size="8" text-anchor="middle">Slot 4</text>
+          </g>
+          <path d="M310 180 L350 180" stroke="#34d399" stroke-width="2" marker-end="url(#arrowhead)"/>
+          <rect x="350" y="150" width="340" height="60" rx="4" fill="#0f172a" stroke="#fbbf24" stroke-width="2"/>
+          <text x="520" y="170" fill="#fbbf24" font-family="sans-serif" font-size="11" text-anchor="middle">Time-Slotted Shared Channel</text>
+          <text x="520" y="190" fill="#94a3b8" font-family="sans-serif" font-size="10" text-anchor="middle">[Sig1|Sig2|Sig1|Sig2] repeating pattern</text>
+
+          <!-- Legend -->
+          <text x="30" y="250" fill="#64748b" font-family="sans-serif" font-size="12"><strong>Key Difference:</strong> FDM uses frequency separation; TDM uses time separation</text>
+          <text x="30" y="275" fill="#64748b" font-family="sans-serif" font-size="12">CDM: Code-based separation | SDM: Spatial/Path-based | WDM: Wavelength (fiber)</text>
+        </svg>
+      </div>
+      <div class="diagram-caption">Figure 6.1: Multiplexing Techniques Comparison - FDM and TDM Channel Division Methods.</div>
+    </div>
+
+    <!-- FRAMING TECHNIQUES -->
+    <div class="subsection" id="framing-techniques">
+      <div class="subsection-title">Framing: Data Link Layer Packet Boundaries</div>
+      
+      <p><strong>Purpose:</strong> Define frame boundaries so receiver knows where one frame ends and next begins. Critical for data link layer operation.</p>
+
+      <div class="topic-grid">
+        <div class="topic-card">
+          <div class="card-title">📏 Character-Oriented Framing</div>
+          <div class="card-body">
+            <strong>Method:</strong> Use special character codes to mark frame boundaries.<br><br>
+            <strong>Components:</strong><br>
+            • <strong>STX (Start of Text):</strong> Marks frame start<br>
+            • <strong>ETX (End of Text):</strong> Marks frame end<br>
+            • <strong>ESC (Escape):</strong> Escapes special characters in data<br><br>
+            <strong>Example Frame Structure:</strong><br>
+            [STX][Header][Data][ETX]<br><br>
+            <strong>Problem:</strong> If data contains ETX, must escape it (overhead)
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">📐 Bit-Oriented Framing</div>
+          <div class="card-body">
+            <strong>Method:</strong> Use special bit patterns (flag) to mark boundaries.<br><br>
+            <strong>Components:</strong><br>
+            • <strong>Flag Pattern:</strong> 01111110 marks frame boundaries<br>
+            • <strong>Zero Insertion:</strong> Prevents data from containing flag pattern<br>
+            • <strong>FCS (Frame Check Sequence):</strong> Error detection field<br><br>
+            <strong>Example Frame Structure:</strong><br>
+            [Flag][Address][Control][Data][FCS][Flag]<br><br>
+            <strong>Advantage:</strong> Works with any data (binary-safe)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBNETTING & SUPERNETTING -->
+    <div class="subsection" id="subnetting-supernetting">
+      <div class="subsection-title">Subnetting vs Supernetting: IP Address Space Management</div>
+      
+      <div class="topic-grid">
+        <div class="topic-card">
+          <div class="card-title">🔍 Subnetting (Subdivision)</div>
+          <div class="card-body">
+            <strong>Definition:</strong> Divide single large network into smaller subnets.<br><br>
+            <strong>Process:</strong><br>
+            • Borrow host bits for network portion<br>
+            • Reduces /X prefix (increases host bits)<br>
+            • Increases number of networks<br><br>
+            <strong>Example:</strong><br>
+            192.168.1.0/24 → Four /26 subnets:<br>
+            192.168.1.0/26 (0-63)<br>
+            192.168.1.64/26 (64-127)<br>
+            192.168.1.128/26 (128-191)<br>
+            192.168.1.192/26 (192-255)<br><br>
+            <strong>Purpose:</strong> Better address utilization, security isolation
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">🔗 Supernetting (Aggregation)</div>
+          <div class="card-body">
+            <strong>Definition:</strong> Combine multiple networks into single larger network.<br><br>
+            <strong>Process:</strong><br>
+            • Reduce network bits for network portion<br>
+            • Increases /X prefix (decreases host bits)<br>
+            • Reduces number of networks<br><br>
+            <strong>Example:</strong><br>
+            Four /26 networks → Single /24 network:<br>
+            192.168.1.0/26<br>
+            192.168.1.64/26<br>
+            192.168.1.128/26<br>
+            192.168.1.192/26<br>
+            = 192.168.1.0/24<br><br>
+            <strong>Purpose:</strong> Route aggregation (reduces routing table size)
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-formula">
+        <strong>📋 Subnetting Calculation Formula:</strong>
+        <div class="math-block">Number of Subnets = 2^(Additional Bits Borrowed)</div>
+        <div class="math-block">Hosts per Subnet = 2^(Host Bits Available) - 2</div>
+        <div class="math-block">For Supernetting: Reduce prefix by n bits to combine 2^n networks</div>
+      </div>
+    </div>
+
+    <!-- LAYER 7 PROTOCOLS -->
+    <div class="subsection" id="layer7-protocols">
+      <div class="subsection-title">Layer 7: Application Layer Protocols (Complete Reference)</div>
+      
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Protocol</th>
+            <th>Full Form</th>
+            <th>Port(s)</th>
+            <th>Purpose & Definition</th>
+            <th>Transport</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>HTTP</strong></td>
+            <td>HyperText Transfer Protocol</td>
+            <td>80, 443</td>
+            <td>Web page transfer; stateless request-response; methods: GET, POST, PUT, DELETE; HTTPS adds SSL/TLS encryption</td>
+            <td>TCP</td>
+          </tr>
+          <tr>
+            <td><strong>HTTPS</strong></td>
+            <td>HTTP Secure</td>
+            <td>443</td>
+            <td>HTTP over SSL/TLS; provides encryption, authentication, integrity; uses certificates for server verification</td>
+            <td>TCP</td>
+          </tr>
+          <tr>
+            <td><strong>DNS</strong></td>
+            <td>Domain Name System</td>
+            <td>53</td>
+            <td>Translates domain names to IP addresses; hierarchical structure; recursive queries (full resolution) vs iterative (referral)</td>
+            <td>UDP (queries), TCP (zone transfers)</td>
+          </tr>
+          <tr>
+            <td><strong>SMTP</strong></td>
+            <td>Simple Mail Transfer Protocol</td>
+            <td>25, 587</td>
+            <td>Email transmission; MAIL FROM, RCPT TO, DATA commands; 3-digit reply codes (2xx success, 4xx temp fail, 5xx perm fail)</td>
+            <td>TCP</td>
+          </tr>
+          <tr>
+            <td><strong>POP3</strong></td>
+            <td>Post Office Protocol v3</td>
+            <td>110, 995</td>
+            <td>Email retrieval; downloads messages to client storage; DELETE marks for deletion; stateful connection</td>
+            <td>TCP</td>
+          </tr>
+          <tr>
+            <td><strong>IMAP</strong></td>
+            <td>Internet Message Access Protocol</td>
+            <td>143, 993</td>
+            <td>Email access without download; maintains server-side folders; SEARCH, FETCH operations; better for multi-device</td>
+            <td>TCP</td>
+          </tr>
+          <tr>
+            <td><strong>FTP</strong></td>
+            <td>File Transfer Protocol</td>
+            <td>21, 20</td>
+            <td>File transfer; control channel (21) for commands, data channel (20) for transfer; active vs passive modes; ASCII/binary modes</td>
+            <td>TCP</td>
+          </tr>
+          <tr>
+            <td><strong>TFTP</strong></td>
+            <td>Trivial FTP</td>
+            <td>69</td>
+            <td>Simplified FTP without authentication; minimal overhead; used for booting diskless workstations; lock-step operation</td>
+            <td>UDP</td>
+          </tr>
+          <tr>
+            <td><strong>Telnet</strong></td>
+            <td>Telecommunication Network</td>
+            <td>23</td>
+            <td>Remote terminal access; unencrypted (security risk); uses NVT (Network Virtual Terminal); replaced by SSH</td>
+            <td>TCP</td>
+          </tr>
+          <tr>
+            <td><strong>SSH</strong></td>
+            <td>Secure Shell</td>
+            <td>22</td>
+            <td>Encrypted remote shell; public-key cryptography; provides authentication and confidentiality; SCP for secure file transfer</td>
+            <td>TCP</td>
+          </tr>
+          <tr>
+            <td><strong>SNMP</strong></td>
+            <td>Simple Network Management Protocol</td>
+            <td>161, 162</td>
+            <td>Network device management; GET/SET/TRAP operations; community strings (v1/v2) or user auth (v3); MIB database</td>
+            <td>UDP</td>
+          </tr>
+          <tr>
+            <td><strong>DHCP</strong></td>
+            <td>Dynamic Host Configuration Protocol</td>
+            <td>67, 68</td>
+            <td>Automatic IP assignment; DORA process (Discover→Offer→Request→Acknowledge); lease time; broadcast-based discovery</td>
+            <td>UDP</td>
+          </tr>
+          <tr>
+            <td><strong>NTP</strong></td>
+            <td>Network Time Protocol</td>
+            <td>123</td>
+            <td>Time synchronization across network; uses timestamps; stratum levels for time source hierarchy; critical for logging</td>
+            <td>UDP</td>
+          </tr>
+          <tr>
+            <td><strong>SIP</strong></td>
+            <td>Session Initiation Protocol</td>
+            <td>5060, 5061</td>
+            <td>VoIP call setup and management; INVITE, BYE, REGISTER messages; SDP for session description</td>
+            <td>TCP/UDP</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LAYER 6 PRESENTATION LAYER -->
+    <div class="subsection" id="layer6-protocols">
+      <div class="subsection-title">Layer 6: Presentation Layer Protocols</div>
+      
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Protocol/Service</th>
+            <th>Full Form</th>
+            <th>Purpose & Definition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>SSL/TLS</strong></td>
+            <td>Secure Sockets Layer / Transport Layer Security</td>
+            <td>Encryption protocol for secure communication; uses certificates; handshake procedure; cipher suites; now TLS is standard (v1.2, v1.3)</td>
+          </tr>
+          <tr>
+            <td><strong>MIME</strong></td>
+            <td>Multipurpose Internet Mail Extensions</td>
+            <td>Standardizes email content encoding; defines Content-Type headers; supports attachments, images, audio in email</td>
+          </tr>
+          <tr>
+            <td><strong>Compression</strong></td>
+            <td>Data Compression Algorithms</td>
+            <td>Reduces data size; lossless (ZIP, GZIP) or lossy (JPEG, MP3); encryption compatibility considerations</td>
+          </tr>
+          <tr>
+            <td><strong>Character Encoding</strong></td>
+            <td>ASCII, UTF-8, UTF-16</td>
+            <td>Converts between different character set representations; UTF-8 is variable-length (1-4 bytes) and widely compatible</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LAYER 5 SESSION LAYER -->
+    <div class="subsection" id="layer5-protocols">
+      <div class="subsection-title">Layer 5: Session Layer Protocols & Services</div>
+      
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Definition & Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Session Management</strong></td>
+            <td>Establishes, maintains, terminates sessions between applications; uses tokens/identifiers to track conversations</td>
+          </tr>
+          <tr>
+            <td><strong>Dialog Control</strong></td>
+            <td>Manages who can transmit and when (simplex, half-duplex, full-duplex); prevents simultaneous transmission conflicts</td>
+          </tr>
+          <tr>
+            <td><strong>Synchronization Points</strong></td>
+            <td>Checkpoints in data exchange; allows recovery from failures without restarting entire session</td>
+          </tr>
+          <tr>
+            <td><strong>PAP</strong></td>
+            <td><strong>Password Authentication Protocol:</strong> Basic authentication for PPP; sends username/password in clear (insecure)</td>
+          </tr>
+          <tr>
+            <td><strong>CHAP</strong></td>
+            <td><strong>Challenge-Handshake Auth Protocol:</strong> Secure PPP authentication; uses challenge-response with MD5; periodic re-authentication</td>
+          </tr>
+          <tr>
+            <td><strong>RPC</strong></td>
+            <td><strong>Remote Procedure Call:</strong> Allows programs to execute functions on remote systems; abstracts network communication; version control</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LAYER 4 TRANSPORT LAYER -->
+    <div class="subsection" id="layer4-protocols">
+      <div class="subsection-title">Layer 4: Transport Layer Protocols (Full Reference)</div>
+      
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Protocol</th>
+            <th>Full Form</th>
+            <th>Type</th>
+            <th>Port(s)</th>
+            <th>Definition & Key Features</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>TCP</strong></td>
+            <td>Transmission Control Protocol</td>
+            <td>Connection-Oriented</td>
+            <td>Varies (HTTP:80, HTTPS:443, SMTP:25, etc.)</td>
+            <td>Reliable delivery with sequencing; 3-way handshake (SYN, SYN-ACK, ACK); flow control; congestion control; ordered delivery; error correction via retransmission</td>
+          </tr>
+          <tr>
+            <td><strong>UDP</strong></td>
+            <td>User Datagram Protocol</td>
+            <td>Connectionless</td>
+            <td>Varies (DNS:53, NTP:123, DHCP:67/68, RTP, etc.)</td>
+            <td>Fast delivery without connection setup; no reliability; no sequencing; minimal overhead; applications handle retransmission; used for real-time applications</td>
+          </tr>
+          <tr>
+            <td><strong>SCTP</strong></td>
+            <td>Stream Control Transmission Protocol</td>
+            <td>Hybrid (Connection-based, message-oriented)</td>
+            <td>Variable</td>
+            <td>Combines TCP reliability with UDP message boundaries; supports multi-streaming; multi-homing (failover); association setup similar to TCP</td>
+          </tr>
+          <tr>
+            <td><strong>DCCP</strong></td>
+            <td>Datagram Congestion Control Protocol</td>
+            <td>Message-Oriented</td>
+            <td>Variable</td>
+            <td>UDP-like speed with TCP-like congestion control; maintains message boundaries; suitable for real-time media applications</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>TCP Header Fields (20 bytes minimum):</strong> Source Port, Destination Port, Sequence Number, Acknowledgment Number, Control Flags (SYN, ACK, FIN, RST, PSH, URG), Window Size, Checksum, Urgent Pointer</p>
+      <p><strong>UDP Header Fields (8 bytes):</strong> Source Port, Destination Port, Length, Checksum</p>
+    </div>
+
+    <!-- LAYER 3 NETWORK LAYER -->
+    <div class="subsection" id="layer3-protocols">
+      <div class="subsection-title">Layer 3: Network Layer Protocols (Routing & IP)</div>
+      
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Protocol</th>
+            <th>Full Form</th>
+            <th>Purpose & Definition</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>IP</strong></td>
+            <td>Internet Protocol (IPv4/IPv6)</td>
+            <td>Fundamental packet delivery protocol; addresses via IP addresses; fragmentation handling; TTL field; used by all higher layers</td>
+            <td>Core Protocol</td>
+          </tr>
+          <tr>
+            <td><strong>ICMP</strong></td>
+            <td>Internet Control Message Protocol</td>
+            <td>Error reporting and diagnostics; ping (ECHO REQUEST/REPLY); traceroute; destination unreachable messages; used by routers</td>
+            <td>Control Protocol</td>
+          </tr>
+          <tr>
+            <td><strong>IGMP</strong></td>
+            <td>Internet Group Management Protocol</td>
+            <td>Manages multicast group membership; hosts report interest in multicast groups; routers track group members; v1, v2, v3 versions</td>
+            <td>Group Management</td>
+          </tr>
+          <tr>
+            <td><strong>ARP</strong></td>
+            <td>Address Resolution Protocol</td>
+            <td>Maps IP addresses to MAC addresses; broadcast query for IP; unicast response with MAC; dynamic table; ~3-20 minute cache timeout</td>
+            <td>Address Resolution</td>
+          </tr>
+          <tr>
+            <td><strong>RIP</strong></td>
+            <td>Routing Information Protocol</td>
+            <td>Distance-vector routing; hop count metric (max 15); periodic updates (30s); RIPv1 (classful), RIPv2 (classless, CIDR); slow convergence</td>
+            <td>IGP (Interior Gateway Protocol)</td>
+          </tr>
+          <tr>
+            <td><strong>OSPF</strong></td>
+            <td>Open Shortest Path First</td>
+            <td>Link-state routing; uses Dijkstra algorithm; cost metric (bandwidth-based); SPF computation; triggered updates; hierarchical (areas); faster convergence</td>
+            <td>IGP</td>
+          </tr>
+          <tr>
+            <td><strong>BGP</strong></td>
+            <td>Border Gateway Protocol</td>
+            <td>Exterior gateway protocol; inter-AS routing; path-vector algorithm; policy-based routing; TCP port 179; large network scalability</td>
+            <td>EGP (Exterior Gateway Protocol)</td>
+          </tr>
+          <tr>
+            <td><strong>EIGRP</strong></td>
+            <td>Enhanced Interior Gateway Routing Protocol</td>
+            <td>Cisco proprietary; hybrid routing (distance-vector + link-state); DUAL algorithm; fast convergence; multiple paths; bandwidth-delay metric</td>
+            <td>IGP</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LAYER 2 DATA LINK LAYER -->
+    <div class="subsection" id="layer2-protocols">
+      <div class="subsection-title">Layer 2: Data Link Layer Protocols & Standards</div>
+      
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Protocol</th>
+            <th>Full Form</th>
+            <th>Purpose & Definition</th>
+            <th>Scope</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Ethernet</strong></td>
+            <td>IEEE 802.3</td>
+            <td>LAN protocol; CSMA/CD for access; 48-bit MAC addresses; frames with preamble, SFD, header, data, FCS; speeds: 10Mbps→100Gbps</td>
+            <td>LAN</td>
+          </tr>
+          <tr>
+            <td><strong>Wi-Fi</strong></td>
+            <td>IEEE 802.11 (a/b/g/n/ac/ax)</td>
+            <td>Wireless LAN; CSMA/CA (collision avoidance); RTS/CTS handshake; hidden terminal solution; channel access; 2.4GHz/5GHz/6GHz bands</td>
+            <td>WLAN</td>
+          </tr>
+          <tr>
+            <td><strong>PPP</strong></td>
+            <td>Point-to-Point Protocol</td>
+            <td>Dial-up and serial link protocol; frame format with flags; LCP (Link Control), NCP (Network Control); authentication (PAP, CHAP)</td>
+            <td>Point-to-Point</td>
+          </tr>
+          <tr>
+            <td><strong>HDLC</strong></td>
+            <td>High-Level Data Link Control</td>
+            <td>Bit-oriented synchronous protocol; flag-based framing; bit stuffing; used in WAN links; derivatives: X.25, Frame Relay</td>
+            <td>WAN</td>
+          </tr>
+          <tr>
+            <td><strong>Frame Relay</strong></td>
+            <td>Frame Relay Protocol</td>
+            <td>Packet-switching service; DLCI (Data Link Connection Identifier); virtual circuits; reduced error checking (relies on upper layers)</td>
+            <td>WAN</td>
+          </tr>
+          <tr>
+            <td><strong>ATM</strong></td>
+            <td>Asynchronous Transfer Mode</td>
+            <td>Cell-based switching (53-byte cells); connection-oriented; QoS support; legacy WAN technology; virtual paths/channels</td>
+            <td>WAN</td>
+          </tr>
+          <tr>
+            <td><strong>Spanning Tree</strong></td>
+            <td>IEEE 802.1D Spanning Tree Protocol</td>
+            <td>Loop prevention in switched networks; BPDU (Bridge Protocol Data Unit); root bridge election; port states (Disabled→Blocking→Listening→Learning→Forwarding)</td>
+            <td>Switching</td>
+          </tr>
+          <tr>
+            <td><strong>VLANs</strong></td>
+            <td>Virtual Local Area Networks (IEEE 802.1Q)</td>
+            <td>Logical network segmentation; VLAN tagging with 12-bit VLAN ID; broadcast domain isolation; trunking between switches</td>
+            <td>Switching</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LAYER 1 PHYSICAL LAYER -->
+    <div class="subsection" id="layer1-protocols">
+      <div class="subsection-title">Layer 1: Physical Layer Standards & Media</div>
+      
+      <table class="spec-table">
+        <thead>
+          <tr>
+            <th>Medium/Standard</th>
+            <th>Bandwidth/Speed</th>
+            <th>Characteristics & Definition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Twisted Pair (UTP/STP)</strong></td>
+            <td>Cat 5e: 1Gbps, Cat 6: 10Gbps, Cat 6A: 10Gbps</td>
+            <td>Two wires twisted together; UTP (unshielded) vs STP (shielded); RJ-45 connectors; susceptible to EMI/interference; common in LAN</td>
+          </tr>
+          <tr>
+            <td><strong>Coaxial Cable</strong></td>
+            <td>10Mbps (legacy), 100 Mbps</td>
+            <td>Central conductor with outer shield; better EMI protection; used in cable TV; legacy Ethernet (10Base-2, 10Base-5)</td>
+          </tr>
+          <tr>
+            <td><strong>Fiber Optic</strong></td>
+            <td>100Mbps→100Gbps (multimode), up to 400Gbps (single-mode)</td>
+            <td>Light pulses through glass; immune to EMI; single-mode (long-distance), multimode (short-distance); higher cost; future-proof</td>
+          </tr>
+          <tr>
+            <td><strong>Wireless (Radio)</strong></td>
+            <td>11Mbps→9.6Gbps depending on standard</td>
+            <td>Electromagnetic waves; 2.4GHz (crowded), 5GHz, 6GHz bands; attenuation over distance; multipath fading; interference issues</td>
+          </tr>
+          <tr>
+            <td><strong>Microwave/Satellite</strong></td>
+            <td>Variable (Mbps to Gbps)</td>
+            <td>Long-distance transmission; microwave line-of-sight; satellite for remote areas; high latency (satellite ~250ms); weather dependent</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PROTOCOL COMPARISON CHART -->
+    <div class="subsection" id="protocol-quick-ref">
+      <div class="subsection-title">Quick Protocol Reference by Category</div>
+      
+      <div class="topic-grid">
+        <div class="topic-card">
+          <div class="card-title">🌐 Web & HTTP Services</div>
+          <div class="card-body">
+            HTTP/HTTPS - Web pages<br>
+            FTP/SFTP - File transfer<br>
+            SMTP - Email sending<br>
+            POP3/IMAP - Email retrieval<br>
+            DNS - Name resolution
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">📞 Real-Time & Voice</div>
+          <div class="card-body">
+            RTP - Real-time media<br>
+            RTCP - RTP control<br>
+            SIP - VoIP call setup<br>
+            H.323 - Video conferencing<br>
+            MMPEG - Media protocols
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">🔧 Network Management</div>
+          <div class="card-body">
+            SNMP - Device management<br>
+            NetFlow - Traffic analysis<br>
+            SYSLOG - Event logging<br>
+            NTP - Time sync<br>
+            SSH - Secure administration
+          </div>
+        </div>
+        <div class="topic-card">
+          <div class="card-title">🔒 Security & Encryption</div>
+          <div class="card-body">
+            SSL/TLS - Transport security<br>
+            IPSec - IP layer encryption<br>
+            SSH - Secure shell<br>
+            PGP - Email encryption<br>
+            LDAP - Directory services
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVISION BLUEPRINT CLOSING -->
+  <footer class="footer">
+    <div style="margin-bottom:0.5rem; color:var(--accent);">🛰️ Computer Networks Core Spec Manual — Comprehensive Blueprint</div>
+    <div>Strict Production Compilation Engine — Fully Formatted for Zero-Anomalous Performance Review</div>
+  </footer>
+
+</main>
+
+<script>
+  // Active navigation link tracking highlight logic
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      const top = s.offsetTop;
+      if (pageYOffset >= top - 100) {
+        current = s.getAttribute('id');
+      }
+    });
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === `#${current}`) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

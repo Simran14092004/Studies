@@ -1,0 +1,956 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.container { padding: 1rem 0; }
+.header { margin-bottom: 1.5rem; }
+.header h1 { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.header p { font-size: 14px; color: var(--color-text-secondary); margin-top: 4px; }
+.progress-bar { background: var(--color-background-secondary); border-radius: 99px; height: 8px; margin: 12px 0 0; overflow: hidden; }
+.progress-fill { height: 100%; background: #1D9E75; border-radius: 99px; transition: width 0.4s; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.tab { padding: 6px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); font-size: 13px; cursor: pointer; background: var(--color-background-primary); color: var(--color-text-secondary); transition: all 0.15s; }
+.tab:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.tab.active { background: #1D9E75; color: #fff; border-color: #1D9E75; }
+.tab.done { border-color: #1D9E75; color: #1D9E75; }
+.content-area { display: none; }
+.content-area.active { display: block; }
+.day-badge { display: inline-block; font-size: 11px; padding: 2px 10px; border-radius: 99px; background: #E1F5EE; color: #0F6E56; font-weight: 500; margin-bottom: 10px; }
+.section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+.section-desc { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 1rem; line-height: 1.6; }
+.concept-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); margin-bottom: 1rem; overflow: hidden; }
+.concept-header { padding: 12px 16px; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+.concept-header:hover { background: var(--color-background-secondary); }
+.concept-icon { font-size: 18px; color: #1D9E75; }
+.concept-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); flex: 1; }
+.concept-badge { font-size: 11px; padding: 2px 8px; border-radius: 99px; }
+.badge-theory { background: #E6F1FB; color: #185FA5; }
+.badge-code { background: #E1F5EE; color: #0F6E56; }
+.badge-realworld { background: #FAEEDA; color: #854F0B; }
+.chevron { font-size: 14px; color: var(--color-text-secondary); transition: transform 0.2s; }
+.concept-body { display: none; padding: 0 16px 16px; }
+.concept-body.open { display: block; }
+.chevron.open { transform: rotate(180deg); }
+.explanation { font-size: 14px; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 12px; }
+.code-block { background: #2C2C2A; border-radius: var(--border-radius-md); padding: 14px 16px; overflow-x: auto; margin: 10px 0; position: relative; }
+.code-block pre { font-family: var(--font-mono); font-size: 13px; color: #D3D1C7; line-height: 1.6; white-space: pre; }
+.code-label { font-size: 11px; color: #888780; font-family: var(--font-mono); margin-bottom: 6px; }
+.kw { color: #B5D4F4; }
+.fn { color: #9FE1CB; }
+.str { color: #FAC775; }
+.cm { color: #5F5E5A; }
+.var { color: #F5C4B3; }
+.num { color: #ED93B1; }
+.real-world { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 12px 14px; margin-top: 10px; }
+.real-world-label { font-size: 11px; font-weight: 500; color: #854F0B; margin-bottom: 4px; }
+.real-world p { font-size: 13px; color: #633806; line-height: 1.6; }
+.tip-box { background: #E1F5EE; border-radius: var(--border-radius-md); padding: 10px 14px; margin-top: 8px; font-size: 13px; color: #085041; line-height: 1.6; }
+.done-btn { display: block; margin-top: 14px; padding: 8px 18px; border-radius: var(--border-radius-md); background: #1D9E75; color: #fff; border: none; font-size: 13px; cursor: pointer; }
+.done-btn:hover { background: #0F6E56; }
+.done-btn.checked { background: var(--color-background-secondary); color: #1D9E75; border: 0.5px solid #1D9E75; }
+.roadmap { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.roadmap-item { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 12px; text-align: center; }
+.roadmap-item.current { border-color: #1D9E75; border-width: 1.5px; }
+.roadmap-day { font-size: 11px; color: var(--color-text-secondary); }
+.roadmap-topic { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-top: 2px; }
+.roadmap-item.done-topic .roadmap-topic { color: #1D9E75; }
+.ask-btn { padding: 8px 16px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); font-size: 13px; color: var(--color-text-primary); cursor: pointer; margin-top: 1rem; }
+.ask-btn:hover { background: var(--color-background-secondary); }
+</style>
+
+<div class="container">
+<h2 class="sr-only">PHP and Laravel 20-Day Study Guide for Internship at 24/7 Software Inc.</h2>
+
+<div class="header">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <i class="ti ti-code" style="font-size:22px;color:#1D9E75" aria-hidden="true"></i>
+    <h1>PHP + Laravel — 20-Day Internship Guide</h1>
+  </div>
+  <p>24/7 Software Inc. · AIML Department Prep · Tap any topic to expand notes, code & examples</p>
+  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:5%"></div></div>
+  <p style="font-size:12px;color:var(--color-text-secondary);margin-top:4px;" id="prog-label">0 / 20 topics completed</p>
+</div>
+
+<div class="tabs" id="tabs">
+  <div class="tab active" onclick="switchTab('roadmap')"><i class="ti ti-map" aria-hidden="true"></i> Roadmap</div>
+  <div class="tab" onclick="switchTab('basics')">PHP Basics</div>
+  <div class="tab" onclick="switchTab('intermediate')">Intermediate</div>
+  <div class="tab" onclick="switchTab('advanced')">Advanced PHP</div>
+  <div class="tab" onclick="switchTab('laravel')">Laravel</div>
+</div>
+
+<div class="content-area active" id="tab-roadmap">
+  <div class="day-badge">Full 20-Day Plan</div>
+  <div class="section-title">Your Learning Roadmap</div>
+  <p class="section-desc">Follow this day-by-day schedule. Each session is ~3-4 hours. Click a phase tab above to jump into notes.</p>
+  <div class="roadmap">
+    <div class="roadmap-item current"><div class="roadmap-day">Days 1–2</div><div class="roadmap-topic">PHP Syntax & Variables</div></div>
+    <div class="roadmap-item"><div class="roadmap-day">Days 3–4</div><div class="roadmap-topic">Arrays & Functions</div></div>
+    <div class="roadmap-item"><div class="roadmap-day">Days 5–6</div><div class="roadmap-topic">OOP Basics</div></div>
+    <div class="roadmap-item"><div class="roadmap-day">Days 7–8</div><div class="roadmap-topic">File I/O & Forms</div></div>
+    <div class="roadmap-item"><div class="roadmap-day">Days 9–10</div><div class="roadmap-topic">MySQL & PDO</div></div>
+    <div class="roadmap-item"><div class="roadmap-day">Days 11–12</div><div class="roadmap-topic">Sessions & APIs</div></div>
+    <div class="roadmap-item"><div class="roadmap-day">Days 13–14</div><div class="roadmap-topic">Laravel Setup & MVC</div></div>
+    <div class="roadmap-item"><div class="roadmap-day">Days 15–16</div><div class="roadmap-topic">Eloquent ORM</div></div>
+    <div class="roadmap-item"><div class="roadmap-day">Days 17–18</div><div class="roadmap-topic">Blade & Auth</div></div>
+    <div class="roadmap-item"><div class="roadmap-day">Days 19–20</div><div class="roadmap-topic">Mini Project</div></div>
+  </div>
+  <div class="tip-box"><i class="ti ti-bulb" aria-hidden="true"></i> <strong>Tip:</strong> Build a small "Task Manager" app as you learn — it will use every concept from variables to Laravel routes. By day 20 it'll be your portfolio piece!</div>
+  <button class="ask-btn" onclick="sendPrompt('Give me a detailed day-by-day schedule for learning PHP and Laravel in 20 days with daily goals and mini exercises')">Get detailed daily schedule with exercises ↗</button>
+</div>
+
+<div class="content-area" id="tab-basics">
+  <div class="day-badge">Days 1–4 · PHP Basics</div>
+  <div class="section-title">PHP Fundamentals</div>
+  <p class="section-desc">PHP is a server-side scripting language. Every .php file runs on the server and sends HTML to the browser. Master these before anything else.</p>
+
+  <div class="concept-card" id="cc1">
+    <div class="concept-header" onclick="toggle('cc1')">
+      <i class="ti ti-variable concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Variables, Data Types & Echo</span>
+      <span class="concept-badge badge-code">Code</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc1"></i>
+    </div>
+    <div class="concept-body" id="cb-cc1">
+      <p class="explanation">PHP variables start with <code>$</code>. PHP is loosely typed — you don't declare types. The <code>echo</code> or <code>print</code> statement outputs to the browser.</p>
+      <div class="code-block">
+        <div class="code-label">variables_types.php</div>
+        <pre><span class="cm">&lt;?php</span>
+<span class="cm">// Variables always start with $</span>
+<span class="var">$name</span>    = <span class="str">"Riya"</span>;          <span class="cm">// string</span>
+<span class="var">$age</span>     = <span class="num">22</span>;              <span class="cm">// integer</span>
+<span class="var">$salary</span>  = <span class="num">45000.50</span>;        <span class="cm">// float</span>
+<span class="var">$isIntern</span> = <span class="kw">true</span>;           <span class="cm">// boolean</span>
+<span class="var">$company</span> = <span class="kw">null</span>;            <span class="cm">// null</span>
+
+<span class="cm">// Outputting values</span>
+<span class="kw">echo</span> <span class="str">"Hello, "</span> . <span class="var">$name</span>;     <span class="cm">// concatenation with .</span>
+<span class="kw">echo</span> <span class="str">"&lt;br&gt;Age: {$age}"</span>;     <span class="cm">// string interpolation</span>
+
+<span class="cm">// Type checking</span>
+<span class="fn">var_dump</span>(<span class="var">$isIntern</span>);         <span class="cm">// bool(true)</span>
+<span class="kw">echo</span> <span class="fn">gettype</span>(<span class="var">$salary</span>);      <span class="cm">// double</span>
+
+<span class="cm">// Type casting</span>
+<span class="var">$strAge</span> = (<span class="kw">string</span>) <span class="var">$age</span>;
+<span class="var">$intStr</span> = (<span class="kw">int</span>) <span class="str">"42abc"</span>;    <span class="cm">// 42</span></pre>
+      </div>
+      <div class="real-world">
+        <div class="real-world-label">Real-World Use at 24/7 Software Inc.</div>
+        <p>When a user fills a registration form, their name, email, and age come in as variables: <code>$name = $_POST['name']</code>. You'll validate, cast, and store these in a database every single day.</p>
+      </div>
+      <button class="done-btn" id="btn-cc1" onclick="markDone('cc1',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <div class="concept-card" id="cc2">
+    <div class="concept-header" onclick="toggle('cc2')">
+      <i class="ti ti-arrows-shuffle concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Conditionals & Loops</span>
+      <span class="concept-badge badge-code">Code</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc2"></i>
+    </div>
+    <div class="concept-body" id="cb-cc2">
+      <p class="explanation">Control flow with if/else, switch, and loops. PHP has for, while, foreach — you'll use foreach constantly for arrays.</p>
+      <div class="code-block">
+        <div class="code-label">control_flow.php</div>
+        <pre><span class="cm">&lt;?php</span>
+<span class="var">$score</span> = <span class="num">85</span>;
+
+<span class="cm">// if / elseif / else</span>
+<span class="kw">if</span> (<span class="var">$score</span> >= <span class="num">90</span>) {
+    <span class="kw">echo</span> <span class="str">"Grade: A"</span>;
+} <span class="kw">elseif</span> (<span class="var">$score</span> >= <span class="num">75</span>) {
+    <span class="kw">echo</span> <span class="str">"Grade: B"</span>;   <span class="cm">// this runs</span>
+} <span class="kw">else</span> {
+    <span class="kw">echo</span> <span class="str">"Grade: C"</span>;
+}
+
+<span class="cm">// Ternary (short if)</span>
+<span class="var">$status</span> = <span class="var">$score</span> >= <span class="num">50</span> ? <span class="str">"Pass"</span> : <span class="str">"Fail"</span>;
+
+<span class="cm">// for loop</span>
+<span class="kw">for</span> (<span class="var">$i</span> = <span class="num">1</span>; <span class="var">$i</span> <= <span class="num">5</span>; <span class="var">$i</span>++) {
+    <span class="kw">echo</span> <span class="str">"Row {$i} &lt;br&gt;"</span>;
+}
+
+<span class="cm">// foreach (most common in PHP)</span>
+<span class="var">$fruits</span> = [<span class="str">"apple"</span>, <span class="str">"mango"</span>, <span class="str">"banana"</span>];
+<span class="kw">foreach</span> (<span class="var">$fruits</span> <span class="kw">as</span> <span class="var">$fruit</span>) {
+    <span class="kw">echo</span> <span class="var">$fruit</span> . <span class="str">" &lt;br&gt;"</span>;
+}
+
+<span class="cm">// while loop</span>
+<span class="var">$n</span> = <span class="num">1</span>;
+<span class="kw">while</span> (<span class="var">$n</span> <= <span class="num">3</span>) {
+    <span class="kw">echo</span> <span class="var">$n</span>++;
+}</pre>
+      </div>
+      <div class="real-world">
+        <div class="real-world-label">Real-World: E-commerce Order List</div>
+        <p>Fetching all orders from a database returns an array. You loop through with <code>foreach ($orders as $order)</code> and display each row in an HTML table — this is the backbone of every dashboard.</p>
+      </div>
+      <button class="done-btn" id="btn-cc2" onclick="markDone('cc2',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <div class="concept-card" id="cc3">
+    <div class="concept-header" onclick="toggle('cc3')">
+      <i class="ti ti-list concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Arrays (Indexed, Associative, Multidimensional)</span>
+      <span class="concept-badge badge-code">Code</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc3"></i>
+    </div>
+    <div class="concept-body" id="cb-cc3">
+      <p class="explanation">Arrays are the workhorse of PHP. Associative arrays (key → value) are like Python dicts and JavaScript objects. You'll use them everywhere — database rows, config, API responses.</p>
+      <div class="code-block">
+        <div class="code-label">arrays.php</div>
+        <pre><span class="cm">&lt;?php</span>
+<span class="cm">// Indexed array</span>
+<span class="var">$skills</span> = [<span class="str">"PHP"</span>, <span class="str">"Laravel"</span>, <span class="str">"MySQL"</span>];
+<span class="kw">echo</span> <span class="var">$skills</span>[<span class="num">0</span>];              <span class="cm">// PHP</span>
+
+<span class="cm">// Associative array (key => value)</span>
+<span class="var">$user</span> = [
+    <span class="str">"name"</span>  => <span class="str">"Arjun"</span>,
+    <span class="str">"email"</span> => <span class="str">"arjun@247.in"</span>,
+    <span class="str">"role"</span>  => <span class="str">"intern"</span>
+];
+<span class="kw">echo</span> <span class="var">$user</span>[<span class="str">"name"</span>];           <span class="cm">// Arjun</span>
+
+<span class="cm">// Multidimensional (array of arrays)</span>
+<span class="var">$employees</span> = [
+    [<span class="str">"id"</span> => <span class="num">1</span>, <span class="str">"name"</span> => <span class="str">"Priya"</span>],
+    [<span class="str">"id"</span> => <span class="num">2</span>, <span class="str">"name"</span> => <span class="str">"Rahul"</span>],
+];
+<span class="kw">echo</span> <span class="var">$employees</span>[<span class="num">0</span>][<span class="str">"name"</span>]; <span class="cm">// Priya</span>
+
+<span class="cm">// Useful array functions</span>
+<span class="fn">array_push</span>(<span class="var">$skills</span>, <span class="str">"Git"</span>);  <span class="cm">// add to end</span>
+<span class="fn">count</span>(<span class="var">$skills</span>);              <span class="cm">// 4</span>
+<span class="fn">in_array</span>(<span class="str">"PHP"</span>, <span class="var">$skills</span>);   <span class="cm">// true</span>
+<span class="fn">array_keys</span>(<span class="var">$user</span>);          <span class="cm">// [name,email,role]</span>
+<span class="fn">array_merge</span>(<span class="var">$skills</span>, [<span class="str">"Vue"</span>]);</pre>
+      </div>
+      <div class="real-world">
+        <div class="real-world-label">Real-World: API Response Handling</div>
+        <p>Every JSON API response becomes a PHP associative array after <code>json_decode($response, true)</code>. At 24/7 Software, AIML model results come back as arrays you'll parse and display.</p>
+      </div>
+      <button class="done-btn" id="btn-cc3" onclick="markDone('cc3',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <div class="concept-card" id="cc4">
+    <div class="concept-header" onclick="toggle('cc4')">
+      <i class="ti ti-function concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Functions & Built-in String Functions</span>
+      <span class="concept-badge badge-code">Code</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc4"></i>
+    </div>
+    <div class="concept-body" id="cb-cc4">
+      <p class="explanation">Functions are reusable code blocks. PHP has 1000+ built-in functions — learn the string and math ones first. Use type hints (PHP 7+) for cleaner code.</p>
+      <div class="code-block">
+        <div class="code-label">functions.php</div>
+        <pre><span class="cm">&lt;?php</span>
+<span class="cm">// Basic function</span>
+<span class="kw">function</span> <span class="fn">greet</span>(<span class="kw">string</span> <span class="var">$name</span>): <span class="kw">string</span> {
+    <span class="kw">return</span> <span class="str">"Hello, {$name}!"</span>;
+}
+<span class="kw">echo</span> <span class="fn">greet</span>(<span class="str">"Anjali"</span>);
+
+<span class="cm">// Default parameter value</span>
+<span class="kw">function</span> <span class="fn">makeTitle</span>(<span class="var">$text</span>, <span class="var">$tag</span> = <span class="str">"h1"</span>): <span class="kw">string</span> {
+    <span class="kw">return</span> <span class="str">"&lt;{$tag}&gt;{$text}&lt;/{$tag}&gt;"</span>;
+}
+
+<span class="cm">// Arrow function (PHP 7.4+)</span>
+<span class="var">$double</span> = <span class="kw">fn</span>(<span class="var">$n</span>) => <span class="var">$n</span> * <span class="num">2</span>;
+<span class="kw">echo</span> <span class="var">$double</span>(<span class="num">5</span>);              <span class="cm">// 10</span>
+
+<span class="cm">// Essential string functions</span>
+<span class="fn">strlen</span>(<span class="str">"Hello"</span>);               <span class="cm">// 5</span>
+<span class="fn">strtoupper</span>(<span class="str">"php"</span>);            <span class="cm">// PHP</span>
+<span class="fn">str_replace</span>(<span class="str">"World"</span>,<span class="str">"PHP"</span>,<span class="str">"Hello World"</span>);
+<span class="fn">trim</span>(<span class="str">"  hello  "</span>);           <span class="cm">// "hello"</span>
+<span class="fn">explode</span>(<span class="str">","</span>, <span class="str">"a,b,c"</span>);       <span class="cm">// ["a","b","c"]</span>
+<span class="fn">implode</span>(<span class="str">"-"</span>, [<span class="str">"a"</span>,<span class="str">"b"</span>]);     <span class="cm">// "a-b"</span>
+<span class="fn">substr</span>(<span class="str">"Laravel"</span>, <span class="num">0</span>, <span class="num">3</span>);     <span class="cm">// "Lar"</span>
+<span class="fn">strpos</span>(<span class="str">"Hello PHP"</span>, <span class="str">"PHP"</span>);  <span class="cm">// 6</span>
+<span class="fn">sprintf</span>(<span class="str">"Price: ₹%.2f"</span>, <span class="num">99.9</span>);</pre>
+      </div>
+      <div class="real-world">
+        <div class="real-world-label">Real-World: Input Sanitization</div>
+        <p>Before saving any user input to your database, you'll call <code>trim()</code>, <code>strtolower()</code>, and <code>htmlspecialchars()</code> to clean data. This prevents XSS attacks — something interviewers ask about!</p>
+      </div>
+      <button class="done-btn" id="btn-cc4" onclick="markDone('cc4',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <button class="ask-btn" onclick="sendPrompt('Give me 5 PHP beginner exercises on variables, loops, arrays and functions that I can practice today')">Give me practice exercises for PHP basics ↗</button>
+</div>
+
+<div class="content-area" id="tab-intermediate">
+  <div class="day-badge">Days 5–12 · Intermediate PHP</div>
+  <div class="section-title">OOP, Forms, MySQL & Sessions</div>
+  <p class="section-desc">This is the core of professional PHP. Everything in Laravel is built on these concepts — especially OOP.</p>
+
+  <div class="concept-card" id="cc5">
+    <div class="concept-header" onclick="toggle('cc5')">
+      <i class="ti ti-building-factory concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Object-Oriented PHP — Classes & Objects</span>
+      <span class="concept-badge badge-theory">Theory + Code</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc5"></i>
+    </div>
+    <div class="concept-body" id="cb-cc5">
+      <p class="explanation">OOP organizes code into classes (blueprints) and objects (instances). Laravel is 100% OOP — you cannot use Laravel without understanding this. Key concepts: properties, methods, constructor, visibility (public/private/protected).</p>
+      <div class="code-block">
+        <div class="code-label">oop_basics.php</div>
+        <pre><span class="cm">&lt;?php</span>
+<span class="kw">class</span> <span class="fn">Employee</span> {
+    <span class="cm">// Properties</span>
+    <span class="kw">public</span> <span class="kw">string</span> <span class="var">$name</span>;
+    <span class="kw">private</span> <span class="kw">float</span> <span class="var">$salary</span>;
+    <span class="kw">protected</span> <span class="kw">string</span> <span class="var">$department</span>;
+
+    <span class="cm">// Constructor — runs when object is created</span>
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="var">$name</span>, <span class="var">$salary</span>, <span class="var">$dept</span>) {
+        <span class="var">$this</span>-><span class="var">name</span>       = <span class="var">$name</span>;
+        <span class="var">$this</span>-><span class="var">salary</span>     = <span class="var">$salary</span>;
+        <span class="var">$this</span>-><span class="var">department</span> = <span class="var">$dept</span>;
+    }
+
+    <span class="cm">// Method</span>
+    <span class="kw">public function</span> <span class="fn">introduce</span>(): <span class="kw">string</span> {
+        <span class="kw">return</span> <span class="str">"{$this->name} works in {$this->department}"</span>;
+    }
+
+    <span class="cm">// Getter for private property</span>
+    <span class="kw">public function</span> <span class="fn">getSalary</span>(): <span class="kw">float</span> {
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="var">salary</span>;
+    }
+}
+
+<span class="cm">// Create an object</span>
+<span class="var">$emp</span> = <span class="kw">new</span> <span class="fn">Employee</span>(<span class="str">"Neha"</span>, <span class="num">55000</span>, <span class="str">"AIML"</span>);
+<span class="kw">echo</span> <span class="var">$emp</span>-><span class="fn">introduce</span>();   <span class="cm">// Neha works in AIML</span>
+<span class="kw">echo</span> <span class="var">$emp</span>-><span class="fn">getSalary</span>();  <span class="cm">// 55000</span>
+
+<span class="cm">// Inheritance</span>
+<span class="kw">class</span> <span class="fn">Intern</span> <span class="kw">extends</span> <span class="fn">Employee</span> {
+    <span class="kw">public</span> <span class="kw">int</span> <span class="var">$daysLeft</span>;
+
+    <span class="kw">public function</span> <span class="fn">__construct</span>(<span class="var">$name</span>, <span class="var">$dept</span>, <span class="var">$days</span>) {
+        <span class="kw">parent</span>::<span class="fn">__construct</span>(<span class="var">$name</span>, <span class="num">0</span>, <span class="var">$dept</span>);
+        <span class="var">$this</span>-><span class="var">daysLeft</span> = <span class="var">$days</span>;
+    }
+
+    <span class="kw">public function</span> <span class="fn">introduce</span>(): <span class="kw">string</span> {
+        <span class="kw">return</span> <span class="str">"Intern {$this->name}, {$this->daysLeft} days to go!"</span>;
+    }
+}
+
+<span class="var">$me</span> = <span class="kw">new</span> <span class="fn">Intern</span>(<span class="str">"You"</span>, <span class="str">"AIML"</span>, <span class="num">20</span>);
+<span class="kw">echo</span> <span class="var">$me</span>-><span class="fn">introduce</span>();</pre>
+      </div>
+      <div class="real-world">
+        <div class="real-world-label">Real-World: Every Laravel Model is a Class</div>
+        <p>In Laravel, <code>class User extends Model</code> is OOP inheritance. Every controller, middleware, and service is a class. Understanding <code>$this</code>, constructors, and visibility is non-negotiable.</p>
+      </div>
+      <button class="done-btn" id="btn-cc5" onclick="markDone('cc5',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <div class="concept-card" id="cc6">
+    <div class="concept-header" onclick="toggle('cc6')">
+      <i class="ti ti-forms concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Forms, GET/POST & Input Validation</span>
+      <span class="concept-badge badge-code">Code</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc6"></i>
+    </div>
+    <div class="concept-body" id="cb-cc6">
+      <p class="explanation">Forms send data via GET (URL) or POST (body). Always validate and sanitize before processing. Never trust raw user input.</p>
+      <div class="code-block">
+        <div class="code-label">form_handler.php</div>
+        <pre><span class="cm">&lt;!-- HTML Form --&gt;</span>
+<span class="kw">&lt;form</span> method=<span class="str">"POST"</span> action=<span class="str">"process.php"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;input</span> type=<span class="str">"text"</span> name=<span class="str">"username"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;input</span> type=<span class="str">"email"</span> name=<span class="str">"email"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;button</span> type=<span class="str">"submit"</span><span class="kw">&gt;</span>Register<span class="kw">&lt;/button&gt;</span>
+<span class="kw">&lt;/form&gt;</span>
+
+<span class="cm">&lt;?php // process.php</span>
+<span class="kw">if</span> (<span class="var">$_SERVER</span>[<span class="str">"REQUEST_METHOD"</span>] === <span class="str">"POST"</span>) {
+
+    <span class="cm">// Sanitize inputs</span>
+    <span class="var">$username</span> = <span class="fn">trim</span>(<span class="fn">htmlspecialchars</span>(<span class="var">$_POST</span>[<span class="str">"username"</span>]));
+    <span class="var">$email</span>    = <span class="fn">filter_var</span>(<span class="var">$_POST</span>[<span class="str">"email"</span>], <span class="kw">FILTER_SANITIZE_EMAIL</span>);
+
+    <span class="cm">// Validate</span>
+    <span class="var">$errors</span> = [];
+    <span class="kw">if</span> (<span class="fn">empty</span>(<span class="var">$username</span>)) {
+        <span class="var">$errors</span>[] = <span class="str">"Username required"</span>;
+    }
+    <span class="kw">if</span> (!<span class="fn">filter_var</span>(<span class="var">$email</span>, <span class="kw">FILTER_VALIDATE_EMAIL</span>)) {
+        <span class="var">$errors</span>[] = <span class="str">"Invalid email"</span>;
+    }
+
+    <span class="kw">if</span> (<span class="fn">empty</span>(<span class="var">$errors</span>)) {
+        <span class="kw">echo</span> <span class="str">"Welcome, {$username}!"</span>;
+    } <span class="kw">else</span> {
+        <span class="kw">foreach</span> (<span class="var">$errors</span> <span class="kw">as</span> <span class="var">$e</span>) <span class="kw">echo</span> <span class="var">$e</span> . <span class="str">"&lt;br&gt;"</span>;
+    }
+}</pre>
+      </div>
+      <div class="real-world">
+        <div class="real-world-label">Security at 24/7 Software Inc.</div>
+        <p>OWASP Top 10 attacks include XSS (cross-site scripting) and SQL injection — both exploited via form inputs. <code>htmlspecialchars()</code> prevents XSS. Use PDO prepared statements (next topic) to prevent SQL injection.</p>
+      </div>
+      <button class="done-btn" id="btn-cc6" onclick="markDone('cc6',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <div class="concept-card" id="cc7">
+    <div class="concept-header" onclick="toggle('cc7')">
+      <i class="ti ti-database concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">MySQL Database with PDO</span>
+      <span class="concept-badge badge-realworld">Critical</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc7"></i>
+    </div>
+    <div class="concept-body" id="cb-cc7">
+      <p class="explanation">PDO (PHP Data Objects) is the modern, secure way to talk to databases. Always use prepared statements to prevent SQL injection. Master CRUD — Create, Read, Update, Delete.</p>
+      <div class="code-block">
+        <div class="code-label">database_pdo.php</div>
+        <pre><span class="cm">&lt;?php</span>
+<span class="cm">// 1. Connect to MySQL</span>
+<span class="kw">try</span> {
+    <span class="var">$pdo</span> = <span class="kw">new</span> <span class="fn">PDO</span>(
+        <span class="str">"mysql:host=localhost;dbname=company_db;charset=utf8"</span>,
+        <span class="str">"root"</span>, <span class="str">"password"</span>,
+        [<span class="kw">PDO</span>::<span class="fn">ATTR_ERRMODE</span> => <span class="kw">PDO</span>::<span class="fn">ERRMODE_EXCEPTION</span>]
+    );
+} <span class="kw">catch</span> (<span class="fn">PDOException</span> <span class="var">$e</span>) {
+    <span class="kw">die</span>(<span class="str">"Connection failed: "</span> . <span class="var">$e</span>-><span class="fn">getMessage</span>());
+}
+
+<span class="cm">// 2. CREATE — Insert (always use prepared statements)</span>
+<span class="var">$stmt</span> = <span class="var">$pdo</span>-><span class="fn">prepare</span>(
+    <span class="str">"INSERT INTO users (name, email) VALUES (:name, :email)"</span>
+);
+<span class="var">$stmt</span>-><span class="fn">execute</span>([<span class="str">':name'</span> => <span class="str">"Kiran"</span>, <span class="str">':email'</span> => <span class="str">"k@247.in"</span>]);
+
+<span class="cm">// 3. READ — Fetch all users</span>
+<span class="var">$stmt</span> = <span class="var">$pdo</span>-><span class="fn">query</span>(<span class="str">"SELECT * FROM users"</span>);
+<span class="var">$users</span> = <span class="var">$stmt</span>-><span class="fn">fetchAll</span>(<span class="kw">PDO</span>::<span class="fn">FETCH_ASSOC</span>);
+<span class="kw">foreach</span> (<span class="var">$users</span> <span class="kw">as</span> <span class="var">$user</span>) {
+    <span class="kw">echo</span> <span class="var">$user</span>[<span class="str">'name'</span>] . <span class="str">" - "</span> . <span class="var">$user</span>[<span class="str">'email'</span>];
+}
+
+<span class="cm">// 4. UPDATE</span>
+<span class="var">$stmt</span> = <span class="var">$pdo</span>-><span class="fn">prepare</span>(
+    <span class="str">"UPDATE users SET email = :email WHERE id = :id"</span>
+);
+<span class="var">$stmt</span>-><span class="fn">execute</span>([<span class="str">':email'</span> => <span class="str">"new@247.in"</span>, <span class="str">':id'</span> => <span class="num">1</span>]);
+
+<span class="cm">// 5. DELETE</span>
+<span class="var">$stmt</span> = <span class="var">$pdo</span>-><span class="fn">prepare</span>(<span class="str">"DELETE FROM users WHERE id = :id"</span>);
+<span class="var">$stmt</span>-><span class="fn">execute</span>([<span class="str">':id'</span> => <span class="num">3</span>]);</pre>
+      </div>
+      <div class="real-world">
+        <div class="real-world-label">Real-World: User Management System</div>
+        <p>Every app at 24/7 Software has a users table. Registration inserts, login reads and verifies, profile edit updates — you'll write these 4 operations dozens of times. Laravel's Eloquent ORM wraps this in beautiful syntax.</p>
+      </div>
+      <button class="done-btn" id="btn-cc7" onclick="markDone('cc7',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <div class="concept-card" id="cc8">
+    <div class="concept-header" onclick="toggle('cc8')">
+      <i class="ti ti-lock concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Sessions, Cookies & Authentication Flow</span>
+      <span class="concept-badge badge-code">Code</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc8"></i>
+    </div>
+    <div class="concept-body" id="cb-cc8">
+      <p class="explanation">HTTP is stateless — sessions solve this by storing user data server-side between requests. This is how "stay logged in" works. Cookies store small data client-side.</p>
+      <div class="code-block">
+        <div class="code-label">session_auth.php</div>
+        <pre><span class="cm">&lt;?php</span>
+<span class="fn">session_start</span>();  <span class="cm">// Always first line</span>
+
+<span class="cm">// Login logic</span>
+<span class="kw">function</span> <span class="fn">loginUser</span>(<span class="var">$pdo</span>, <span class="var">$email</span>, <span class="var">$password</span>): <span class="kw">bool</span> {
+    <span class="var">$stmt</span> = <span class="var">$pdo</span>-><span class="fn">prepare</span>(
+        <span class="str">"SELECT * FROM users WHERE email = :email"</span>
+    );
+    <span class="var">$stmt</span>-><span class="fn">execute</span>([<span class="str">':email'</span> => <span class="var">$email</span>]);
+    <span class="var">$user</span> = <span class="var">$stmt</span>-><span class="fn">fetch</span>();
+
+    <span class="kw">if</span> (<span class="var">$user</span> && <span class="fn">password_verify</span>(<span class="var">$password</span>, <span class="var">$user</span>[<span class="str">'password'</span>])) {
+        <span class="cm">// Store in session</span>
+        <span class="var">$_SESSION</span>[<span class="str">'user_id'</span>]   = <span class="var">$user</span>[<span class="str">'id'</span>];
+        <span class="var">$_SESSION</span>[<span class="str">'user_name'</span>] = <span class="var">$user</span>[<span class="str">'name'</span>];
+        <span class="kw">return</span> <span class="kw">true</span>;
+    }
+    <span class="kw">return</span> <span class="kw">false</span>;
+}
+
+<span class="cm">// Hash password on registration</span>
+<span class="var">$hashed</span> = <span class="fn">password_hash</span>(<span class="str">"mypassword"</span>, <span class="kw">PASSWORD_BCRYPT</span>);
+
+<span class="cm">// Protect a page</span>
+<span class="kw">if</span> (!<span class="fn">isset</span>(<span class="var">$_SESSION</span>[<span class="str">'user_id'</span>])) {
+    <span class="fn">header</span>(<span class="str">"Location: login.php"</span>);
+    <span class="kw">exit</span>;
+}
+
+<span class="kw">echo</span> <span class="str">"Welcome, "</span> . <span class="var">$_SESSION</span>[<span class="str">'user_name'</span>];
+
+<span class="cm">// Logout</span>
+<span class="fn">session_destroy</span>();
+<span class="fn">header</span>(<span class="str">"Location: login.php"</span>);</pre>
+      </div>
+      <div class="tip-box">Always use <code>password_hash()</code> + <code>password_verify()</code>. Never store plain text passwords. Laravel handles all of this automatically with its Auth system.</div>
+      <button class="done-btn" id="btn-cc8" onclick="markDone('cc8',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <button class="ask-btn" onclick="sendPrompt('Show me a complete PHP login and registration system with sessions and PDO MySQL that I can build as a practice project')">Build a complete login system project ↗</button>
+</div>
+
+<div class="content-area" id="tab-advanced">
+  <div class="day-badge">Days 9–12 · Advanced PHP</div>
+  <div class="section-title">Interfaces, Traits, REST APIs & Composer</div>
+  <p class="section-desc">These are the skills that separate junior from mid-level developers — and what Laravel is built on.</p>
+
+  <div class="concept-card" id="cc9">
+    <div class="concept-header" onclick="toggle('cc9')">
+      <i class="ti ti-puzzle concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Interfaces, Abstract Classes & Traits</span>
+      <span class="concept-badge badge-theory">Theory + Code</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc9"></i>
+    </div>
+    <div class="concept-body" id="cb-cc9">
+      <p class="explanation">Interfaces define a contract (what methods must exist). Abstract classes provide partial implementation. Traits are reusable code mixins. Laravel uses all three heavily.</p>
+      <div class="code-block">
+        <div class="code-label">interfaces_traits.php</div>
+        <pre><span class="cm">&lt;?php</span>
+<span class="cm">// Interface — defines contract</span>
+<span class="kw">interface</span> <span class="fn">Notifiable</span> {
+    <span class="kw">public function</span> <span class="fn">sendNotification</span>(<span class="kw">string</span> <span class="var">$message</span>): <span class="kw">void</span>;
+}
+
+<span class="cm">// Implementing the interface</span>
+<span class="kw">class</span> <span class="fn">EmailNotifier</span> <span class="kw">implements</span> <span class="fn">Notifiable</span> {
+    <span class="kw">public function</span> <span class="fn">sendNotification</span>(<span class="kw">string</span> <span class="var">$msg</span>): <span class="kw">void</span> {
+        <span class="kw">echo</span> <span class="str">"Email: {$msg}"</span>;
+    }
+}
+
+<span class="kw">class</span> <span class="fn">SMSNotifier</span> <span class="kw">implements</span> <span class="fn">Notifiable</span> {
+    <span class="kw">public function</span> <span class="fn">sendNotification</span>(<span class="kw">string</span> <span class="var">$msg</span>): <span class="kw">void</span> {
+        <span class="kw">echo</span> <span class="str">"SMS: {$msg}"</span>;
+    }
+}
+
+<span class="cm">// Trait — reusable code mixin</span>
+<span class="kw">trait</span> <span class="fn">Timestampable</span> {
+    <span class="kw">public function</span> <span class="fn">getCreatedAt</span>(): <span class="kw">string</span> {
+        <span class="kw">return</span> <span class="fn">date</span>(<span class="str">'Y-m-d H:i:s'</span>);
+    }
+}
+
+<span class="kw">class</span> <span class="fn">Post</span> {
+    <span class="kw">use</span> <span class="fn">Timestampable</span>;  <span class="cm">// mixes in the trait</span>
+    <span class="kw">public</span> <span class="kw">string</span> <span class="var">$title</span>;
+}
+
+<span class="var">$post</span> = <span class="kw">new</span> <span class="fn">Post</span>();
+<span class="kw">echo</span> <span class="var">$post</span>-><span class="fn">getCreatedAt</span>();</pre>
+      </div>
+      <div class="real-world">
+        <div class="real-world-label">Laravel Connection</div>
+        <p>Laravel's <code>Authenticatable</code> is an interface. <code>SoftDeletes</code>, <code>HasApiTokens</code> are traits you add to your User model with <code>use</code>. Understanding traits is how you'll extend Laravel models.</p>
+      </div>
+      <button class="done-btn" id="btn-cc9" onclick="markDone('cc9',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <div class="concept-card" id="cc10">
+    <div class="concept-header" onclick="toggle('cc10')">
+      <i class="ti ti-api concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">REST APIs — Consuming & Building</span>
+      <span class="concept-badge badge-realworld">Critical for AIML</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc10"></i>
+    </div>
+    <div class="concept-body" id="cb-cc10">
+      <p class="explanation">APIs are how modern services communicate. As an AIML intern, you'll call ML model APIs constantly. PHP uses cURL or file_get_contents to consume APIs, and JSON to exchange data.</p>
+      <div class="code-block">
+        <div class="code-label">api_client.php</div>
+        <pre><span class="cm">&lt;?php</span>
+<span class="cm">// Consuming an external API (e.g. ML model endpoint)</span>
+<span class="kw">function</span> <span class="fn">callMLApi</span>(<span class="kw">string</span> <span class="var">$text</span>): <span class="kw">array</span> {
+    <span class="var">$ch</span> = <span class="fn">curl_init</span>();
+    <span class="fn">curl_setopt_array</span>(<span class="var">$ch</span>, [
+        <span class="kw">CURLOPT_URL</span>           => <span class="str">"https://api.247ml.in/predict"</span>,
+        <span class="kw">CURLOPT_RETURNTRANSFER</span> => <span class="kw">true</span>,
+        <span class="kw">CURLOPT_POST</span>          => <span class="kw">true</span>,
+        <span class="kw">CURLOPT_POSTFIELDS</span>    => <span class="fn">json_encode</span>([<span class="str">'text'</span> => <span class="var">$text</span>]),
+        <span class="kw">CURLOPT_HTTPHEADER</span>    => [
+            <span class="str">'Content-Type: application/json'</span>,
+            <span class="str">'Authorization: Bearer YOUR_TOKEN'</span>
+        ]
+    ]);
+    <span class="var">$response</span> = <span class="fn">curl_exec</span>(<span class="var">$ch</span>);
+    <span class="fn">curl_close</span>(<span class="var">$ch</span>);
+    <span class="kw">return</span> <span class="fn">json_decode</span>(<span class="var">$response</span>, <span class="kw">true</span>);
+}
+
+<span class="var">$result</span> = <span class="fn">callMLApi</span>(<span class="str">"Classify this customer review"</span>);
+<span class="kw">echo</span> <span class="var">$result</span>[<span class="str">'sentiment'</span>];  <span class="cm">// "positive"</span>
+
+<span class="cm">// Building a simple REST API endpoint</span>
+<span class="fn">header</span>(<span class="str">'Content-Type: application/json'</span>);
+<span class="var">$data</span> = [<span class="str">'status'</span> => <span class="str">'success'</span>, <span class="str">'data'</span> => [<span class="str">'id'</span>=><span class="num">1</span>]];
+<span class="kw">echo</span> <span class="fn">json_encode</span>(<span class="var">$data</span>);</pre>
+      </div>
+      <div class="real-world">
+        <div class="real-world-label">AIML Department Use Case</div>
+        <p>The AIML team will have Python ML models exposed as APIs. Your PHP/Laravel backend will call those APIs, process results, and display them on dashboards. This is exactly the PHP-AIML bridge you'll be building!</p>
+      </div>
+      <button class="done-btn" id="btn-cc10" onclick="markDone('cc10',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <div class="concept-card" id="cc11">
+    <div class="concept-header" onclick="toggle('cc11')">
+      <i class="ti ti-package concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Composer & Namespaces</span>
+      <span class="concept-badge badge-code">Code</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc11"></i>
+    </div>
+    <div class="concept-body" id="cb-cc11">
+      <p class="explanation">Composer is PHP's package manager (like npm for JavaScript). Namespaces prevent naming conflicts in large apps. Laravel is installed via Composer and uses namespaces extensively.</p>
+      <div class="code-block">
+        <div class="code-label">terminal + php</div>
+        <pre><span class="cm"># Install Composer (done once)</span>
+<span class="cm"># https://getcomposer.org</span>
+
+<span class="cm"># Install a package</span>
+composer require guzzlehttp/guzzle
+
+<span class="cm"># composer.json</span>
+{
+    <span class="str">"require"</span>: {
+        <span class="str">"guzzlehttp/guzzle"</span>: <span class="str">"^7.0"</span>
+    },
+    <span class="str">"autoload"</span>: {
+        <span class="str">"psr-4"</span>: {
+            <span class="str">"App\\"</span>: <span class="str">"src/"</span>
+        }
+    }
+}
+
+<span class="cm">&lt;?php // src/Services/UserService.php</span>
+<span class="kw">namespace</span> <span class="fn">App\Services</span>;
+
+<span class="kw">use</span> <span class="fn">App\Models\User</span>;
+
+<span class="kw">class</span> <span class="fn">UserService</span> {
+    <span class="kw">public function</span> <span class="fn">createUser</span>(<span class="kw">array</span> <span class="var">$data</span>): <span class="fn">User</span> {
+        <span class="cm">// ... business logic</span>
+    }
+}
+
+<span class="cm">// In your main file:</span>
+<span class="kw">require</span> <span class="str">"vendor/autoload.php"</span>;
+<span class="kw">use</span> <span class="fn">App\Services\UserService</span>;
+<span class="var">$svc</span> = <span class="kw">new</span> <span class="fn">UserService</span>();</pre>
+      </div>
+      <div class="tip-box">Laravel's entire folder structure (App\Http\Controllers, App\Models, etc.) is just Composer PSR-4 autoloading. Once you understand this, Laravel's folder structure will click immediately.</div>
+      <button class="done-btn" id="btn-cc11" onclick="markDone('cc11',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <button class="ask-btn" onclick="sendPrompt('Explain PHP error handling with try/catch/finally and custom exceptions with a real-world example')">Learn PHP error handling with exceptions ↗</button>
+</div>
+
+<div class="content-area" id="tab-laravel">
+  <div class="day-badge">Days 13–20 · Laravel Framework</div>
+  <div class="section-title">Laravel — MVC, Eloquent, Blade & Auth</div>
+  <p class="section-desc">Laravel is the most popular PHP framework. It follows MVC pattern and makes building web apps fast and elegant.</p>
+
+  <div class="concept-card" id="cc12">
+    <div class="concept-header" onclick="toggle('cc12')">
+      <i class="ti ti-rocket concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Laravel Setup & MVC Architecture</span>
+      <span class="concept-badge badge-theory">Foundation</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc12"></i>
+    </div>
+    <div class="concept-body" id="cb-cc12">
+      <p class="explanation">MVC = Model (data), View (display), Controller (logic). Laravel separates these cleanly. Install via Composer, then use Artisan (the CLI tool) to generate everything.</p>
+      <div class="code-block">
+        <div class="code-label">terminal — setup</div>
+        <pre><span class="cm"># Install Laravel</span>
+composer create-project laravel/laravel taskmanager
+
+cd taskmanager
+php artisan serve     <span class="cm"># starts dev server at localhost:8000</span>
+
+<span class="cm"># Create a Controller</span>
+php artisan make:controller TaskController
+
+<span class="cm"># Create a Model + Migration together</span>
+php artisan make:model Task -m
+
+<span class="cm"># Run migrations (creates tables in DB)</span>
+php artisan migrate</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label">routes/web.php — URL routing</div>
+        <pre><span class="cm">&lt;?php</span>
+<span class="kw">use</span> <span class="fn">App\Http\Controllers\TaskController</span>;
+
+<span class="cm">// Resource routes (all 7 CRUD routes at once!)</span>
+<span class="fn">Route</span>::<span class="fn">resource</span>(<span class="str">'tasks'</span>, <span class="fn">TaskController</span>::<span class="kw">class</span>);
+
+<span class="cm">// Or define individually:</span>
+<span class="fn">Route</span>::<span class="fn">get</span>(<span class="str">'/tasks'</span>,       [<span class="fn">TaskController</span>::<span class="kw">class</span>, <span class="str">'index'</span>]);
+<span class="fn">Route</span>::<span class="fn">post</span>(<span class="str">'/tasks'</span>,      [<span class="fn">TaskController</span>::<span class="kw">class</span>, <span class="str">'store'</span>]);
+<span class="fn">Route</span>::<span class="fn">get</span>(<span class="str">'/tasks/{id}'</span>, [<span class="fn">TaskController</span>::<span class="kw">class</span>, <span class="str">'show'</span>]);
+<span class="fn">Route</span>::<span class="fn">delete</span>(<span class="str">'/tasks/{id}'</span>, [<span class="fn">TaskController</span>::<span class="kw">class</span>, <span class="str">'destroy'</span>]);</pre>
+      </div>
+      <button class="done-btn" id="btn-cc12" onclick="markDone('cc12',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <div class="concept-card" id="cc13">
+    <div class="concept-header" onclick="toggle('cc13')">
+      <i class="ti ti-database-import concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Eloquent ORM — Database the Laravel Way</span>
+      <span class="concept-badge badge-realworld">Must Learn</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc13"></i>
+    </div>
+    <div class="concept-body" id="cb-cc13">
+      <p class="explanation">Eloquent is Laravel's ORM. Instead of writing raw SQL, you use elegant PHP methods. Each database table has a corresponding Model class. Relationships (hasMany, belongsTo) make joins effortless.</p>
+      <div class="code-block">
+        <div class="code-label">app/Models/Task.php</div>
+        <pre><span class="cm">&lt;?php</span>
+<span class="kw">namespace</span> <span class="fn">App\Models</span>;
+<span class="kw">use</span> <span class="fn">Illuminate\Database\Eloquent\Model</span>;
+
+<span class="kw">class</span> <span class="fn">Task</span> <span class="kw">extends</span> <span class="fn">Model</span> {
+    <span class="kw">protected</span> <span class="var">$fillable</span> = [<span class="str">'title'</span>, <span class="str">'status'</span>, <span class="str">'user_id'</span>];
+
+    <span class="cm">// A task belongs to a user</span>
+    <span class="kw">public function</span> <span class="fn">user</span>() {
+        <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">belongsTo</span>(<span class="fn">User</span>::<span class="kw">class</span>);
+    }
+}</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-label">Eloquent queries — no raw SQL needed!</div>
+        <pre><span class="cm">// CREATE</span>
+<span class="fn">Task</span>::<span class="fn">create</span>([<span class="str">'title'</span> => <span class="str">'Learn Laravel'</span>, <span class="str">'status'</span> => <span class="str">'pending'</span>]);
+
+<span class="cm">// READ</span>
+<span class="var">$tasks</span>    = <span class="fn">Task</span>::<span class="fn">all</span>();
+<span class="var">$task</span>     = <span class="fn">Task</span>::<span class="fn">find</span>(<span class="num">1</span>);
+<span class="var">$pending</span>  = <span class="fn">Task</span>::<span class="fn">where</span>(<span class="str">'status'</span>, <span class="str">'pending'</span>)-><span class="fn">get</span>();
+<span class="var">$recent</span>   = <span class="fn">Task</span>::<span class="fn">latest</span>()-><span class="fn">take</span>(<span class="num">5</span>)-><span class="fn">get</span>();
+
+<span class="cm">// UPDATE</span>
+<span class="fn">Task</span>::<span class="fn">find</span>(<span class="num">1</span>)-><span class="fn">update</span>([<span class="str">'status'</span> => <span class="str">'done'</span>]);
+
+<span class="cm">// DELETE</span>
+<span class="fn">Task</span>::<span class="fn">find</span>(<span class="num">1</span>)-><span class="fn">delete</span>();
+
+<span class="cm">// Eager loading (prevent N+1 query problem)</span>
+<span class="var">$tasks</span> = <span class="fn">Task</span>::<span class="fn">with</span>(<span class="str">'user'</span>)-><span class="fn">get</span>();
+<span class="kw">foreach</span> (<span class="var">$tasks</span> <span class="kw">as</span> <span class="var">$task</span>) {
+    <span class="kw">echo</span> <span class="var">$task</span>-><span class="var">title</span> . <span class="str">" by "</span> . <span class="var">$task</span>->user-><span class="var">name</span>;
+}</pre>
+      </div>
+      <button class="done-btn" id="btn-cc13" onclick="markDone('cc13',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <div class="concept-card" id="cc14">
+    <div class="concept-header" onclick="toggle('cc14')">
+      <i class="ti ti-template concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Blade Templates — Views in Laravel</span>
+      <span class="concept-badge badge-code">Code</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc14"></i>
+    </div>
+    <div class="concept-body" id="cb-cc14">
+      <p class="explanation">Blade is Laravel's templating engine. Files end in <code>.blade.php</code>. It compiles to PHP but is much cleaner. Use layouts to avoid repeating HTML. The <code>@</code> syntax is Blade directives.</p>
+      <div class="code-block">
+        <div class="code-label">resources/views/layouts/app.blade.php</div>
+        <pre><span class="cm">&lt;!-- Master layout --&gt;</span>
+<span class="kw">&lt;html&gt;&lt;body&gt;</span>
+    <span class="kw">&lt;nav&gt;</span>Task Manager | {{ Auth::user()-&gt;name }}<span class="kw">&lt;/nav&gt;</span>
+    @yield(<span class="str">'content'</span>)  {{-- child puts content here --}}
+<span class="kw">&lt;/body&gt;&lt;/html&gt;</span>
+
+<span class="cm">&lt;!-- resources/views/tasks/index.blade.php --&gt;</span>
+@extends(<span class="str">'layouts.app'</span>)
+
+@section(<span class="str">'content'</span>)
+    <span class="kw">&lt;h1&gt;</span>All Tasks<span class="kw">&lt;/h1&gt;</span>
+
+    @foreach(<span class="var">$tasks</span> as <span class="var">$task</span>)
+        <span class="kw">&lt;div&gt;</span>
+            {{ <span class="var">$task</span>->title }}   {{-- auto-escaped XSS safe --}}
+
+            @if(<span class="var">$task</span>->status === <span class="str">'done'</span>)
+                <span class="kw">&lt;span&gt;</span>✓ Done<span class="kw">&lt;/span&gt;</span>
+            @else
+                <span class="kw">&lt;span&gt;</span>Pending<span class="kw">&lt;/span&gt;</span>
+            @endif
+        <span class="kw">&lt;/div&gt;</span>
+    @endforeach
+
+    @if(<span class="var">$tasks</span>->isEmpty())
+        <span class="kw">&lt;p&gt;</span>No tasks yet!<span class="kw">&lt;/p&gt;</span>
+    @endif
+@endsection</pre>
+      </div>
+      <button class="done-btn" id="btn-cc14" onclick="markDone('cc14',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <div class="concept-card" id="cc15">
+    <div class="concept-header" onclick="toggle('cc15')">
+      <i class="ti ti-shield-check concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Controllers, Validation & Auth</span>
+      <span class="concept-badge badge-realworld">Critical</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc15"></i>
+    </div>
+    <div class="concept-body" id="cb-cc15">
+      <p class="explanation">Controllers handle request logic. Laravel's built-in validation is powerful. Laravel Breeze/Sanctum gives you complete auth scaffolding in minutes.</p>
+      <div class="code-block">
+        <div class="code-label">app/Http/Controllers/TaskController.php</div>
+        <pre><span class="cm">&lt;?php</span>
+<span class="kw">namespace</span> <span class="fn">App\Http\Controllers</span>;
+<span class="kw">use</span> <span class="fn">App\Models\Task</span>;
+<span class="kw">use</span> <span class="fn">Illuminate\Http\Request</span>;
+
+<span class="kw">class</span> <span class="fn">TaskController</span> <span class="kw">extends</span> <span class="fn">Controller</span> {
+
+    <span class="kw">public function</span> <span class="fn">index</span>() {
+        <span class="var">$tasks</span> = <span class="fn">Task</span>::<span class="fn">latest</span>()-><span class="fn">paginate</span>(<span class="num">10</span>);
+        <span class="kw">return</span> <span class="fn">view</span>(<span class="str">'tasks.index'</span>, <span class="fn">compact</span>(<span class="str">'tasks'</span>));
+    }
+
+    <span class="kw">public function</span> <span class="fn">store</span>(<span class="fn">Request</span> <span class="var">$request</span>) {
+        <span class="cm">// Validation (auto redirects back on failure)</span>
+        <span class="var">$validated</span> = <span class="var">$request</span>-><span class="fn">validate</span>([
+            <span class="str">'title'</span>  => <span class="str">'required|string|max:255'</span>,
+            <span class="str">'status'</span> => <span class="str">'required|in:pending,done'</span>,
+        ]);
+
+        <span class="fn">Task</span>::<span class="fn">create</span>(<span class="var">$validated</span>);
+
+        <span class="kw">return</span> <span class="fn">redirect</span>()-><span class="fn">route</span>(<span class="str">'tasks.index'</span>)
+                         -><span class="fn">with</span>(<span class="str">'success'</span>, <span class="str">'Task created!'</span>);
+    }
+}
+
+<span class="cm"># Install Auth scaffolding (one command!)</span>
+composer require laravel/breeze --dev
+php artisan breeze:install
+php artisan migrate</pre>
+      </div>
+      <div class="real-world">
+        <div class="real-world-label">Real-World: Protected API Endpoints</div>
+        <p>For the AIML dashboard, you'll protect routes with <code>middleware('auth')</code> so only logged-in users can trigger ML predictions. Laravel Sanctum adds token-based API auth for mobile apps.</p>
+      </div>
+      <button class="done-btn" id="btn-cc15" onclick="markDone('cc15',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <div class="concept-card" id="cc16">
+    <div class="concept-header" onclick="toggle('cc16')">
+      <i class="ti ti-git-branch concept-icon" aria-hidden="true"></i>
+      <span class="concept-title">Migrations, Seeders & Relationships</span>
+      <span class="concept-badge badge-code">Code</span>
+      <i class="ti ti-chevron-down chevron" id="ch-cc16"></i>
+    </div>
+    <div class="concept-body" id="cb-cc16">
+      <p class="explanation">Migrations are version control for your database schema. Seeders populate test data. Relationships (hasMany, belongsTo, manyToMany) replace complex SQL JOINs.</p>
+      <div class="code-block">
+        <div class="code-label">database/migrations/create_tasks_table.php</div>
+        <pre><span class="kw">public function</span> <span class="fn">up</span>(): <span class="kw">void</span> {
+    <span class="fn">Schema</span>::<span class="fn">create</span>(<span class="str">'tasks'</span>, <span class="kw">function</span> (<span class="fn">Blueprint</span> <span class="var">$table</span>) {
+        <span class="var">$table</span>-><span class="fn">id</span>();
+        <span class="var">$table</span>-><span class="fn">string</span>(<span class="str">'title'</span>);
+        <span class="var">$table</span>-><span class="fn">enum</span>(<span class="str">'status'</span>, [<span class="str">'pending'</span>, <span class="str">'done'</span>])-><span class="fn">default</span>(<span class="str">'pending'</span>);
+        <span class="var">$table</span>-><span class="fn">foreignId</span>(<span class="str">'user_id'</span>)-><span class="fn">constrained</span>()-><span class="fn">onDelete</span>(<span class="str">'cascade'</span>);
+        <span class="var">$table</span>-><span class="fn">timestamps</span>();  <span class="cm">// created_at, updated_at</span>
+    });
+}
+
+<span class="cm">// Relationships in Models</span>
+<span class="cm">// User.php</span>
+<span class="kw">public function</span> <span class="fn">tasks</span>() {
+    <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">hasMany</span>(<span class="fn">Task</span>::<span class="kw">class</span>);  <span class="cm">// one user has many tasks</span>
+}
+
+<span class="cm">// Task.php</span>
+<span class="kw">public function</span> <span class="fn">user</span>() {
+    <span class="kw">return</span> <span class="var">$this</span>-><span class="fn">belongsTo</span>(<span class="fn">User</span>::<span class="kw">class</span>); <span class="cm">// task belongs to one user</span>
+}
+
+<span class="cm">// Usage</span>
+<span class="var">$user</span>  = <span class="fn">User</span>::<span class="fn">find</span>(<span class="num">1</span>);
+<span class="var">$tasks</span> = <span class="var">$user</span>->tasks;              <span class="cm">// get all tasks for user</span>
+<span class="var">$task</span>  = <span class="fn">Task</span>::<span class="fn">find</span>(<span class="num">1</span>);
+<span class="kw">echo</span>   <span class="var">$task</span>->user-><span class="var">name</span>;           <span class="cm">// get user who owns task</span></pre>
+      </div>
+      <button class="done-btn" id="btn-cc16" onclick="markDone('cc16',this)">Mark as done ✓</button>
+    </div>
+  </div>
+
+  <button class="ask-btn" onclick="sendPrompt('Help me build a complete Laravel Task Manager CRUD app with Blade views, authentication, Eloquent ORM and pagination — step by step')">Build the complete Laravel project ↗</button>
+</div>
+
+</div>
+
+<script>
+let done = new Set();
+const total = 16;
+
+function switchTab(name) {
+  document.querySelectorAll('.content-area').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(el => {
+    if (el.textContent.toLowerCase().includes(name) ||
+        (name === 'roadmap' && el.querySelector('.ti-map'))) {
+      el.classList.add('active');
+    }
+  });
+}
+
+function toggle(id) {
+  const body = document.getElementById('cb-' + id);
+  const chev = document.getElementById('ch-' + id);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+
+function markDone(id, btn) {
+  if (done.has(id)) {
+    done.delete(id);
+    btn.textContent = 'Mark as done ✓';
+    btn.classList.remove('checked');
+  } else {
+    done.add(id);
+    btn.textContent = '✓ Completed!';
+    btn.classList.add('checked');
+  }
+  const pct = Math.round((done.size / total) * 100);
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = done.size + ' / ' + total + ' topics completed';
+}
+</script>

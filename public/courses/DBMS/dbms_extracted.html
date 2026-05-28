@@ -1,0 +1,2342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Database Management Systems — GATE CSE 2027 Preparation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- MathJax for LaTeX rendering -->
+<script>
+window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] }, svg: { fontCache: 'global' } };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<style>
+/* =======================================================
+   THEME: Dark futuristic — neon cyan / violet accents
+   ======================================================= */
+:root{
+  --bg-0:#05060a;
+  --bg-1:#0a0d16;
+  --bg-2:#10142099;
+  --bg-card:#0d1220;
+  --border:#1d2540;
+  --border-strong:#2a3563;
+  --text:#dfe6ff;
+  --text-dim:#8b97c4;
+  --text-mute:#5a6488;
+  --cyan:#00e5ff;
+  --cyan-dim:#0095a8;
+  --violet:#9d6bff;
+  --violet-dim:#5b39a8;
+  --pink:#ff4fa3;
+  --green:#3ddc97;
+  --yellow:#ffd166;
+  --red:#ff5d6c;
+  --grad-1: linear-gradient(135deg,#00e5ff 0%,#9d6bff 100%);
+  --grad-2: linear-gradient(135deg,#0d1220 0%,#161c33 100%);
+  --shadow-glow: 0 0 20px rgba(0,229,255,.15), 0 0 40px rgba(157,107,255,.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{
+  font-family:'Rajdhani', sans-serif;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(0,229,255,.07), transparent 60%),
+    radial-gradient(1000px 500px at 100% 0%, rgba(157,107,255,.08), transparent 60%),
+    var(--bg-0);
+  color:var(--text);
+  line-height:1.65;
+  min-height:100vh;
+  overflow-x:hidden;
+  letter-spacing:.2px;
+}
+/* subtle grid overlay */
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;
+  z-index:0;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+
+/* ===== Navbar ===== */
+nav.topbar{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 28px;
+  backdrop-filter:blur(14px);
+  background:rgba(8,10,18,.78);
+  border-bottom:1px solid var(--border);
+}
+.brand{
+  font-family:'Orbitron', sans-serif;
+  font-weight:900;
+  font-size:1.05rem;
+  letter-spacing:2px;
+  background:var(--grad-1);
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent;
+  text-transform:uppercase;
+}
+.brand small{display:block;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text-mute);letter-spacing:3px;margin-top:2px}
+
+.nav-links{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.nav-links a{
+  font-family:'JetBrains Mono', monospace;
+  font-size:.72rem; letter-spacing:1px;
+  color:var(--text-dim);
+  text-decoration:none;
+  padding:8px 12px;
+  border:1px solid transparent;
+  border-radius:6px;
+  transition: color .2s ease, border-color .2s ease, background-color .2s ease;
+}
+.nav-links a:hover{color:var(--cyan); border-color:var(--border-strong); background:rgba(0,229,255,.05)}
+.nav-toggle{display:none;background:none;border:1px solid var(--border-strong);color:var(--cyan);padding:6px 10px;border-radius:6px;cursor:pointer;font-family:'JetBrains Mono',monospace}
+
+/* ===== Layout ===== */
+.container{
+  display:grid;
+  grid-template-columns: 240px minmax(0,1fr) 240px;
+  gap:32px;
+  max-width:1400px;
+  margin: 32px auto;
+  padding: 0 24px;
+  position:relative; z-index:1;
+}
+aside.left, aside.right{
+  position:sticky; top:80px;
+  align-self:start;
+  max-height:calc(100vh - 100px);
+  overflow:auto;
+}
+aside.left{padding-right:8px}
+aside .panel{
+  background:var(--grad-2);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px 16px;
+  margin-bottom:18px;
+  box-shadow:var(--shadow-glow);
+}
+aside h4{
+  font-family:'Orbitron', sans-serif;
+  font-size:.7rem; letter-spacing:2.5px;
+  color:var(--cyan);
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+.chapter-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.chapter-list a{
+  display:flex; align-items:center; gap:8px;
+  text-decoration:none;
+  color:var(--text-dim);
+  font-size:.85rem;
+  padding:7px 10px;
+  border-radius:7px;
+  border:1px solid transparent;
+  transition:.2s;
+}
+.chapter-list a:hover{color:var(--text); background:rgba(0,229,255,.06);border-color:var(--border)}
+.chapter-list a.done{color:var(--green)}
+.chapter-list .num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;
+  color:var(--violet);
+  min-width:22px;
+}
+.chapter-list a.done .num{color:var(--green)}
+
+.progress-wrap{margin-top:10px}
+.progress-bar{height:6px;border-radius:99px;background:#101529;overflow:hidden;border:1px solid var(--border)}
+.progress-fill{height:100%;width:0%;background:var(--grad-1);transition:width .5s ease}
+.progress-text{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-mute);margin-top:6px;display:flex;justify-content:space-between}
+
+.quote{
+  font-style:italic;
+  font-size:.88rem;
+  color:var(--text-dim);
+  border-left:2px solid var(--violet);
+  padding:8px 12px;
+  margin-bottom:10px;
+}
+.quote span{display:block;margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-mute);font-style:normal}
+
+/* ===== Hero ===== */
+.hero{
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:
+    radial-gradient(800px 300px at 90% -20%, rgba(157,107,255,.18), transparent 60%),
+    radial-gradient(600px 300px at -10% 100%, rgba(0,229,255,.15), transparent 60%),
+    var(--bg-card);
+  padding:42px 36px;
+  margin-bottom:34px;
+  position:relative; overflow:hidden;
+}
+.hero::after{
+  content:""; position:absolute; inset:0;
+  background-image:linear-gradient(transparent 95%, rgba(0,229,255,.12) 95%);
+  background-size:100% 8px;
+  pointer-events:none;
+  opacity:.4;
+}
+.hero h1{
+  font-family:'Orbitron', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight:900;
+  letter-spacing:1.5px;
+  line-height:1.1;
+  margin-bottom:14px;
+}
+.hero h1 .grad{
+  background:var(--grad-1);
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent;
+}
+.hero p.tag{
+  font-family:'JetBrains Mono', monospace;
+  font-size:.78rem;
+  letter-spacing:3px;
+  color:var(--cyan);
+  text-transform:uppercase;
+  margin-bottom:18px;
+}
+.hero p.desc{color:var(--text-dim);max-width:760px;font-size:1.05rem}
+.hero .meta{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}
+.hero .chip{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;
+  border:1px solid var(--border-strong);background:rgba(0,229,255,.05);
+  color:var(--cyan); padding:6px 12px; border-radius:99px;
+}
+
+/* ===== Chapters ===== */
+section.chapter{
+  border:1px solid var(--border);
+  background:var(--bg-card);
+  border-radius:16px;
+  padding:34px 32px;
+  margin-bottom:36px;
+  position:relative;
+  scroll-margin-top:90px;
+}
+section.chapter::before{
+  content:"";
+  position:absolute; left:0; top:24px; bottom:24px;
+  width:3px;
+  background:var(--grad-1);
+  border-radius:0 4px 4px 0;
+  opacity:.6;
+}
+.chapter-head{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:14px; flex-wrap:wrap;
+  border-bottom:1px dashed var(--border);
+  padding-bottom:18px; margin-bottom:24px;
+}
+.chapter-head .tt{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(1.3rem,2.2vw,1.7rem);
+  font-weight:700;
+  letter-spacing:1px;
+}
+.chapter-head .num-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;letter-spacing:2px;
+  color:var(--violet);
+  display:block; margin-bottom:6px;
+}
+.complete-btn{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;letter-spacing:1.5px;
+  background:transparent;
+  color:var(--cyan);
+  border:1px solid var(--cyan-dim);
+  padding:8px 14px; border-radius:8px;
+  cursor:pointer; transition:.25s;
+  text-transform:uppercase;
+}
+.complete-btn:hover{background:rgba(0,229,255,.08); box-shadow:0 0 18px rgba(0,229,255,.25)}
+.complete-btn.done{background:rgba(61,220,151,.1); color:var(--green); border-color:var(--green)}
+
+h2.sub{
+  font-family:'Orbitron',sans-serif;
+  font-size:1.1rem; letter-spacing:1px;
+  color:var(--cyan); margin: 22px 0 12px;
+  display:flex; align-items:center; gap:10px;
+}
+h2.sub::before{
+  content:""; width:8px;height:8px;border-radius:2px;
+  background:var(--cyan); box-shadow:0 0 8px var(--cyan);
+}
+h3.sub2{
+  font-family:'Rajdhani',sans-serif; font-weight:700;
+  font-size:1.05rem; color:var(--violet); margin:16px 0 8px;
+  text-transform:uppercase; letter-spacing:1px;
+}
+
+p, li{color:var(--text); font-size:1rem}
+ul,ol{padding-left:22px; margin: 8px 0 10px}
+li{margin-bottom:4px}
+
+code, .mono{
+  font-family:'JetBrains Mono', monospace;
+  font-size:.88rem;
+  background:#0a0f1f;
+  border:1px solid var(--border);
+  padding:1px 6px;
+  border-radius:4px;
+  color:var(--cyan);
+}
+pre{
+  font-family:'JetBrains Mono', monospace;
+  background:#070b16;
+  border:1px solid var(--border);
+  border-left:3px solid var(--violet);
+  padding:14px 16px;
+  border-radius:8px;
+  overflow-x:auto;
+  font-size:.85rem;
+  color:#cfe6ff;
+  margin:10px 0;
+  line-height:1.55;
+}
+pre .kw{color:var(--violet);font-weight:600}
+pre .str{color:var(--green)}
+pre .cm{color:var(--text-mute);font-style:italic}
+
+/* ===== Color-coded boxes ===== */
+.note, .warning, .tip, .fact, .formula{
+  border-radius:10px;
+  padding:14px 16px;
+  margin:14px 0;
+  position:relative;
+  border:1px solid var(--border);
+  background:#0a0f1f;
+}
+.note{border-left:3px solid var(--cyan); background:rgba(0,229,255,.05)}
+.warning{border-left:3px solid var(--red); background:rgba(255,93,108,.06)}
+.tip{border-left:3px solid var(--green); background:rgba(61,220,151,.05)}
+.fact{border-left:3px solid var(--yellow); background:rgba(255,209,102,.05)}
+.formula{border-left:3px solid var(--violet); background:rgba(157,107,255,.06); font-family:'JetBrains Mono', monospace; font-size:.95rem}
+
+.note::before, .warning::before, .tip::before, .fact::before, .formula::before{
+  font-family:'JetBrains Mono', monospace;
+  font-size:.65rem; letter-spacing:2px;
+  display:block; margin-bottom:6px;
+  text-transform:uppercase;
+}
+.note::before{content:"// NOTE"; color:var(--cyan)}
+.warning::before{content:"// PITFALL"; color:var(--red)}
+.tip::before{content:"// TIP"; color:var(--green)}
+.fact::before{content:"// DID YOU KNOW?"; color:var(--yellow)}
+.formula::before{content:"// FORMULA"; color:var(--violet)}
+
+/* ===== Tooltip-styled keyword ===== */
+.term{
+  border-bottom:1px dotted var(--cyan);
+  cursor:help;
+  color:var(--cyan);
+  font-weight:600;
+}
+
+/* ===== Collapsibles ===== */
+details{
+  background:#0a0f1f;
+  border:1px solid var(--border);
+  border-radius:10px;
+  margin:10px 0;
+  overflow:hidden;
+  transition:.2s;
+}
+details[open]{border-color:var(--border-strong)}
+details summary{
+  cursor:pointer;
+  padding:12px 16px;
+  font-family:'Rajdhani',sans-serif; font-weight:600;
+  color:var(--text);
+  list-style:none;
+  display:flex; align-items:center; gap:10px;
+  font-size:1rem;
+}
+details summary::-webkit-details-marker{display:none}
+details summary::before{
+  content:"›";
+  font-family:'JetBrains Mono',monospace;
+  color:var(--cyan);
+  transition:transform .25s ease;
+  font-size:1.2rem;
+}
+details[open] summary::before{transform:rotate(90deg)}
+details .content{padding:0 16px 16px;color:var(--text-dim);font-size:.96rem;border-top:1px dashed var(--border)}
+details .content > *:first-child{margin-top:12px}
+
+/* ===== Tables ===== */
+.table-wrap{overflow-x:auto;margin:12px 0;border:1px solid var(--border);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:.92rem;min-width:480px}
+th, td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+th{
+  background:#0e1428; color:var(--cyan);
+  font-family:'JetBrains Mono', monospace; font-size:.78rem;
+  letter-spacing:1.5px; text-transform:uppercase;
+}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(0,229,255,.03)}
+
+/* ===== Diagram styles ===== */
+.diagram{
+  display:block; margin:14px auto;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:16px;
+  background:radial-gradient(400px 200px at 50% 0%, rgba(0,229,255,.06), transparent 70%), #070b16;
+}
+.ascii{
+  font-family:'JetBrains Mono', monospace;
+  white-space:pre;
+  font-size:.78rem;
+  color:#9bd6ff;
+  line-height:1.4;
+  overflow-x:auto;
+}
+
+/* ===== PYQ ===== */
+.pyq{
+  border:1px solid var(--border-strong);
+  border-radius:10px;
+  padding:14px 16px;
+  margin:10px 0;
+  background:linear-gradient(180deg, rgba(157,107,255,.04), transparent);
+}
+.pyq .pyq-tag{
+  font-family:'JetBrains Mono', monospace;
+  font-size:.68rem; letter-spacing:2px;
+  color:var(--violet); text-transform:uppercase;
+  display:inline-block; padding:3px 8px;
+  border:1px solid var(--violet-dim); border-radius:99px;
+  margin-bottom:8px;
+}
+.pyq .q{font-weight:600;color:var(--text);margin-bottom:6px}
+.pyq .opts{list-style:upper-alpha;padding-left:24px;color:var(--text-dim);margin:6px 0}
+
+/* ===== Quiz ===== */
+.quiz{
+  border:1px dashed var(--violet-dim);
+  border-radius:12px;
+  padding:18px 20px;
+  background:rgba(157,107,255,.04);
+  margin-top:20px;
+}
+.quiz h3{
+  font-family:'Orbitron',sans-serif;
+  letter-spacing:2px; font-size:.9rem;
+  color:var(--violet); margin-bottom:14px;
+  text-transform:uppercase;
+}
+.quiz .q-item{margin-bottom:14px}
+.quiz .q-item .q-text{font-weight:600;margin-bottom:6px}
+.quiz .q-item ul{list-style:upper-alpha;padding-left:24px;color:var(--text-dim)}
+.quiz details summary{font-size:.85rem;color:var(--green)}
+.quiz details summary::before{color:var(--green)}
+
+/* ===== Footer ===== */
+footer{
+  text-align:center;
+  padding:40px 20px 30px;
+  border-top:1px solid var(--border);
+  color:var(--text-mute);
+  font-family:'JetBrains Mono', monospace;
+  font-size:.78rem;
+  letter-spacing:2px;
+  margin-top:30px;
+}
+footer .grad{
+  background:var(--grad-1);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700;
+}
+
+/* ===== Selection ===== */
+::selection{background:rgba(0,229,255,.3);color:#fff}
+/* Scrollbar */
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:#070b16}
+::-webkit-scrollbar-thumb{background:#1d2540;border-radius:8px}
+::-webkit-scrollbar-thumb:hover{background:var(--violet-dim)}
+
+/* ===== Responsive ===== */
+@media (max-width: 1100px){
+  .container{grid-template-columns: 200px minmax(0,1fr); }
+  aside.right{display:none}
+}
+@media (max-width: 760px){
+  .container{grid-template-columns: 1fr; padding:0 16px}
+  aside.left{position:static;max-height:none;display:none}
+  aside.left.open{display:block;margin-bottom:18px}
+  aside.left .panel, aside.right .panel{margin-bottom:14px}
+  .nav-toggle{display:inline-block}
+  .nav-links{display:none; width:100%; background:#0a0f1f; border:1px solid var(--border); border-radius:10px; padding:10px; margin-top:10px; flex-direction:column; align-items:flex-start}
+  .nav-links.open{display:flex}
+  nav.topbar{flex-wrap:wrap}
+  section.chapter{padding:24px 18px}
+  .hero{padding:30px 22px}
+}
+
+/* fade-in on load */
+section.chapter, .hero{animation: fadeUp .55s ease both}
+section.chapter:nth-child(2){animation-delay:.05s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<nav class="topbar">
+  <div class="brand">
+    DBMS · GATE CSE 2027
+    <small>// neural prep terminal v2027.1</small>
+  </div>
+  <button class="nav-toggle" id="navToggle" aria-label="menu">≡ MENU</button>
+  <div class="nav-links" id="navLinks">
+    <a href="#ch1">01 Intro</a>
+    <a href="#ch2">02 ER</a>
+    <a href="#ch3">03 Relational</a>
+    <a href="#ch4">04 SQL</a>
+    <a href="#ch5">05 Normalization</a>
+    <a href="#ch6">06 Transactions</a>
+    <a href="#ch7">07 Concurrency</a>
+    <a href="#ch8">08 Distributed</a>
+    <a href="#ch9">09 Case Studies</a>
+    <a href="#pyq-bank">PYQ Bank</a>
+  </div>
+</nav>
+
+<div class="container">
+  <!-- ============ LEFT SIDEBAR ============ -->
+  <aside class="left" id="leftAside">
+    <div class="panel">
+      <h4>◇ Syllabus Map</h4>
+      <ul class="chapter-list" id="chapterList">
+        <li><a href="#ch1" data-ch="1"><span class="num">01</span> Introduction to DBMS</a></li>
+        <li><a href="#ch2" data-ch="2"><span class="num">02</span> ER Model</a></li>
+        <li><a href="#ch3" data-ch="3"><span class="num">03</span> Relational Model</a></li>
+        <li><a href="#ch4" data-ch="4"><span class="num">04</span> SQL &amp; PL/SQL</a></li>
+        <li><a href="#ch5" data-ch="5"><span class="num">05</span> Normalization</a></li>
+        <li><a href="#ch6" data-ch="6"><span class="num">06</span> Transactions</a></li>
+        <li><a href="#ch7" data-ch="7"><span class="num">07</span> Concurrency Control</a></li>
+        <li><a href="#ch8" data-ch="8"><span class="num">08</span> Distributed DBs</a></li>
+        <li><a href="#ch8b" data-ch="8b"><span class="num">08★</span> Indexing &amp; B+ Trees</a></li>
+        <li><a href="#ch9" data-ch="9"><span class="num">09</span> Case Studies</a></li>
+        <li><a href="#pyq-bank" data-ch="10"><span class="num">★</span> Mega PYQ Bank</a></li>
+      </ul>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-text"><span id="progressLabel">0 / 10 Chapters</span><span id="progressPct">0%</span></div>
+      </div>
+      <button class="complete-btn" style="margin-top:12px;width:100%" id="resetBtn">↻ Reset Progress</button>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main>
+    <!-- HERO -->
+    <header class="hero">
+      <p class="tag">// GATE CSE 2027 · Subject Drill 04</p>
+      <h1>Database Management <span class="grad">Systems</span></h1>
+      <p class="desc">A complete, interactive, exam-grade companion — theory, diagrams, formulas, numerical drills, and a curated bank of GATE Previous Year Questions (2015 – 2024). Designed to be skimmed, drilled, and mastered.</p>
+      <div class="meta">
+        <span class="chip">10 Chapters</span>
+        <span class="chip">70+ PYQs</span>
+        <span class="chip">50+ Quizzes</span>
+        <span class="chip">Self-contained · Offline ready</span>
+      </div>
+    </header>
+
+    <!-- ===================================================== -->
+    <!-- CHAPTER 1: Introduction to DBMS -->
+    <!-- ===================================================== -->
+    <section class="chapter" id="ch1">
+      <div class="chapter-head">
+        <div>
+          <span class="num-tag">CHAPTER · 01</span>
+          <div class="tt">Introduction to DBMS</div>
+        </div>
+        <button class="complete-btn" data-ch="1">◯ Mark Complete</button>
+      </div>
+
+      <p>A <span class="term" title="Database Management System: software that stores, retrieves and manages structured data while ensuring integrity and concurrent access.">Database Management System (DBMS)</span> is an organized collection of <em>interrelated data</em> together with a set of programs to access, define, and manipulate it. It hides the gory details of how bytes are laid out on disk and presents a clean, logical view to the application.</p>
+
+      <h2 class="sub">1.1 File System vs DBMS</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Aspect</th><th>File System</th><th>DBMS</th></tr></thead>
+          <tbody>
+            <tr><td>Data Redundancy</td><td>High</td><td>Controlled</td></tr>
+            <tr><td>Consistency</td><td>Hard to maintain</td><td>Enforced via constraints</td></tr>
+            <tr><td>Concurrent Access</td><td>Application-level locks</td><td>Built-in transactions</td></tr>
+            <tr><td>Recovery</td><td>Manual / backups</td><td>ACID + log-based recovery</td></tr>
+            <tr><td>Security</td><td>OS file permissions</td><td>Fine-grained GRANT/REVOKE</td></tr>
+            <tr><td>Querying</td><td>Custom code</td><td>Declarative SQL</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="sub">1.2 Three-Schema Architecture (ANSI/SPARC)</h2>
+      <div class="diagram">
+<pre class="ascii">
+   ┌────────────────────────────────┐
+   │   External  View 1    View 2   │   ← User views (logical subset)
+   └────┬────────────┬──────────────┘
+        │  Logical Data Independence
+   ┌────▼────────────▼──────────────┐
+   │     Conceptual / Logical       │   ← Entire DB schema (tables, FKs)
+   └────┬───────────────────────────┘
+        │  Physical Data Independence
+   ┌────▼───────────────────────────┐
+   │ Internal / Physical Schema     │   ← Indexes, pages, file layout
+   └────────────────────────────────┘
+</pre>
+      </div>
+      <div class="note"><strong>Data Independence</strong> is the ability to change one schema level without affecting the level above it. <em>Physical independence</em> is easier to achieve; <em>logical independence</em> is harder because views ride on the logical schema.</div>
+
+      <h2 class="sub">1.3 DBMS Architecture Types</h2>
+      <ul>
+        <li><strong>1-tier:</strong> User directly sits on the DBMS (e.g., DBA running scripts).</li>
+        <li><strong>2-tier:</strong> Client ↔ Server (classic ODBC/JDBC apps).</li>
+        <li><strong>3-tier:</strong> Client ↔ Application server ↔ DBMS (almost every web app).</li>
+      </ul>
+
+      <h2 class="sub">1.4 Data Models — A Family Tree</h2>
+      <details>
+        <summary>▸ Hierarchical, Network, Relational, Object-Oriented, NoSQL</summary>
+        <div class="content">
+          <ul>
+            <li><strong>Hierarchical (IMS, 1966):</strong> Tree-shaped; one parent per child. Fast traversal, painful queries.</li>
+            <li><strong>Network (CODASYL):</strong> Graph; child may have many parents. More flexible but complex.</li>
+            <li><strong>Relational (Codd, 1970):</strong> Tables (relations). Declarative SQL. The GATE star.</li>
+            <li><strong>Object-Oriented:</strong> Class hierarchies (e.g., db4o).</li>
+            <li><strong>NoSQL / Document / Key-Value / Column-family / Graph:</strong> Trade strict schema/ACID for horizontal scale.</li>
+          </ul>
+        </div>
+      </details>
+
+      <h2 class="sub">1.5 Database Users &amp; the DBA</h2>
+      <ul>
+        <li><strong>Naïve users</strong> — fill forms, click buttons.</li>
+        <li><strong>Application programmers</strong> — write business logic.</li>
+        <li><strong>Sophisticated users</strong> — analysts firing raw SQL.</li>
+        <li><strong>DBA</strong> — schema design, performance tuning, access control, backups.</li>
+      </ul>
+
+      <h2 class="sub">1.6 Numerical: Storage Estimation</h2>
+      <div class="formula">storage_required = rows × (Σ column_sizes + row_overhead) × (1 + index_overhead)</div>
+      <div class="tip"><strong>Worked Example.</strong> A table <code>Student(roll INT(4B), name CHAR(20), cgpa FLOAT(4B))</code> with 1,00,000 rows and 20% index overhead.<br>
+      Row size = 4 + 20 + 4 = 28 B → Data = 28 × 10<sup>5</sup> = 2.8 MB → With indexes ≈ 3.36 MB.</div>
+
+      <div class="fact"><strong>Did you know?</strong> The term “database” first appeared in print in a 1962 System Development Corporation technical memo — long before SQL was even imagined.</div>
+
+      <h2 class="sub">1.7 GATE PYQs — Chapter 1</h2>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2015 · 1 mark</span>
+        <div class="q">Q1. Which of the following is NOT a function of a DBA?</div>
+        <ul class="opts">
+          <li>Defining the schema</li>
+          <li>Granting permissions</li>
+          <li>Writing application logic</li>
+          <li>Backup and recovery</li>
+        </ul>
+        <details><summary>Show answer</summary>
+          <div class="content"><strong>Ans: (C)</strong>. Writing business/application logic is the developer's job. The DBA owns schema, security, integrity, and recovery.</div>
+        </details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2017 · 1 mark</span>
+        <div class="q">Q2. The ability to modify the conceptual schema without causing application programs to be rewritten is called __________ .</div>
+        <details><summary>Show answer</summary>
+          <div class="content"><strong>Ans:</strong> Logical Data Independence. Physical independence shields you from storage changes; logical independence shields you from schema-level changes (assuming views are adjusted).</div>
+        </details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2018 · 2 marks</span>
+        <div class="q">Q3. Match the level to its description:
+          (P) External (Q) Conceptual (R) Internal
+          with — (1) Storage details (2) User view (3) Whole DB logical structure.</div>
+        <details><summary>Show answer</summary>
+          <div class="content"><strong>Ans:</strong> P-2, Q-3, R-1.</div>
+        </details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2020 · 1 mark</span>
+        <div class="q">Q4. In a 3-tier client–server architecture, the application logic resides on the _____.</div>
+        <details><summary>Show answer</summary>
+          <div class="content"><strong>Ans:</strong> Application (middle) server. Client renders UI; DB server stores data.</div>
+        </details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2022 · 1 mark</span>
+        <div class="q">Q5. Which of the following is an advantage of DBMS over file systems?
+        I. Data redundancy is controlled.  II. Atomicity of operations.  III. Easier concurrent access.  IV. Tighter security.</div>
+        <details><summary>Show answer</summary>
+          <div class="content"><strong>Ans:</strong> All of I, II, III, IV.</div>
+        </details>
+      </div>
+
+      <!-- Quiz -->
+      <div class="quiz">
+        <h3>◆ Quick Quiz · Chapter 1</h3>
+        <div class="q-item"><div class="q-text">1. Logical data independence is harder to achieve than physical data independence because…</div>
+          <ul><li>views depend on the conceptual schema</li><li>indexes are physical structures</li><li>OS handles physical layout</li><li>SQL is declarative</li></ul>
+          <details><summary>Answer</summary><div class="content">(A) — Views and applications directly rely on the conceptual schema, so changing it ripples up.</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">2. The DBA decides the…</div>
+          <ul><li>Conceptual + Internal schemas</li><li>Only the External schema</li><li>Only the Internal schema</li><li>Web UI</li></ul>
+          <details><summary>Answer</summary><div class="content">(A)</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">3. Which is NOT a NoSQL category?</div>
+          <ul><li>Document</li><li>Key-Value</li><li>Hierarchical</li><li>Column-family</li></ul>
+          <details><summary>Answer</summary><div class="content">(C) Hierarchical is a classical pre-relational model, not NoSQL.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- CHAPTER 2: ER MODEL -->
+    <!-- ===================================================== -->
+    <section class="chapter" id="ch2">
+      <div class="chapter-head">
+        <div>
+          <span class="num-tag">CHAPTER · 02</span>
+          <div class="tt">Data Modeling with the ER Model</div>
+        </div>
+        <button class="complete-btn" data-ch="2">◯ Mark Complete</button>
+      </div>
+
+      <p>The <span class="term" title="Entity-Relationship model proposed by Peter Chen (1976) for conceptual database design.">Entity-Relationship (ER) model</span> is a graphical language for capturing the <em>real-world meaning</em> of data before mapping it to tables.</p>
+
+      <h2 class="sub">2.1 Core Vocabulary</h2>
+      <ul>
+        <li><strong>Entity</strong> — a real-world object (a student, an account). <em>Strong</em> entity has its own PK; <em>weak</em> entity needs an owner.</li>
+        <li><strong>Attribute</strong> — property of an entity. Types: <em>simple, composite, derived, multi-valued, key</em>.</li>
+        <li><strong>Relationship</strong> — association between entity sets. Degree = number of entity sets involved.</li>
+        <li><strong>Cardinality</strong> — 1:1, 1:N, M:N.</li>
+        <li><strong>Participation</strong> — total (double line) or partial (single line).</li>
+      </ul>
+
+      <h2 class="sub">2.2 ER Diagram Symbols</h2>
+      <div class="diagram">
+<pre class="ascii">
+  ┌──────────┐    ◇  Relationship      ⬭  Attribute
+  │  Entity  │    ◆  Identifying rel    ⬭⬭ Multi-valued
+  └──────────┘    ║   Weak entity       (⬭) Derived
+                  •—  Partial         •═  Total participation
+</pre>
+      </div>
+
+      <h2 class="sub">2.3 Example — University Mini-Schema</h2>
+      <div class="diagram">
+<pre class="ascii">
+  STUDENT ────── enrolls ──────M:N────── COURSE
+   (rollNo*)                              (cid*)
+      │
+      │ 1
+      │
+   advisor (1:N)
+      │
+      │ N
+      ▼
+  FACULTY (fid*) ──── teaches (1:N) ──── COURSE
+</pre>
+      </div>
+      <div class="note">Total participation: every STUDENT has an advisor → double line from STUDENT to <em>advisor</em>.</div>
+
+      <h2 class="sub">2.4 EER — Specialization &amp; Generalization</h2>
+      <ul>
+        <li><strong>Specialization</strong> (top-down): split a superclass into subclasses (Person → Student, Faculty).</li>
+        <li><strong>Generalization</strong> (bottom-up): combine subclasses into a superclass.</li>
+        <li><strong>Aggregation</strong>: treat a relationship as a higher-level entity (often needed when a relationship participates in another relationship).</li>
+        <li><strong>Disjoint vs. Overlapping</strong>; <strong>Total vs. Partial</strong>.</li>
+      </ul>
+
+      <h2 class="sub">2.5 ER → Relational Mapping Rules</h2>
+      <details><summary>▸ The 7 rules every GATE aspirant must memorize</summary>
+        <div class="content">
+          <ol>
+            <li><strong>Strong entity</strong> → table with all simple attributes; PK = entity key.</li>
+            <li><strong>Weak entity</strong> → table that includes the owner's PK as part of its composite key.</li>
+            <li><strong>1:1 relationship</strong> → merge into one of the entity tables (prefer total-participation side) using an FK with UNIQUE.</li>
+            <li><strong>1:N</strong> → put FK on the <em>N</em>-side referencing the <em>1</em>-side.</li>
+            <li><strong>M:N</strong> → create a new table with FKs to both, PK = (FK1, FK2).</li>
+            <li><strong>Multi-valued attribute</strong> → new table (entity_PK, value).</li>
+            <li><strong>Specialization</strong> → either (a) one table for superclass + tables for subclasses, (b) one table per subclass with inherited columns, or (c) single table with discriminator. Choice depends on disjointness/totality.</li>
+          </ol>
+        </div>
+      </details>
+
+      <h2 class="sub">2.6 Numerical — Counting Tables</h2>
+      <div class="tip"><strong>Problem.</strong> An ER diagram has 3 strong entities, 1 weak entity, 2 M:N relationships, and 1 multi-valued attribute on a strong entity. How many relations are produced?<br>
+      <strong>Solution.</strong> 3 (strong) + 1 (weak) + 2 (M:N) + 1 (MVA) = <strong>7 tables</strong>. Note: 1:N relationships do NOT produce extra tables.</div>
+
+      <div class="warning"><strong>Pitfall:</strong> Aggregation is needed when a relationship has its own attributes <em>and</em> participates in another relationship. Don't confuse aggregation with composition (UML).</div>
+
+      <div class="fact"><strong>Did you know?</strong> Peter Chen’s original 1976 ER paper is one of the top-10 most cited computer science papers ever — over 10,000 citations.</div>
+
+      <h2 class="sub">2.7 GATE PYQs — Chapter 2</h2>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2014 · 1 mark</span>
+        <div class="q">Q1. In an ER diagram, a weak entity is represented using a __________ rectangle and connected to its identifying relationship using a __________ diamond.</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Double rectangle; double diamond.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2015 · 2 marks</span>
+        <div class="q">Q2. Consider an ER schema with two entities E1, E2 and a 1:N relationship R from E1 to E2 with total participation on the E2 side. How many tables are needed (minimum)?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: 2</strong>. The relationship is folded into E2 by adding an FK to E1, which is mandatory due to total participation.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2017 · 2 marks</span>
+        <div class="q">Q3. In an M:N relationship between Employee and Project with attribute <em>hours</em>, where does <em>hours</em> live after mapping?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> In the new associative table EmployeeProject(empId, projId, hours).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2019 · 1 mark</span>
+        <div class="q">Q4. Which of the following is true about a weak entity?
+        I. Has no primary key of its own.  II. Always has total participation in the identifying relationship.  III. Its key is the owner's key.</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> I and II true. III is partly true — its <em>full</em> key is owner_PK + its own discriminator.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2021 · 2 marks</span>
+        <div class="q">Q5. An ER schema has entities A (key a), B (key b), C (key c). There is a ternary relationship R(A,B,C). Cardinality is recorded as 1 from A, 1 from B, N from C. The minimum number of tables is?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> 3. The ternary collapses into C by adding FKs to A and B (one each, because the cardinality on the C side is N).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2023 · 2 marks</span>
+        <div class="q">Q6. For specialization with overlapping &amp; total constraints, which mapping is the most space-efficient?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Single table with discriminator(s). Subclass-only tables would duplicate rows because of overlap.</div></details>
+      </div>
+
+      <div class="quiz">
+        <h3>◆ Quick Quiz · Chapter 2</h3>
+        <div class="q-item"><div class="q-text">1. A derived attribute is shown by…</div>
+          <ul><li>Double oval</li><li>Dashed oval</li><li>Underlined oval</li><li>Diamond</li></ul>
+          <details><summary>Answer</summary><div class="content">(B) Dashed oval.</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">2. Aggregation is most often used to model…</div>
+          <ul><li>Subclassing</li><li>A relationship between an entity and another relationship</li><li>Multi-valued attributes</li><li>Inheritance</li></ul>
+          <details><summary>Answer</summary><div class="content">(B)</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">3. A 1:1 relationship with one-sided total participation should be merged into…</div>
+          <ul><li>The total side</li><li>The partial side</li><li>A new table</li><li>Cannot be merged</li></ul>
+          <details><summary>Answer</summary><div class="content">(A) — keeps FK NOT-NULL trivially.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- CHAPTER 3: Relational Model & Languages -->
+    <!-- ===================================================== -->
+    <section class="chapter" id="ch3">
+      <div class="chapter-head">
+        <div>
+          <span class="num-tag">CHAPTER · 03</span>
+          <div class="tt">Relational Data Model &amp; Languages</div>
+        </div>
+        <button class="complete-btn" data-ch="3">◯ Mark Complete</button>
+      </div>
+
+      <p>Codd's relational model treats data as <strong>relations</strong> (sets of tuples). Two complementary query languages exist: <span class="term" title="Procedural language using operators like σ, π, ⋈ to specify HOW to compute a result.">Relational Algebra</span> (procedural) and <span class="term" title="Declarative language using set-builder/predicate logic.">Relational Calculus</span> (declarative).</p>
+
+      <h2 class="sub">3.1 Terminology</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>Formal</th><th>Informal</th></tr></thead>
+        <tbody>
+          <tr><td>Relation</td><td>Table</td></tr>
+          <tr><td>Tuple</td><td>Row</td></tr>
+          <tr><td>Attribute</td><td>Column</td></tr>
+          <tr><td>Domain</td><td>Data type / set of allowed values</td></tr>
+          <tr><td>Degree</td><td>No. of columns</td></tr>
+          <tr><td>Cardinality</td><td>No. of rows</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h2 class="sub">3.2 Keys</h2>
+      <ul>
+        <li><strong><span class="term" title="Set of attributes that uniquely identify each tuple AND no proper subset does.">Candidate Key</span></strong>: minimal super key.</li>
+        <li><strong><span class="term" title="A candidate key chosen by the designer as the primary identifier. NOT NULL + UNIQUE.">Primary Key</span></strong>: chosen candidate key.</li>
+        <li><strong>Super Key</strong>: any set that uniquely identifies tuples (need not be minimal).</li>
+        <li><strong>Alternate Keys</strong>: candidates not chosen as primary.</li>
+        <li><strong>Foreign Key</strong>: attribute(s) referencing PK of another relation.</li>
+        <li><strong>Composite Key</strong>: candidate key with ≥ 2 attributes.</li>
+      </ul>
+
+      <h2 class="sub">3.3 Integrity Constraints</h2>
+      <ul>
+        <li><strong>Domain</strong> — values must come from the declared domain.</li>
+        <li><strong>Entity Integrity</strong> — no part of a PK may be NULL.</li>
+        <li><strong>Referential Integrity</strong> — FK value must match some PK value or be NULL (if allowed).</li>
+        <li><strong>Key constraint</strong> — UNIQUE.</li>
+      </ul>
+
+      <h2 class="sub">3.4 Relational Algebra — Operators</h2>
+      <div class="formula">
+σ (selection) · π (projection) · ρ (rename)
+∪ (union) · − (set diff) · ∩ (intersection) · × (Cartesian)
+⋈θ (theta-join) · ⋈ (natural join) · ⟕ ⟖ ⟗ (outer joins) · ÷ (division)
+      </div>
+
+      <div class="diagram">
+<pre class="ascii">
+σ_{age &gt; 20} (Student)        — picks rows
+π_{name, cgpa} (Student)      — picks columns
+Student ⋈ Enroll              — joins on common attrs
+Student ⋈_{rollNo = sid} Enroll — theta join
+Course ÷ Required             — "find courses that satisfy ALL"
+</pre>
+      </div>
+
+      <h2 class="sub">3.5 Relational Calculus</h2>
+      <ul>
+        <li><strong>Tuple Relational Calculus (TRC):</strong> { t | P(t) }, e.g. <code>{ s | s ∈ Student ∧ s.cgpa &gt; 8 }</code></li>
+        <li><strong>Domain Relational Calculus (DRC):</strong> { ⟨x1,…,xn⟩ | P(x1,…,xn) }</li>
+      </ul>
+      <div class="note">RA, safe TRC, safe DRC, and SQL (minus aggregates &amp; nulls) are equivalent in expressive power.</div>
+
+      <h2 class="sub">3.6 Division — The Tricky One</h2>
+      <p>Given <code>R(A,B)</code> and <code>S(B)</code>, <code>R ÷ S</code> returns all <em>A</em>-values that pair with <strong>every</strong> <em>B</em> in <code>S</code>. Classic use: "students who have taken <em>all</em> required courses".</p>
+      <div class="tip"><strong>Identity:</strong> R ÷ S = π<sub>A</sub>(R) − π<sub>A</sub>( ( π<sub>A</sub>(R) × S ) − R )</div>
+
+      <h2 class="sub">3.7 Numerical — Tuple Counts</h2>
+      <div class="tip"><strong>Problem.</strong> R has 200 tuples, S has 100 tuples on a common attribute. What's the max/min cardinality of R ⋈ S (natural join)?<br>
+      <strong>Solution.</strong> Min = 0 (if no values match). Max = 200 × 100 = 20,000 (if the common attribute has the same value in every row of both — extremely skewed, but the algebraic upper bound).</div>
+
+      <div class="warning"><strong>Common trap.</strong> Set operators (∪, −, ∩) require <em>union compatibility</em>: same arity and corresponding domains. Otherwise: type error.</div>
+
+      <div class="fact"><strong>Did you know?</strong> Codd's 1970 paper “A Relational Model of Data for Large Shared Data Banks” was nearly rejected internally at IBM — they thought it was “too theoretical to ever be efficient”.</div>
+
+      <h2 class="sub">3.8 GATE PYQs — Chapter 3</h2>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2015 · 2 marks</span>
+        <div class="q">Q1. Consider R(A, B) and S(C, D). The expression π<sub>A</sub>(R ⋈<sub>B=C</sub> S) is equivalent to:</div>
+        <ul class="opts">
+          <li>π<sub>A</sub>(R)</li>
+          <li>π<sub>A</sub>(σ<sub>B ∈ π<sub>C</sub>(S)</sub>(R))</li>
+          <li>R</li>
+          <li>None</li>
+        </ul>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: (B)</strong>. The join keeps only those R-tuples whose B-value occurs as a C-value in S.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2016 · 2 marks</span>
+        <div class="q">Q2. A relation R has attributes {A,B,C,D,E} and FDs {A→B, BC→D, E→C, D→A}. Identify ALL candidate keys.</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> {AE}, {BE}, {CE}, {DE} — verify by computing closures; E appears in every key because it is never on the RHS.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2017 · 2 marks</span>
+        <div class="q">Q3. R(A,B) has 200 rows; S(A,C) has 100 rows. Maximum and minimum number of rows in R ⋈ S?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Min = 0, Max = 200 × 100 = 20,000.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2018 · 2 marks</span>
+        <div class="q">Q4. Which of the following is equivalent to division R(A,B) ÷ S(B)?</div>
+        <ul class="opts">
+          <li>π<sub>A</sub>(R) − π<sub>A</sub>((π<sub>A</sub>(R) × S) − R)</li>
+          <li>π<sub>A</sub>(R × S)</li>
+          <li>σ<sub>B∈S</sub>(R)</li>
+          <li>R ⋈ S</li>
+        </ul>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: (A)</strong>.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2020 · 2 marks</span>
+        <div class="q">Q5. Relations R(A,B) and S(A,B). |R|=100, |S|=80. The maximum tuples in R ∩ S, R ∪ S, R − S?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> max(R∩S)=80; max(R∪S)=180 (if disjoint); max(R−S)=100.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2022 · 2 marks</span>
+        <div class="q">Q6. In TRC, the query "names of students enrolled in CS101" can be written as:</div>
+        <details><summary>Show answer</summary><div class="content"><code>{ s.name | s ∈ Student ∧ ∃ e (e ∈ Enroll ∧ e.sid = s.sid ∧ e.cid = 'CS101') }</code></div></details>
+      </div>
+
+      <div class="quiz">
+        <h3>◆ Quick Quiz · Chapter 3</h3>
+        <div class="q-item"><div class="q-text">1. A super key must be:</div>
+          <ul><li>Minimal</li><li>Unique</li><li>Both</li><li>Neither</li></ul>
+          <details><summary>Answer</summary><div class="content">(B) Only unique. Candidate keys are also minimal.</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">2. Which RA operator is NOT a primitive?</div>
+          <ul><li>σ</li><li>∪</li><li>∩</li><li>×</li></ul>
+          <details><summary>Answer</summary><div class="content">(C) ∩ can be derived: A ∩ B = A − (A − B).</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">3. PK ⇒ NOT NULL is enforced by which integrity rule?</div>
+          <ul><li>Domain</li><li>Entity</li><li>Referential</li><li>Key</li></ul>
+          <details><summary>Answer</summary><div class="content">(B) Entity Integrity.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- CHAPTER 4: SQL & PL/SQL -->
+    <!-- ===================================================== -->
+    <section class="chapter" id="ch4">
+      <div class="chapter-head">
+        <div>
+          <span class="num-tag">CHAPTER · 04</span>
+          <div class="tt">SQL &amp; PL/SQL</div>
+        </div>
+        <button class="complete-btn" data-ch="4">◯ Mark Complete</button>
+      </div>
+
+      <p>SQL is the lingua franca of relational databases. It has three sub-languages: <strong>DDL</strong> (define), <strong>DML</strong> (manipulate), <strong>DCL</strong> (control). PL/SQL is Oracle's procedural extension.</p>
+
+      <h2 class="sub">4.1 The SELECT Anatomy</h2>
+<pre><span class="kw">SELECT</span>   col_list / aggregates
+<span class="kw">FROM</span>     table_refs (with JOINs)
+<span class="kw">WHERE</span>    row-level predicates
+<span class="kw">GROUP BY</span> grouping cols
+<span class="kw">HAVING</span>   group-level predicates
+<span class="kw">ORDER BY</span> sort cols
+<span class="kw">LIMIT</span>    n;</pre>
+
+      <div class="warning"><strong>Pitfall:</strong> <code>WHERE</code> filters rows <em>before</em> grouping; <code>HAVING</code> filters <em>after</em>. Aggregates cannot appear in <code>WHERE</code>.</div>
+
+      <h2 class="sub">4.2 Joins — All Five</h2>
+      <ul>
+        <li><strong>INNER JOIN</strong> — matched pairs.</li>
+        <li><strong>LEFT OUTER JOIN</strong> — keep all left, NULL the unmatched right.</li>
+        <li><strong>RIGHT OUTER JOIN</strong> — mirror.</li>
+        <li><strong>FULL OUTER JOIN</strong> — both sides padded.</li>
+        <li><strong>CROSS JOIN</strong> — Cartesian product.</li>
+        <li><strong>Self-join</strong> — table joined with an alias of itself (e.g., employee–manager).</li>
+      </ul>
+
+      <h2 class="sub">4.3 Aggregates &amp; NULL semantics</h2>
+      <ul>
+        <li><code>COUNT(*)</code> counts rows including NULLs; <code>COUNT(col)</code> ignores NULLs.</li>
+        <li>NULL is <em>unknown</em>: <code>NULL = NULL → unknown</code>; use <code>IS NULL</code>.</li>
+        <li>Three-valued logic: TRUE / FALSE / UNKNOWN.</li>
+      </ul>
+
+      <h2 class="sub">4.4 Subqueries &amp; Set Operations</h2>
+      <ul>
+        <li><strong>Scalar</strong>: returns single value.</li>
+        <li><strong>Row</strong>: returns single row.</li>
+        <li><strong>Correlated</strong>: inner query references outer columns; evaluated per outer row.</li>
+        <li><strong>Set ops:</strong> <code>UNION</code>, <code>UNION ALL</code>, <code>INTERSECT</code>, <code>EXCEPT/MINUS</code>.</li>
+      </ul>
+
+      <h2 class="sub">4.5 Views</h2>
+<pre><span class="kw">CREATE VIEW</span> TopStudents <span class="kw">AS</span>
+<span class="kw">SELECT</span> rollNo, name, cgpa
+<span class="kw">FROM</span>   Student
+<span class="kw">WHERE</span>  cgpa &gt;= 9.0;</pre>
+      <div class="note">A view is updatable only if it's defined on a single table without aggregates, DISTINCT, GROUP BY, or set ops, and includes the table's PK.</div>
+
+      <h2 class="sub">4.6 Indexes</h2>
+      <ul>
+        <li><strong>Primary</strong> — on PK; data is sorted by it (clustered).</li>
+        <li><strong>Secondary</strong> — non-clustered; extra lookup level.</li>
+        <li><strong>Dense vs Sparse</strong>: dense has one entry per record; sparse has one per data block.</li>
+        <li><strong>B+ Tree</strong> — default; supports range queries.</li>
+        <li><strong>Hash</strong> — O(1) equality, no range.</li>
+      </ul>
+
+      <h2 class="sub">4.7 Transactions in SQL</h2>
+<pre><span class="kw">BEGIN</span>;
+  <span class="kw">UPDATE</span> Account <span class="kw">SET</span> bal = bal - 1000 <span class="kw">WHERE</span> id = 1;
+  <span class="kw">UPDATE</span> Account <span class="kw">SET</span> bal = bal + 1000 <span class="kw">WHERE</span> id = 2;
+<span class="kw">COMMIT</span>;   <span class="cm">-- or ROLLBACK on failure</span></pre>
+
+      <h2 class="sub">4.8 PL/SQL — Quick Tour</h2>
+<pre><span class="kw">DECLARE</span>
+   v_avg <span class="kw">NUMBER</span>;
+<span class="kw">BEGIN</span>
+   <span class="kw">SELECT</span> AVG(salary) <span class="kw">INTO</span> v_avg <span class="kw">FROM</span> Employee;
+   <span class="kw">IF</span> v_avg &lt; 50000 <span class="kw">THEN</span>
+      DBMS_OUTPUT.PUT_LINE(<span class="str">'Underpaid team'</span>);
+   <span class="kw">END IF</span>;
+<span class="kw">END</span>;</pre>
+      <ul>
+        <li><strong>Cursors</strong>: implicit (single row) or explicit (multi-row).</li>
+        <li><strong>Triggers</strong>: BEFORE / AFTER on INSERT/UPDATE/DELETE.</li>
+        <li><strong>Stored Procedures &amp; Functions</strong>: server-side modules.</li>
+        <li><strong>Exceptions</strong>: <code>NO_DATA_FOUND</code>, <code>TOO_MANY_ROWS</code>, user-defined.</li>
+      </ul>
+
+      <h2 class="sub">4.9 Numerical — Query Output Counting</h2>
+      <div class="tip"><strong>Problem.</strong> Table <code>Emp(eid, did, sal)</code> has 5 rows: (1,A,100), (2,A,200), (3,B,300), (4,B,400), (5,C,500). What does <code>SELECT did, AVG(sal) FROM Emp GROUP BY did HAVING AVG(sal) &gt; 200;</code> return?<br>
+      <strong>Solution.</strong> Group averages: A→150, B→350, C→500. HAVING filters out A. Output: 2 rows — (B, 350), (C, 500).</div>
+
+      <div class="fact"><strong>Did you know?</strong> SQL was originally called <em>SEQUEL</em> (Structured English Query Language). It was renamed to <strong>SQL</strong> due to a trademark conflict — and IBM developed it at the San Jose Research Lab in the early 1970s.</div>
+
+      <h2 class="sub">4.10 GATE PYQs — Chapter 4</h2>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2015 · 2 marks</span>
+        <div class="q">Q1. <code>SELECT COUNT(*) FROM R WHERE A IN (NULL);</code> — output?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: 0</strong>. Any comparison with NULL yields UNKNOWN; the row is not counted.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2016 · 2 marks</span>
+        <div class="q">Q2. Consider:
+<pre><span class="kw">SELECT</span> dept, COUNT(*) <span class="kw">FROM</span> Emp <span class="kw">GROUP BY</span> dept <span class="kw">HAVING</span> COUNT(*) &gt; (<span class="kw">SELECT</span> AVG(c) <span class="kw">FROM</span> (<span class="kw">SELECT</span> COUNT(*) c <span class="kw">FROM</span> Emp <span class="kw">GROUP BY</span> dept) t);</pre>
+        What does the query return?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Departments whose headcount exceeds the average departmental headcount.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2017 · 2 marks</span>
+        <div class="q">Q3. Which of the following is INCORRECT regarding views?</div>
+        <ul class="opts">
+          <li>Views improve security by hiding columns</li>
+          <li>All views are updatable</li>
+          <li>Views can be materialized</li>
+          <li>Views appear in the data dictionary</li>
+        </ul>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: (B)</strong>. Views containing aggregates, GROUP BY, DISTINCT, joins, etc., are typically not updatable.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2019 · 2 marks</span>
+        <div class="q">Q4. Given two relations R(A,B) with 5 rows and S(B,C) with 4 rows, the maximum number of rows in <code>R LEFT OUTER JOIN S</code> is?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> 5 × 4 = 20 (all R rows match every S row).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2021 · 2 marks</span>
+        <div class="q">Q5. Consider a relation Employee(eid, name, mgr). <code>SELECT e.name FROM Employee e, Employee m WHERE e.mgr = m.eid AND m.name = 'Bob';</code> finds:</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Names of employees whose manager is Bob.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2023 · 2 marks</span>
+        <div class="q">Q6. Which of these is NOT allowed inside a single SQL statement?</div>
+        <ul class="opts">
+          <li>Aggregate inside HAVING</li>
+          <li>Aggregate inside WHERE</li>
+          <li>Aggregate inside SELECT list</li>
+          <li>Aggregate inside ORDER BY</li>
+        </ul>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: (B)</strong>.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2024 · 2 marks</span>
+        <div class="q">Q7. In PL/SQL, a row-level trigger fires:</div>
+        <ul class="opts">
+          <li>Once per statement</li>
+          <li>Once per affected row</li>
+          <li>Once per session</li>
+          <li>Never</li>
+        </ul>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: (B)</strong>.</div></details>
+      </div>
+
+      <div class="quiz">
+        <h3>◆ Quick Quiz · Chapter 4</h3>
+        <div class="q-item"><div class="q-text">1. <code>COUNT(DISTINCT col)</code> counts:</div>
+          <ul><li>All rows</li><li>Rows where col is NOT NULL, deduplicated</li><li>All distinct values including NULL</li><li>None</li></ul>
+          <details><summary>Answer</summary><div class="content">(B)</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">2. <code>NULL = NULL</code> evaluates to:</div>
+          <ul><li>TRUE</li><li>FALSE</li><li>UNKNOWN</li><li>SYNTAX ERROR</li></ul>
+          <details><summary>Answer</summary><div class="content">(C) UNKNOWN. Use IS NULL.</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">3. Which clause is logically processed FIRST?</div>
+          <ul><li>SELECT</li><li>FROM</li><li>WHERE</li><li>ORDER BY</li></ul>
+          <details><summary>Answer</summary><div class="content">(B) FROM. Conceptual order: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- CHAPTER 5: Normalization -->
+    <!-- ===================================================== -->
+    <section class="chapter" id="ch5">
+      <div class="chapter-head">
+        <div>
+          <span class="num-tag">CHAPTER · 05</span>
+          <div class="tt">Database Design &amp; Normalization</div>
+        </div>
+        <button class="complete-btn" data-ch="5">◯ Mark Complete</button>
+      </div>
+
+      <p>Normalization eliminates <strong>insertion, update, and deletion anomalies</strong> by progressively decomposing relations based on <span class="term" title="A constraint X → Y meaning: whenever two tuples agree on X they must agree on Y.">Functional Dependencies (FDs)</span>.</p>
+
+      <h2 class="sub">5.1 Functional Dependencies</h2>
+      <div class="formula">
+Armstrong's Axioms:
+  Reflexivity:   if Y ⊆ X then X → Y
+  Augmentation:  if X → Y then XZ → YZ
+  Transitivity:  if X → Y and Y → Z then X → Z
+Derived rules:  Union, Decomposition, Pseudotransitivity
+      </div>
+
+      <h2 class="sub">5.2 Attribute Closure (X⁺)</h2>
+      <div class="tip"><strong>Algorithm.</strong>
+        <ol>
+          <li>Start with X⁺ = X.</li>
+          <li>Repeat: for each FD A → B with A ⊆ X⁺, set X⁺ := X⁺ ∪ B.</li>
+          <li>Stop when no change.</li>
+        </ol>
+        X is a <strong>candidate key</strong> iff X⁺ = R and no proper subset has full closure.</div>
+
+      <h2 class="sub">5.3 The Normal Forms</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Form</th><th>Definition</th><th>Anomaly addressed</th></tr></thead>
+          <tbody>
+            <tr><td>1NF</td><td>All attributes atomic</td><td>Multi-valued attributes</td></tr>
+            <tr><td>2NF</td><td>1NF + no partial dependency of non-prime on a candidate key</td><td>Partial key redundancy</td></tr>
+            <tr><td>3NF</td><td>2NF + for every FD X→A: either X is super key OR A is prime</td><td>Transitive dependencies</td></tr>
+            <tr><td>BCNF</td><td>For every non-trivial FD X→Y, X is a super key</td><td>All FD-based anomalies</td></tr>
+            <tr><td>4NF</td><td>BCNF + no non-trivial multi-valued dependency (MVD)</td><td>Independent multi-values</td></tr>
+            <tr><td>5NF (PJNF)</td><td>4NF + every join dependency is implied by candidate keys</td><td>Spurious tuples from joins</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="sub">5.4 BCNF vs 3NF</h2>
+      <ul>
+        <li>3NF allows X → A even when X is not super key, <em>as long as A is prime</em>.</li>
+        <li><span class="term" title="Boyce-Codd Normal Form: stricter than 3NF; for every non-trivial FD X→Y, X must be a super key.">BCNF</span> doesn't allow that.</li>
+        <li><strong>3NF</strong> is always achievable as a lossless + dependency-preserving decomposition. <strong>BCNF</strong> is lossless but <em>may lose</em> dependency preservation.</li>
+      </ul>
+
+      <h2 class="sub">5.5 Decomposition Properties</h2>
+      <ul>
+        <li><strong>Lossless Join</strong>: R = R1 ⋈ R2; required when splitting. R1 ∩ R2 must be a super key of <em>at least one</em> of R1 or R2.</li>
+        <li><strong>Dependency Preservation</strong>: closure of union of projected FDs equals closure of original F.</li>
+      </ul>
+
+      <h2 class="sub">5.6 Numerical — Closure &amp; Keys</h2>
+      <div class="tip">
+        <strong>Problem.</strong> R(A,B,C,D,E) with F = { A → BC, CD → E, B → D, E → A }. Find all candidate keys.<br>
+        <strong>Solution sketch.</strong> Closures: A⁺ = {A,B,C,D,E} ✓; B⁺ = {B,D} ✗; D⁺ = {D}; E⁺ = {A,B,C,D,E} ✓; CD⁺ = {A,B,C,D,E} ✓; BC⁺ = {A,B,C,D,E} ✓.
+        Minimality: A, E are candidate keys. CD and BC are also candidate keys (no proper subset closes to R).<br>
+        <strong>Candidate keys:</strong> {A}, {E}, {BC}, {CD}.
+      </div>
+
+      <h2 class="sub">5.7 Numerical — Decomposing into BCNF</h2>
+      <div class="tip">
+        <strong>Problem.</strong> R(A,B,C) with FDs {A → B, B → C}. Is R in BCNF? If not, decompose.<br>
+        <strong>Solution.</strong> Candidate key = {A}. B → C violates BCNF (B not super key).
+        Decompose: R1(B, C) [FD B→C, key B] and R2(A, B) [FD A→B, key A].
+        Lossless: R1 ∩ R2 = {B} which is the key of R1 ✓.
+        Dependency preservation: A→B in R2; B→C in R1 ✓. Both BCNF.
+      </div>
+
+      <div class="warning"><strong>Trap:</strong> Sometimes a relation in 3NF is <em>not</em> in BCNF; classic example: <code>R(A,B,C)</code> with FDs {AB → C, C → B}. Candidate keys: AB, AC. C→B violates BCNF (C not super key) but is allowed in 3NF because B is prime.</div>
+
+      <div class="fact"><strong>Did you know?</strong> The “Boyce” in BCNF was a relatively unsung coworker of Codd at IBM. Raymond Boyce died of a brain aneurysm at just 26 — months after co-introducing BCNF in 1974.</div>
+
+      <h2 class="sub">5.8 GATE PYQs — Chapter 5</h2>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2014 · 2 marks</span>
+        <div class="q">Q1. Relation R(A,B,C,D) with FDs {A → B, B → C, C → D}. Highest NF satisfied without decomposition?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> 1NF only. Key = A. Transitive FDs A→B→C→D violate 3NF.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2015 · 2 marks</span>
+        <div class="q">Q2. R(A,B,C,D) with F = { AB → C, C → D, D → A }. Number of candidate keys?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: 3</strong> — {AB}, {BC}, {BD}. (Verify by closures.)</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2016 · 2 marks</span>
+        <div class="q">Q3. R(P,Q,R,S) with FDs {PQ → R, R → S}. Is the decomposition (PQ, R) and (R, S) lossless?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Common attribute is R; in R2(R,S), R is super key (R→S). So <strong>lossless</strong>.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2018 · 2 marks</span>
+        <div class="q">Q4. Which of these is true?
+        I. Every BCNF relation is in 3NF.  II. Every 3NF relation is in BCNF.  III. BCNF decomposition is always dependency-preserving.</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Only I.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2020 · 2 marks</span>
+        <div class="q">Q5. R(A,B,C,D,E,F) with F = {A → BC, B → E, CD → EF}. Find A⁺ and AD⁺.</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> A⁺ = {A,B,C,E}; AD⁺ = {A,B,C,D,E,F}. AD is therefore a super key.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2022 · 2 marks</span>
+        <div class="q">Q6. Consider R(A,B,C,D) with {AB → C, AB → D, C → A, D → B}. The number of candidate keys is?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: 4</strong> — {AB}, {AD}, {BC}, {CD}.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2024 · 2 marks</span>
+        <div class="q">Q7. A relation is in 4NF but not in 5NF when:</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> A non-trivial <em>join dependency</em> exists that is not implied by candidate keys.</div></details>
+      </div>
+
+      <div class="quiz">
+        <h3>◆ Quick Quiz · Chapter 5</h3>
+        <div class="q-item"><div class="q-text">1. Partial dependency means…</div>
+          <ul><li>Non-prime attribute depends on part of a candidate key</li><li>Prime attribute depends on a non-prime attribute</li><li>Transitive FD</li><li>None</li></ul>
+          <details><summary>Answer</summary><div class="content">(A)</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">2. Lossless decomposition test for two-way split:</div>
+          <ul><li>R1∩R2 must be empty</li><li>R1∩R2 must be super key of at least one side</li><li>R1∪R2 must equal R</li><li>FDs must be preserved</li></ul>
+          <details><summary>Answer</summary><div class="content">(B)</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">3. BCNF guarantees…</div>
+          <ul><li>Lossless + dependency preservation</li><li>Lossless only</li><li>Dependency preservation only</li><li>Neither</li></ul>
+          <details><summary>Answer</summary><div class="content">(B) Lossless only; dependency preservation may be sacrificed.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- CHAPTER 6: Transactions -->
+    <!-- ===================================================== -->
+    <section class="chapter" id="ch6">
+      <div class="chapter-head">
+        <div>
+          <span class="num-tag">CHAPTER · 06</span>
+          <div class="tt">Transaction Processing Concepts</div>
+        </div>
+        <button class="complete-btn" data-ch="6">◯ Mark Complete</button>
+      </div>
+
+      <p>A <span class="term" title="Logical unit of work — a sequence of reads and writes treated atomically.">transaction</span> moves the DB from one consistent state to another. The bedrock guarantees are <strong>ACID</strong>.</p>
+
+      <h2 class="sub">6.1 ACID</h2>
+      <ul>
+        <li><strong>Atomicity</strong> — all-or-nothing. Enforced by logging + rollback.</li>
+        <li><strong>Consistency</strong> — preserves integrity constraints.</li>
+        <li><strong>Isolation</strong> — concurrent execution = some serial execution.</li>
+        <li><strong>Durability</strong> — committed data survives crashes. Enforced via WAL.</li>
+      </ul>
+
+      <h2 class="sub">6.2 Transaction States</h2>
+      <div class="diagram">
+<pre class="ascii">
+ACTIVE ─▶ PARTIALLY ─▶ COMMITTED ─▶ TERMINATED
+   │      COMMITTED         ▲
+   │          │             │
+   ▼          ▼             │
+FAILED ─────▶ ABORTED ──────┘
+</pre>
+      </div>
+
+      <h2 class="sub">6.3 Schedules</h2>
+      <ul>
+        <li><strong>Serial</strong>: transactions executed one after another — always correct but slow.</li>
+        <li><strong>Concurrent</strong>: interleaved operations — fast but risky.</li>
+        <li><strong>Serializable</strong>: equivalent to some serial schedule.</li>
+        <li><strong>Recoverable</strong>: if Tj reads a value written by Ti, Ti must commit before Tj.</li>
+        <li><strong>Cascadeless</strong>: Tj reads only committed values.</li>
+        <li><strong>Strict</strong>: Tj neither reads nor writes a value written by an uncommitted Ti.</li>
+      </ul>
+
+      <div class="diagram">
+<pre class="ascii">
+Strict ⊂ Cascadeless ⊂ Recoverable ⊂ All schedules
+</pre>
+      </div>
+
+      <h2 class="sub">6.4 Serializability</h2>
+      <ul>
+        <li><strong>Conflict serializable</strong>: precedence graph has no cycle.</li>
+        <li><strong>View serializable</strong>: weaker (allows certain blind writes); test is NP-hard in general.</li>
+        <li>Conflict ⇒ View, but not vice-versa.</li>
+      </ul>
+
+      <div class="formula">
+Two operations Oi(X), Oj(X) conflict iff:
+  - they belong to different transactions, AND
+  - at least one is a WRITE.
+      </div>
+
+      <h2 class="sub">6.5 Building the Precedence Graph</h2>
+      <div class="tip">
+        <strong>Algorithm.</strong>
+        <ol>
+          <li>One node per transaction.</li>
+          <li>Add edge Ti → Tj whenever Ti has an operation conflicting with a later operation of Tj on the same data item.</li>
+          <li>Schedule is conflict-serializable iff the graph is acyclic. Topological order = equivalent serial order.</li>
+        </ol>
+      </div>
+
+      <h2 class="sub">6.6 Numerical Example</h2>
+      <div class="tip">
+        <strong>Schedule S:</strong> R1(A), W2(A), R3(A), W1(B), R2(B), W3(C).<br>
+        Conflicts: R1(A)–W2(A) ⇒ T1→T2; W2(A)–R3(A) ⇒ T2→T3; W1(B)–R2(B) ⇒ T1→T2 (again).
+        Edges: T1→T2, T2→T3. <strong>Acyclic ⇒ conflict serializable.</strong> Serial order: T1, T2, T3.
+      </div>
+
+      <div class="warning"><strong>Pitfall:</strong> Two writes to the same item by the same transaction do <em>not</em> count as conflicts. Always check (a) different txns and (b) at least one write.</div>
+
+      <div class="fact"><strong>Did you know?</strong> The term “ACID” was coined by Andreas Reuter and Theo Härder in 1983, decades after the first transactional systems were built.</div>
+
+      <h2 class="sub">6.7 Recovery</h2>
+      <ul>
+        <li><strong>Log-based:</strong> Write-Ahead Logging (WAL) — log record must hit disk before the page.</li>
+        <li><strong>Deferred update</strong> (no-undo, redo).</li>
+        <li><strong>Immediate update</strong> (undo, redo).</li>
+        <li><strong>Checkpoints</strong>: reduce recovery work after crash.</li>
+        <li><strong>Shadow paging</strong>: maintain copy-on-write page table; no logs, but expensive.</li>
+        <li><strong>ARIES</strong>: industrial-grade WAL-based recovery (Analysis → Redo → Undo).</li>
+      </ul>
+
+      <h2 class="sub">6.8 GATE PYQs — Chapter 6</h2>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2014 · 2 marks</span>
+        <div class="q">Q1. Which property guarantees that the effects of a committed transaction survive a system crash?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Durability.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2016 · 2 marks</span>
+        <div class="q">Q2. Schedule S: R1(X) R2(X) W1(X) W2(X). Is S conflict serializable?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Conflicts give T1→T2 (R1–W2), T2→T1 (R2–W1), T1→T2 (W1–W2). Cycle T1↔T2. <strong>Not</strong> conflict serializable.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2017 · 2 marks</span>
+        <div class="q">Q3. Strict ⊂ Cascadeless ⊂ Recoverable — true or false?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> True.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2019 · 2 marks</span>
+        <div class="q">Q4. Number of conflict-serial orderings consistent with schedule S having transactions T1, T2, T3 producing the precedence graph T1→T2, T2→T3, T1→T3?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Only one — T1, T2, T3 (forced by topological sort).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2021 · 2 marks</span>
+        <div class="q">Q5. Which property is violated when Tj reads an uncommitted value written by Ti and Ti subsequently rolls back?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Isolation → leads to cascading rollback. The schedule is not cascadeless.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2023 · 2 marks</span>
+        <div class="q">Q6. Write-Ahead Logging ensures:</div>
+        <ul class="opts">
+          <li>Atomicity</li>
+          <li>Durability</li>
+          <li>Both A and B</li>
+          <li>Consistency</li>
+        </ul>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: (C)</strong>.</div></details>
+      </div>
+
+      <div class="quiz">
+        <h3>◆ Quick Quiz · Chapter 6</h3>
+        <div class="q-item"><div class="q-text">1. Conflict serializability is decided by:</div>
+          <ul><li>Counting writes</li><li>Acyclicity of precedence graph</li><li>Topological sort time</li><li>Lock granularity</li></ul>
+          <details><summary>Answer</summary><div class="content">(B)</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">2. Which is the strongest schedule class?</div>
+          <ul><li>Recoverable</li><li>Cascadeless</li><li>Strict</li><li>Serial</li></ul>
+          <details><summary>Answer</summary><div class="content">(D) Serial — but among <em>concurrent</em> classes, strict is strongest.</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">3. ARIES recovery phases in order are:</div>
+          <ul><li>Redo, Undo, Analysis</li><li>Analysis, Redo, Undo</li><li>Undo, Redo, Analysis</li><li>Analysis, Undo, Redo</li></ul>
+          <details><summary>Answer</summary><div class="content">(B)</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- CHAPTER 7: Concurrency Control -->
+    <!-- ===================================================== -->
+    <section class="chapter" id="ch7">
+      <div class="chapter-head">
+        <div>
+          <span class="num-tag">CHAPTER · 07</span>
+          <div class="tt">Concurrency Control Techniques</div>
+        </div>
+        <button class="complete-btn" data-ch="7">◯ Mark Complete</button>
+      </div>
+
+      <p>Concurrency control protocols ensure conflict-serializability of concurrent schedules <em>without</em> running everything serially. Two big families: <strong>lock-based</strong> and <strong>timestamp/optimistic</strong>.</p>
+
+      <h2 class="sub">7.1 Lock-Based Protocols</h2>
+      <ul>
+        <li><strong>Shared (S)</strong> &amp; <strong>Exclusive (X)</strong> locks.</li>
+        <li><strong>2PL (Two-Phase Locking)</strong>: growing phase (acquire) + shrinking phase (release).</li>
+        <li><strong>Strict 2PL</strong>: X-locks held till commit → cascadeless.</li>
+        <li><strong>Rigorous 2PL</strong>: <em>all</em> locks held till commit → strict.</li>
+        <li><strong>Conservative (Static) 2PL</strong>: acquire all locks upfront → deadlock-free, but reduces concurrency.</li>
+      </ul>
+      <div class="note"><strong>2PL guarantees conflict serializability</strong>, but doesn't prevent deadlocks.</div>
+
+      <h2 class="sub">7.2 Lock Compatibility Matrix</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>S</th><th>X</th></tr></thead>
+        <tbody>
+          <tr><td><strong>S</strong></td><td>✓</td><td>✗</td></tr>
+          <tr><td><strong>X</strong></td><td>✗</td><td>✗</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h2 class="sub">7.3 Deadlock Handling</h2>
+      <ul>
+        <li><strong>Prevention:</strong> ordering of resources, or timestamp-based schemes:
+          <ul>
+            <li><strong>Wait-Die</strong>: older waits, younger dies.</li>
+            <li><strong>Wound-Wait</strong>: older wounds (preempts) younger, younger waits.</li>
+          </ul>
+        </li>
+        <li><strong>Detection:</strong> Wait-for graph; cycle = deadlock; pick a victim.</li>
+        <li><strong>Avoidance:</strong> Banker's algorithm (rare in DBMS).</li>
+      </ul>
+
+      <h2 class="sub">7.4 Timestamp Ordering (TO)</h2>
+      <ul>
+        <li>Each Ti gets timestamp TS(Ti).</li>
+        <li>For each item X, track RTS(X) and WTS(X).</li>
+        <li>If a request violates timestamp order ⇒ <strong>abort Ti and restart with new timestamp</strong>.</li>
+      </ul>
+      <div class="formula">
+On Read(X) by Ti:
+  if TS(Ti) &lt; WTS(X) → abort Ti
+  else RTS(X) := max(RTS(X), TS(Ti))
+
+On Write(X) by Ti:
+  if TS(Ti) &lt; RTS(X) or TS(Ti) &lt; WTS(X) → abort Ti
+  else WTS(X) := TS(Ti)
+      </div>
+
+      <h2 class="sub">7.5 Multi-Version &amp; Optimistic Protocols</h2>
+      <ul>
+        <li><strong>MVCC</strong>: keep multiple versions; readers never block writers (used in PostgreSQL, Oracle).</li>
+        <li><strong>OCC</strong>: read phase → validation phase → write phase. Good when conflicts are rare.</li>
+      </ul>
+
+      <h2 class="sub">7.6 Granularity &amp; Intention Locks</h2>
+      <ul>
+        <li>Locking can be at DB / file / page / row level.</li>
+        <li>Intention locks (<em>IS, IX, SIX</em>) sit on ancestors so coarse locks can detect conflicts efficiently.</li>
+      </ul>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th></th><th>IS</th><th>IX</th><th>S</th><th>SIX</th><th>X</th></tr></thead>
+          <tbody>
+            <tr><td><strong>IS</strong></td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✗</td></tr>
+            <tr><td><strong>IX</strong></td><td>✓</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td></tr>
+            <tr><td><strong>S</strong></td><td>✓</td><td>✗</td><td>✓</td><td>✗</td><td>✗</td></tr>
+            <tr><td><strong>SIX</strong></td><td>✓</td><td>✗</td><td>✗</td><td>✗</td><td>✗</td></tr>
+            <tr><td><strong>X</strong></td><td>✗</td><td>✗</td><td>✗</td><td>✗</td><td>✗</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="sub">7.7 Numerical — 2PL Schedule Analysis</h2>
+      <div class="tip">
+        <strong>Problem.</strong> Trace: L1-S(A), R1(A), L2-X(B), W2(B), L1-X(B) → blocked, U2(B), L1-X(B) granted, W1(B), commit2, commit1, U1.<br>
+        Is this Strict 2PL? Yes — every X-lock is held till commit. Cascading rollback impossible.
+      </div>
+
+      <div class="warning"><strong>Phantom problem:</strong> 2PL on existing rows doesn't prevent new rows matching a predicate from being inserted by another transaction → use <em>predicate locks</em> or <em>index locking</em>.</div>
+
+      <div class="fact"><strong>Did you know?</strong> Jim Gray won the 1998 Turing Award for foundational work on transactions and recovery. He famously coined many terms in the field — and tragically vanished at sea in 2007.</div>
+
+      <h2 class="sub">7.8 GATE PYQs — Chapter 7</h2>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2015 · 2 marks</span>
+        <div class="q">Q1. 2PL ensures which property?</div>
+        <ul class="opts">
+          <li>View serializability only</li>
+          <li>Conflict serializability</li>
+          <li>Deadlock freedom</li>
+          <li>Strict schedules</li>
+        </ul>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: (B)</strong>.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2016 · 2 marks</span>
+        <div class="q">Q2. In wait-die, an OLDER transaction requesting a lock held by a YOUNGER one will:</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Wait.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2017 · 2 marks</span>
+        <div class="q">Q3. The wait-for graph of {T1→T2, T2→T3, T3→T1} indicates:</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> A deadlock (cycle).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2018 · 2 marks</span>
+        <div class="q">Q4. Which property is guaranteed by Strict 2PL but not by basic 2PL?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Cascadelessness (and recoverability).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2020 · 2 marks</span>
+        <div class="q">Q5. In timestamp ordering, if R(X) by Ti finds WTS(X) &gt; TS(Ti), the system will:</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Abort and restart Ti (since Ti is "too old").</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2022 · 2 marks</span>
+        <div class="q">Q6. Which of the following prevents the phantom problem?</div>
+        <ul class="opts">
+          <li>2PL</li>
+          <li>Strict 2PL</li>
+          <li>Predicate locking</li>
+          <li>OCC</li>
+        </ul>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: (C)</strong>.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2024 · 2 marks</span>
+        <div class="q">Q7. MVCC achieves snapshot isolation by:</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Maintaining multiple versions so readers see a consistent snapshot taken at transaction start; writers create new versions.</div></details>
+      </div>
+
+      <div class="quiz">
+        <h3>◆ Quick Quiz · Chapter 7</h3>
+        <div class="q-item"><div class="q-text">1. Which is NOT a deadlock-prevention scheme?</div>
+          <ul><li>Wait-die</li><li>Wound-wait</li><li>Conservative 2PL</li><li>Wait-for graph</li></ul>
+          <details><summary>Answer</summary><div class="content">(D) Wait-for graph is a detection technique.</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">2. OCC's three phases are:</div>
+          <ul><li>Read · Validate · Write</li><li>Lock · Use · Release</li><li>Plan · Execute · Commit</li><li>Begin · Update · End</li></ul>
+          <details><summary>Answer</summary><div class="content">(A)</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">3. Intention locks are required because…</div>
+          <ul><li>Of multi-granularity locking</li><li>OCC needs them</li><li>SQL standard mandates</li><li>They're faster</li></ul>
+          <details><summary>Answer</summary><div class="content">(A)</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- CHAPTER 8: Distributed Databases -->
+    <!-- ===================================================== -->
+    <section class="chapter" id="ch8">
+      <div class="chapter-head">
+        <div>
+          <span class="num-tag">CHAPTER · 08</span>
+          <div class="tt">Distributed Databases</div>
+        </div>
+        <button class="complete-btn" data-ch="8">◯ Mark Complete</button>
+      </div>
+
+      <p>A distributed database (DDB) is a single logical DB spread over multiple physical sites connected by a network. Goals: locality, availability, scalability.</p>
+
+      <h2 class="sub">8.1 Architectures</h2>
+      <ul>
+        <li><strong>Homogeneous</strong> — same DBMS everywhere.</li>
+        <li><strong>Heterogeneous (federated)</strong> — different DBMSs cooperating via a global schema.</li>
+        <li><strong>Shared-nothing / Shared-disk / Shared-memory</strong> — cluster topologies.</li>
+      </ul>
+
+      <h2 class="sub">8.2 Fragmentation</h2>
+      <ul>
+        <li><strong>Horizontal</strong> — partition rows (σ-based).</li>
+        <li><strong>Vertical</strong> — partition columns (π-based; must keep PK).</li>
+        <li><strong>Mixed/Hybrid</strong> — both.</li>
+        <li>Correctness rules: <strong>Completeness, Reconstruction, Disjointness</strong> (latter optional for horizontal with overlap).</li>
+      </ul>
+
+      <h2 class="sub">8.3 Replication</h2>
+      <ul>
+        <li><strong>Synchronous</strong>: all replicas updated atomically (strong consistency, higher latency).</li>
+        <li><strong>Asynchronous</strong>: lazy propagation (eventual consistency).</li>
+        <li><strong>Quorum (N, W, R) with W + R &gt; N</strong> → strong consistency.</li>
+      </ul>
+
+      <h2 class="sub">8.4 The CAP Theorem</h2>
+      <div class="formula">Among <strong>Consistency</strong>, <strong>Availability</strong>, and <strong>Partition tolerance</strong>, a distributed system can guarantee at most TWO during a network partition.</div>
+      <div class="note">In practice partition tolerance is non-negotiable for any distributed system, so the real choice is CP vs AP.</div>
+
+      <h2 class="sub">8.5 Distributed Commit — 2PC</h2>
+      <div class="diagram">
+<pre class="ascii">
+          ┌──────────────┐
+          │  COORDINATOR │
+          └──────┬───────┘
+   PREPARE      │
+   ───────▶ all participants
+                │   each: write PREPARED to log, reply YES/NO
+   COMMIT/ABORT │
+   ◀───────  all YES → COMMIT;   any NO → ABORT
+                │   each: write COMMIT/ABORT to log, ACK
+</pre>
+      </div>
+      <div class="warning"><strong>2PC blocking problem:</strong> If the coordinator crashes after participants prepared but before they hear the decision, they're stuck holding locks. <strong>3PC</strong> adds a pre-commit phase to fix this (assumes no network partitions).</div>
+
+      <h2 class="sub">8.6 Distributed Query Processing</h2>
+      <ul>
+        <li><strong>Localization</strong> of fragmented queries.</li>
+        <li><strong>Semi-join</strong>: ship only the join attribute first to reduce data movement:
+          <div class="formula">R ⋉ S = π<sub>attrs(R)</sub>(R ⋈ S)</div>
+        </li>
+        <li>Cost = communication + local IO. In WAN, communication dominates.</li>
+      </ul>
+
+      <h2 class="sub">8.7 Numerical — Semi-Join Savings</h2>
+      <div class="tip">
+        <strong>Problem.</strong> R(A,B) at site 1 has 1000 tuples × 100 B = 100 KB. S(B,C) at site 2 has 500 tuples × 80 B = 40 KB. Only 20 distinct B-values appear in S.<br>
+        <strong>Naïve join</strong>: ship all of S to site 1 → 40 KB.<br>
+        <strong>Semi-join</strong>: ship π<sub>B</sub>(S) → 20 × 4 B = 80 B; filter R locally; ship result back. Massive savings.
+      </div>
+
+      <h2 class="sub">8.8 Distributed Deadlock</h2>
+      <ul>
+        <li><strong>Local wait-for graphs</strong> merged into a global graph.</li>
+        <li><strong>Path-pushing</strong> or <strong>edge chasing</strong> algorithms.</li>
+        <li>Phantom deadlocks: stale info can show false cycles.</li>
+      </ul>
+
+      <div class="fact"><strong>Did you know?</strong> Google Spanner is the first commercially deployed system to claim true <em>external consistency</em> across a planet — thanks to GPS+atomic-clock-driven TrueTime API.</div>
+
+      <h2 class="sub">8.9 GATE PYQs — Chapter 8</h2>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2016 · 2 marks</span>
+        <div class="q">Q1. In a horizontally fragmented relation, fragments must satisfy:</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Completeness, Reconstruction, and Disjointness.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2018 · 2 marks</span>
+        <div class="q">Q2. CAP theorem states that during a partition, a system can guarantee at most:</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Two of {Consistency, Availability, Partition tolerance}.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2020 · 2 marks</span>
+        <div class="q">Q3. Which of the following is true about 2PC?
+        I. It is blocking.  II. It is non-blocking.  III. 3PC fixes the coordinator-failure blocking.</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> I and III.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2021 · 2 marks</span>
+        <div class="q">Q4. Semi-join R ⋉ S equals:</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> π<sub>attrs(R)</sub>(R ⋈ S).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2023 · 2 marks</span>
+        <div class="q">Q5. In quorum-based replication with N=5 replicas, W=3, R=3, is strong consistency guaranteed?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Yes, because W + R = 6 &gt; N = 5; read and write sets overlap.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2024 · 2 marks</span>
+        <div class="q">Q6. Vertical fragmentation requires that:</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Each fragment includes the PK of the original relation so it can be reconstructed via natural join.</div></details>
+      </div>
+
+      <div class="quiz">
+        <h3>◆ Quick Quiz · Chapter 8</h3>
+        <div class="q-item"><div class="q-text">1. Which is NOT a fragmentation correctness rule?</div>
+          <ul><li>Completeness</li><li>Reconstruction</li><li>Compression</li><li>Disjointness</li></ul>
+          <details><summary>Answer</summary><div class="content">(C)</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">2. 2PC is blocking because:</div>
+          <ul><li>Coordinator may fail after prepare</li><li>Participants are slow</li><li>Network is slow</li><li>Locks are too coarse</li></ul>
+          <details><summary>Answer</summary><div class="content">(A)</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">3. CAP "AP" systems give up:</div>
+          <ul><li>Availability</li><li>Partition tolerance</li><li>Consistency</li><li>Performance</li></ul>
+          <details><summary>Answer</summary><div class="content">(C)</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- CHAPTER 8B: File Organisation & Indexing (NEW) -->
+    <!-- ===================================================== -->
+    <section class="chapter" id="ch8b">
+      <div class="chapter-head">
+        <div>
+          <span class="num-tag">CHAPTER · 08B</span>
+          <div class="tt">File Organisation &amp; Indexing</div>
+        </div>
+        <button class="complete-btn" data-ch="8b">◯ Mark Complete</button>
+      </div>
+
+      <p>Indexing is one of the <strong>highest-yield GATE topics</strong> — expect 2–3 direct questions every year. A good index can reduce a full table scan from O(n) disk reads to O(log n).</p>
+
+      <h2 class="sub">8B.1 Types of Files &amp; Access</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>File Type</th><th>Organisation</th><th>Best for</th><th>Weakness</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Heap</strong></td><td>Unordered, append-only</td><td>Bulk inserts, full scans</td><td>Slow point queries</td></tr>
+          <tr><td><strong>Sequential</strong></td><td>Sorted on search key</td><td>Range queries, binary search</td><td>Expensive inserts (reorder)</td></tr>
+          <tr><td><strong>Hash</strong></td><td>Bucket on hash(key)</td><td>Exact-match lookups O(1)</td><td>No range queries</td></tr>
+          <tr><td><strong>Clustered</strong></td><td>Data physically sorted on index key</td><td>Range scans, few large retrievals</td><td>Only 1 per table</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2 class="sub">8B.2 Dense vs Sparse Indexes</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Property</th><th>Dense Index</th><th>Sparse Index</th></tr></thead>
+        <tbody>
+          <tr><td>Entry for each record?</td><td>Yes — one index entry per data record</td><td>No — one entry per disk block</td></tr>
+          <tr><td>File must be sorted?</td><td>No (can be built on any attribute)</td><td>Yes (only on search key used for sorting)</td></tr>
+          <tr><td>Index size</td><td>Large (#records)</td><td>Small (#blocks)</td></tr>
+          <tr><td>Lookup</td><td>Binary search on index then 1 disk read</td><td>Binary search on index then 1–2 disk reads</td></tr>
+          <tr><td>Example</td><td>Secondary index on non-key attribute</td><td>Primary index on sorted file</td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><strong>Primary index</strong> is built on the ordering key of a sequentially ordered file (always sparse). <strong>Secondary index</strong> is on a non-ordering attribute (always dense, may need bucket/overflow).</div>
+
+      <h2 class="sub">8B.3 B+ Tree — The GATE Star ⭐⭐⭐⭐⭐</h2>
+      <p>B+ trees are the default index structure in almost every RDBMS (InnoDB, PostgreSQL, Oracle). They give O(log n) search, insert, and delete — all guaranteed, unlike hash tables.</p>
+
+      <div class="formula">
+Order-p B+ tree:
+  Internal node: at most p pointers, at least ⌈p/2⌉ pointers (except root)
+  Leaf node:     at most p−1 key-pointer pairs, at least ⌈(p−1)/2⌉
+  Height:        ⌊log_⌈p/2⌉(N)⌋ where N = number of records
+  Min records:   root has 1 entry → each level fans out by ⌈p/2⌉
+      </div>
+
+      <div class="diagram">
+<pre class="ascii">
+B+ Tree (Order 3, fan-out = 3):
+
+           [ 30 | 60 ]              ← Internal node (pointers only)
+          /      |     \
+    [10|20]  [30|40|50]  [60|70|80]  ← Leaf nodes (data + next ptr)
+       ↕         ↕           ↕
+    data      data          data
+    records   records       records
+    ↑ Leaf nodes linked in sorted order → fast range scans ↑
+</pre>
+      </div>
+
+      <div class="tip">
+        <strong>Key B+ tree properties:</strong>
+        <ul>
+          <li>ALL data pointers are in <strong>leaf nodes</strong> only — internal nodes are just guides.</li>
+          <li>Leaf nodes are <strong>linked in a doubly-linked list</strong> → range queries need no backtracking.</li>
+          <li>The tree is always <strong>height-balanced</strong> — all leaves at the same level.</li>
+          <li>Splits/merges maintain the order constraint automatically.</li>
+        </ul>
+      </div>
+
+      <h2 class="sub">8B.4 Numerical — B+ Tree Height &amp; Capacity</h2>
+      <div class="tip">
+        <strong>Problem.</strong> A B+ tree index has order p = 100 (each internal node holds up to 100 pointers). The data file has N = 1,000,000 records. Find the maximum height of the tree (levels from root to leaf).<br><br>
+        <strong>Solution.</strong><br>
+        Min fan-out per internal node = ⌈p/2⌉ = 50<br>
+        Level 1 (root): at least 2 children → 2 leaf refs<br>
+        Level 2: 2 × 50 = 100 leaf pointers<br>
+        Level 3: 100 × 50 = 5,000<br>
+        Level 4: 5,000 × 50 = 250,000<br>
+        Level 5: 250,000 × 50 = 12,500,000 &gt; 1,000,000 ✓<br><br>
+        <strong>Answer: Max height = 4 levels</strong> (root + 2 internal + leaf).
+        So only <strong>4 disk reads</strong> to find any record among 1 million!
+      </div>
+
+      <div class="tip">
+        <strong>Problem 2.</strong> Internal node size = 1024 bytes. Each key = 8 bytes, each pointer = 6 bytes. What is the order p?<br><br>
+        <strong>Solution.</strong> Node holds p pointers and (p−1) keys:<br>
+        p × 6 + (p−1) × 8 ≤ 1024<br>
+        6p + 8p − 8 ≤ 1024<br>
+        14p ≤ 1032 → p ≤ 73.7 → <strong>p = 73</strong>
+      </div>
+
+      <h2 class="sub">8B.5 B Tree vs B+ Tree</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Feature</th><th>B Tree</th><th>B+ Tree</th></tr></thead>
+        <tbody>
+          <tr><td>Data records in</td><td>Internal + Leaf nodes</td><td>Leaf nodes only</td></tr>
+          <tr><td>Leaf linking</td><td>No sibling links</td><td>Linked list (→ range scan)</td></tr>
+          <tr><td>Internal node capacity</td><td>Smaller (stores data too)</td><td>Larger fan-out (keys only)</td></tr>
+          <tr><td>Range query</td><td>Traverse entire tree</td><td>Follow leaf linked list</td></tr>
+          <tr><td>Used in RDBMS?</td><td>Rarely</td><td>Universally (InnoDB, Postgres…)</td></tr>
+        </tbody>
+      </table></div>
+      <div class="warning"><strong>GATE Trap:</strong> B tree may find a key in an internal node without reaching a leaf (lucky match). B+ tree ALWAYS goes to the leaf. Internal B+ tree nodes are NOT data records — they only hold search keys as guides.</div>
+
+      <h2 class="sub">8B.6 Hashing</h2>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Property</th><th>Static Hashing</th><th>Extendible Hashing</th><th>Linear Hashing</th></tr></thead>
+        <tbody>
+          <tr><td>Buckets</td><td>Fixed M</td><td>Directory + doubles on overflow</td><td>Grows one bucket at a time</td></tr>
+          <tr><td>Range queries</td><td>None</td><td>None</td><td>None</td></tr>
+          <tr><td>Overflow</td><td>Chaining or open addressing</td><td>Local/global depth, splitting</td><td>Linear split order</td></tr>
+          <tr><td>Complexity (lookup)</td><td>O(1) average</td><td>O(1)</td><td>O(1)</td></tr>
+          <tr><td>Resize</td><td>Full rebuild</td><td>Split + double directory</td><td>Controlled split</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2 class="sub">8B.7 Numerical — Index I/O Cost</h2>
+      <div class="tip">
+        <strong>Problem.</strong> A relation R has 10,000 records, block size = 512 bytes, record size = 50 bytes, pointer = 6 bytes, key = 10 bytes.<br>
+        (a) Blocking factor for data = 512 / 50 = 10 records/block → <strong>1,000 data blocks</strong>.<br>
+        (b) Sparse primary index entry = key + pointer = 16 bytes → entries/block = 512/16 = 32.<br>
+            Index blocks = 1,000 / 32 = ⌈31.25⌉ = <strong>32 index blocks</strong>.<br>
+        (c) Binary search on index = ⌈log₂(32)⌉ = 5 block reads + 1 data read = <strong>6 I/Os</strong>.<br>
+            vs. binary search on unsorted data = ⌈log₂(1000)⌉ = <strong>10 I/Os</strong> — index wins!
+      </div>
+
+      <h2 class="sub">8B.8 GATE PYQs — Indexing</h2>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2019 · 2 marks</span>
+        <div class="q">Q1. A B+ tree of order 5 has leaf nodes that can hold a maximum of __ search-key values.</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: 4</strong>. Order 5 means max 5 pointers per node → max (5−1) = 4 key-pointer pairs in a leaf.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2020 · 2 marks</span>
+        <div class="q">Q2. A dense index is built over a file sorted on attribute A. The index has 100 entries and each block holds 10 index entries. The maximum number of block accesses for a successful search using binary search is?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: ⌈log₂(10)⌉ + 1 = 4 + 1 = 5 block accesses</strong> (4 for binary search on 10 index blocks + 1 for the data block).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2022 · 2 marks</span>
+        <div class="q">Q3. Which of the following is true about B+ trees?<br>
+        I. All leaf nodes are at the same depth.<br>
+        II. A key in an internal node always appears in a leaf.<br>
+        III. Range queries are inefficient in B+ trees.</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: I and II only.</strong> I: height-balanced by construction. II: internal keys are copies of leaf keys. III: FALSE — leaf linking makes range queries very efficient.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2023 · 2 marks</span>
+        <div class="q">Q4. A B+ tree index with order p = 10 indexes a file with 10,000 records. What is the maximum number of levels (including leaf)?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: ⌈log_5(10000)⌉ = ⌈5.86⌉ = 6 levels.</strong> Min fan-out = ⌈10/2⌉ = 5. Level k can hold 5^k leaf pointers. 5^6 = 15625 &gt; 10000.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE 2018 · 1 mark</span>
+        <div class="q">Q5. Which file organization allows for the fastest retrieval of a specific record given an exact key value?</div>
+        <details><summary>Show answer</summary>
+          <div class="content"><strong>Ans: Hash organization</strong> — O(1) average case vs O(log n) for B+ tree. But hash cannot do range queries.</div>
+        </details>
+      </div>
+
+      <div class="quiz">
+        <h3>◆ Quick Quiz · Indexing</h3>
+        <div class="q-item"><div class="q-text">1. A secondary index on a non-key attribute is always:</div>
+          <ul><li>Sparse</li><li>Dense</li><li>Clustered</li><li>Unclustered only if key</li></ul>
+          <details><summary>Answer</summary><div class="content">(B) Dense — because multiple records may share the same attribute value, we need an entry per record (or per distinct value with overflow buckets).</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">2. In a B+ tree, where are actual data record pointers stored?</div>
+          <ul><li>Root node only</li><li>Internal nodes only</li><li>Leaf nodes only</li><li>All nodes</li></ul>
+          <details><summary>Answer</summary><div class="content">(C) Leaf nodes only — internal nodes hold only search-key copies as routing guides.</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">3. The main advantage of B+ tree over B tree for DBMS use is:</div>
+          <ul><li>B+ tree supports duplicate keys</li><li>B+ tree leaf links enable efficient range scans</li><li>B+ tree has lower height</li><li>B+ tree uses less memory</li></ul>
+          <details><summary>Answer</summary><div class="content">(B) The linked leaf chain lets you scan a range by following sibling pointers without tree traversal.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- CHAPTER 9: Case Studies -->
+    <!-- ===================================================== -->
+    <section class="chapter" id="ch9">
+      <div class="chapter-head">
+        <div>
+          <span class="num-tag">CHAPTER · 09</span>
+          <div class="tt">Case Studies — Oracle, MySQL, PostgreSQL</div>
+        </div>
+        <button class="complete-btn" data-ch="9">◯ Mark Complete</button>
+      </div>
+
+      <p>Three of the most widely deployed RDBMSs in the world — each with distinct architectures, philosophies, and design trade-offs that show up frequently in interviews and GATE conceptual questions.</p>
+
+      <h2 class="sub">9.1 Oracle Database</h2>
+      <ul>
+        <li><strong>Storage:</strong> data files organized into <em>tablespaces</em>; logical units = segments → extents → blocks.</li>
+        <li><strong>Concurrency:</strong> Multi-Version Read Consistency using <em>undo segments</em>; readers never block writers.</li>
+        <li><strong>Isolation:</strong> READ COMMITTED (default) and SERIALIZABLE; <em>snapshot</em> semantics under the hood.</li>
+        <li><strong>Recovery:</strong> Redo logs (online + archived) + control files; ARIES-style.</li>
+        <li><strong>RAC (Real Application Clusters):</strong> shared-disk active-active cluster.</li>
+      </ul>
+
+      <h2 class="sub">9.2 MySQL (InnoDB)</h2>
+      <ul>
+        <li><strong>Pluggable storage engines:</strong> InnoDB (default, transactional), MyISAM (legacy, no transactions), Memory, Archive…</li>
+        <li><strong>InnoDB</strong>: clustered B+ tree on PK, supports MVCC via undo logs.</li>
+        <li><strong>Replication:</strong> binlog-based (statement, row, mixed). Group replication adds Paxos-like consistency.</li>
+        <li><strong>Isolation:</strong> default is REPEATABLE READ — implemented with snapshot reads + gap locks to prevent phantoms.</li>
+      </ul>
+
+      <h2 class="sub">9.3 PostgreSQL</h2>
+      <ul>
+        <li><strong>True MVCC:</strong> every row has xmin/xmax → no in-place updates; <em>VACUUM</em> reclaims dead tuples.</li>
+        <li><strong>Index variety:</strong> B-tree, Hash, GIN, GiST, BRIN, SP-GiST.</li>
+        <li><strong>Extensibility:</strong> user-defined types, operators, languages (PL/pgSQL, PL/Python…), extensions (PostGIS, pg_trgm, TimescaleDB).</li>
+        <li><strong>Replication:</strong> WAL streaming; logical decoding for CDC.</li>
+        <li><strong>SQL standard compliance</strong> is the highest of the three.</li>
+      </ul>
+
+      <h2 class="sub">9.4 Quick Comparison</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Aspect</th><th>Oracle</th><th>MySQL/InnoDB</th><th>PostgreSQL</th></tr></thead>
+          <tbody>
+            <tr><td>Concurrency</td><td>MVCC (undo segments)</td><td>MVCC (undo)</td><td>MVCC (xmin/xmax)</td></tr>
+            <tr><td>Default Isolation</td><td>READ COMMITTED</td><td>REPEATABLE READ</td><td>READ COMMITTED</td></tr>
+            <tr><td>Replication</td><td>Data Guard / GoldenGate</td><td>Binlog / Group repl.</td><td>WAL streaming / logical</td></tr>
+            <tr><td>Clustering</td><td>RAC (shared-disk)</td><td>NDB / InnoDB Cluster</td><td>Patroni / Citus (shared-nothing)</td></tr>
+            <tr><td>License</td><td>Proprietary</td><td>GPL / commercial</td><td>PostgreSQL License (BSD-like)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="fact"><strong>Did you know?</strong> PostgreSQL’s name comes from “Post-Ingres” — it was the successor to the Ingres research database at UC Berkeley, started by Michael Stonebraker (2014 Turing Award).</div>
+
+      <h2 class="sub">9.5 Conceptual PYQ-style Questions</h2>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE-Style · Conceptual</span>
+        <div class="q">Q1. Which feature is most directly responsible for "readers don't block writers" in PostgreSQL?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> MVCC (each row has xmin/xmax — readers see a snapshot at transaction start).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE-Style · Conceptual</span>
+        <div class="q">Q2. Why does InnoDB use gap locks under REPEATABLE READ?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> To prevent phantom rows on range queries by locking the index gap between rows.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE-Style · Conceptual</span>
+        <div class="q">Q3. In Oracle RAC, what is shared and what isn't?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Disks (storage) are shared; CPU and memory per node are NOT — it's shared-disk active-active.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE-Style · Conceptual</span>
+        <div class="q">Q4. Why does PostgreSQL need VACUUM?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> MVCC marks rows as dead instead of updating in place; VACUUM reclaims dead tuple space and updates statistics.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">GATE-Style · Conceptual</span>
+        <div class="q">Q5. MyISAM vs InnoDB — which supports transactions and FKs?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Only InnoDB.</div></details>
+      </div>
+
+      <div class="quiz">
+        <h3>◆ Quick Quiz · Chapter 9</h3>
+        <div class="q-item"><div class="q-text">1. Which DBMS stores rows in an index-organized table by PK by default?</div>
+          <ul><li>Oracle</li><li>InnoDB</li><li>PostgreSQL</li><li>MyISAM</li></ul>
+          <details><summary>Answer</summary><div class="content">(B) — InnoDB tables are clustered on the PK.</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">2. Which is BSD-licensed (close to)?</div>
+          <ul><li>Oracle</li><li>MySQL</li><li>PostgreSQL</li><li>SQL Server</li></ul>
+          <details><summary>Answer</summary><div class="content">(C)</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">3. Oracle uses _____ for read-consistency snapshots.</div>
+          <ul><li>Redo logs</li><li>Undo segments</li><li>Bin logs</li><li>WAL</li></ul>
+          <details><summary>Answer</summary><div class="content">(B)</div></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- MEGA PYQ BANK -->
+    <!-- ===================================================== -->
+    <section class="chapter" id="pyq-bank">
+      <div class="chapter-head">
+        <div>
+          <span class="num-tag">BONUS DRILL</span>
+          <div class="tt">Mega PYQ Bank — Cross-Topic Mix</div>
+        </div>
+        <span class="chip" style="font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:2px;color:var(--violet);border:1px solid var(--violet-dim);padding:6px 12px;border-radius:99px">GATE 2027 READY</span>
+      </div>
+      <p>Mixed, exam-style problems pooled across topics — solve daily during the last 60 days before GATE 2027.</p>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M1. R(A,B,C) with FDs {A → B, B → C}. R is decomposed into R1(A,B) and R2(B,C). Which is true?</div>
+        <ul class="opts">
+          <li>Lossless &amp; dependency-preserving</li>
+          <li>Lossy</li>
+          <li>Lossless but not dependency-preserving</li>
+          <li>Dependency-preserving but lossy</li>
+        </ul>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: (A)</strong>. Common attribute B is the key of R2.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M2. Schedule: R1(X), R2(X), R1(Y), W1(X), W2(Y). Conflict serializable?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Edges R2(X)→W1(X) ⇒ T2→T1; R1(Y)→W2(Y) ⇒ T1→T2. Cycle ⇒ NOT conflict serializable.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 1 mark</span>
+        <div class="q">M3. The result of <code>π<sub>name</sub>(σ<sub>cgpa &gt; 9</sub>(Student))</code> is equivalent to which SQL?</div>
+        <details><summary>Show answer</summary><div class="content"><code>SELECT DISTINCT name FROM Student WHERE cgpa &gt; 9;</code></div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M4. R(A,B,C,D,E) with FDs {A → B, BC → E, ED → A}. How many candidate keys exist?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> 3 → {ACD}, {BCD}, {CDE}. (Compute closures of all 2- and 3-attribute combinations containing CD.)</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M5. A B+ tree of order p stores n keys. The height is O(__).</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> O(log<sub>p/2</sub> n). Min fan-out at internal node is ⌈p/2⌉.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M6. In a B+ tree with 200-byte nodes, 8-byte keys and 4-byte pointers, what is the order?</div>
+        <details><summary>Show answer</summary><div class="content">If order = p: p×4 + (p-1)×8 ≤ 200 → 12p ≤ 208 → p = 17.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M7. Two transactions T1: R(A), W(A); T2: R(A), W(A). How many serializable schedules are possible (considering only ordering)?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> 2 → T1 fully before T2, or T2 fully before T1.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M8. <code>SELECT eid FROM Emp WHERE sal &gt; ALL (SELECT sal FROM Emp WHERE dept = 'CS');</code> returns:</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> eids of employees whose salary exceeds every CS employee's salary (i.e., strictly greater than the max CS salary).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M9. Hash index vs B+ index: which supports range queries efficiently?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> B+ tree (because of ordered leaves linked in a list).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M10. Database file has 10,000 records, block size 1 KB, record size 100 B. Number of blocks?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Each block holds ⌊1024/100⌋ = 10 records. Total = 10,000/10 = 1,000 blocks.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M11. Equality search in primary index vs secondary index over a file of B blocks?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Primary:</strong> log<sub>2</sub>(index blocks) + 1; <strong>Secondary:</strong> log<sub>2</sub>(secondary index blocks) + 1 + (extra block per match).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M12. Which of the following ALWAYS implies conflict serializability?</div>
+        <ul class="opts">
+          <li>2PL</li>
+          <li>View serializability</li>
+          <li>Recoverability</li>
+          <li>Cascadelessness</li>
+        </ul>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: (A)</strong>.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M13. Functional dependency F = {AB → C, B → D, CD → E, E → A}. Compute (AB)<sup>+</sup>.</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> {A, B, C, D, E}. So AB is a super key (in fact a candidate key).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M14. <code>SELECT COUNT(DISTINCT col) FROM T;</code> if col has values {1, 2, NULL, NULL, 3}?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans: 3</strong>. NULLs are excluded.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M15. In ARIES, the Analysis phase reads the log starting from the:</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Most recent checkpoint record.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M16. Difference between view serializability and conflict serializability — which is more permissive?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> View serializability is more permissive (allows certain blind writes). Conflict ⇒ View, but not the other way.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M17. R(A,B,C,D), FDs {AB → CD, D → A}. Highest normal form?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> 3NF (not BCNF): candidate keys = {AB}, {BD}. D → A: D is not super key but A is prime → 3NF allows it; BCNF doesn't.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M18. Two relations R(A,B) and S(B,C) have 100 and 200 tuples respectively. The natural join has how many tuples (minimum)?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> Minimum = 0 (no matching B values).</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M19. <code>GRANT SELECT ON Employee TO Alice WITH GRANT OPTION;</code> — what can Alice do?</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> She can SELECT from Employee and further GRANT this privilege to other users.</div></details>
+      </div>
+
+      <div class="pyq">
+        <span class="pyq-tag">Mixed · 2 marks</span>
+        <div class="q">M20. Considering CAP, MongoDB (default settings) leans towards:</div>
+        <details><summary>Show answer</summary><div class="content"><strong>Ans:</strong> CP (consistency + partition tolerance) when primary is reachable; falls back to availability with replica reads.</div></details>
+      </div>
+
+      <div class="quiz">
+        <h3>◆ Rapid-Fire Drill · Mixed</h3>
+        <div class="q-item"><div class="q-text">1. A relation with only one candidate key consisting of all attributes is in which NF (assuming atomic values)?</div>
+          <ul><li>1NF only</li><li>BCNF</li><li>2NF only</li><li>5NF</li></ul>
+          <details><summary>Answer</summary><div class="content">(B) — vacuously BCNF (no non-trivial FDs with non-super-key LHS exist).</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">2. A schedule is conflict serializable. Is it necessarily recoverable?</div>
+          <ul><li>Yes</li><li>No</li><li>Only if strict</li><li>Only with 2PL</li></ul>
+          <details><summary>Answer</summary><div class="content">(B). These are independent properties.</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">3. In a B+ tree, all data records reside in:</div>
+          <ul><li>Root</li><li>Internal nodes</li><li>Leaf nodes</li><li>Anywhere</li></ul>
+          <details><summary>Answer</summary><div class="content">(C)</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">4. Which SQL clause cannot reference a column alias defined in SELECT?</div>
+          <ul><li>ORDER BY</li><li>HAVING</li><li>WHERE</li><li>GROUP BY (depends on dialect)</li></ul>
+          <details><summary>Answer</summary><div class="content">(C) WHERE — it is evaluated before SELECT.</div></details>
+        </div>
+        <div class="q-item"><div class="q-text">5. LaTeX check — selection condition with predicate logic:
+          \( \sigma_{age &gt; 20 \wedge dept = 'CS'}(Employee) \) returns:</div>
+          <ul><li>CS employees over 20</li><li>All employees</li><li>Empty set always</li><li>None</li></ul>
+          <details><summary>Answer</summary><div class="content">(A)</div></details>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ RIGHT SIDEBAR ============ -->
+  <aside class="right">
+    <div class="panel">
+      <h4>◇ Motivational</h4>
+      <div class="quote">"Data is the new oil." <span>— Clive Humby</span></div>
+      <div class="quote">"Premature optimization is the root of all evil." <span>— Donald Knuth</span></div>
+      <div class="quote">"In God we trust, all others must bring data." <span>— W. Edwards Deming</span></div>
+      <div class="quote">"The best way to predict the future is to invent it." <span>— Alan Kay</span></div>
+    </div>
+    <div class="panel">
+      <h4>◇ Cheat-Sheet</h4>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-dim);line-height:1.7">
+      Lossless ↔ R1∩R2 = key<br>
+      3NF ⊂ BCNF ⊂ 4NF ⊂ 5NF<br>
+      Strict ⊂ Cascadeless ⊂ Recoverable<br>
+      WAL → Atomicity + Durability<br>
+      Conflict ⇒ View<br>
+      W + R &gt; N → strong<br>
+      Semi-join ⋉ saves WAN bytes
+      </p>
+    </div>
+    <div class="panel">
+      <h4>◇ Last-Mile Tips</h4>
+      <ul style="font-size:.85rem;color:var(--text-dim);padding-left:18px">
+        <li>Verify keys with attribute closure on paper.</li>
+        <li>Always sketch the precedence graph for serializability.</li>
+        <li>Watch for NULL traps in COUNT/AVG.</li>
+        <li>Confirm "minimum" vs "maximum" in join cardinality questions.</li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <div>◆ <span class="grad">PREPARED FOR GATE CSE 2027</span> ◆</div>
+  <div style="margin-top:8px;font-family:'Rajdhani',sans-serif;letter-spacing:1px;font-size:.85rem;color:var(--text-mute)">© Neural Prep Terminal · Single-file edition · All progress is stored locally in your browser.</div>
+</footer>
+
+<script>
+/* ============= PROGRESS TRACKER ============= */
+const TOTAL = 10;
+const STORE_KEY = 'dbms-gate-2027-progress-v1';
+
+function loadProgress(){
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveProgress(p){
+  localStorage.setItem(STORE_KEY, JSON.stringify(p));
+}
+function refreshUI(){
+  const p = loadProgress();
+  const done = Object.keys(p).filter(k => p[k]).length;
+  const pct = Math.round((done / TOTAL) * 100);
+  document.getElementById('progressFill').style.width = Math.min(pct, 100) + '%';
+  document.getElementById('progressLabel').textContent = `${done} / ${TOTAL} Chapters`;
+  document.getElementById('progressPct').textContent = Math.min(pct,100) + '%';
+  document.querySelectorAll('.chapter-list a').forEach(a => {
+    const ch = a.dataset.ch;
+    if(p[ch]) a.classList.add('done'); else a.classList.remove('done');
+  });
+  document.querySelectorAll('.complete-btn[data-ch]').forEach(btn => {
+    const ch = btn.dataset.ch;
+    if(p[ch]){
+      btn.classList.add('done');
+      btn.textContent = '✓ Completed';
+    } else {
+      btn.classList.remove('done');
+      btn.textContent = '◯ Mark Complete';
+    }
+  });
+}
+document.querySelectorAll('.complete-btn[data-ch]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const ch = btn.dataset.ch;
+    const p = loadProgress();
+    p[ch] = !p[ch];
+    saveProgress(p);
+    refreshUI();
+  });
+});
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if(confirm('Reset all chapter progress?')){
+    localStorage.removeItem(STORE_KEY);
+    refreshUI();
+  }
+});
+
+/* mobile nav toggle */
+document.getElementById('navToggle').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+/* close mobile nav on link click */
+document.querySelectorAll('#navLinks a').forEach(a=>{
+  a.addEventListener('click', ()=> document.getElementById('navLinks').classList.remove('open'));
+});
+
+refreshUI();
+</script>
+</body>
+</html>

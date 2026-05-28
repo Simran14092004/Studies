@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Mastery — From Zero to Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;--border:#1e2d45;--accent:#f59e0b;--accent2:#10b981;--accent3:#6366f1;--accent4:#f43f5e;--text:#e2e8f0;--text-muted:#7a8fa6;--code-bg:#0d1117;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Lora',serif;line-height:1.75;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;background:rgba(10,14,26,0.97);border-right:1px solid var(--border);padding:2rem 0;overflow-y:auto;z-index:100;}
+.sidebar::-webkit-scrollbar{width:4px;}.sidebar::-webkit-scrollbar-thumb{background:var(--border);}
+.logo-area{padding:0 1.5rem 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem;}
+.logo-text{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--accent);}
+.logo-sub{font-size:0.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
+.nav-section{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.12em;padding:1rem 1.5rem 0.4rem;}
+.nav-link{display:flex;align-items:center;gap:.6rem;padding:.45rem 1.5rem;color:var(--text-muted);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:.8rem;transition:all .2s;}
+.nav-link:hover,.nav-link.active{color:var(--accent);background:rgba(245,158,11,.06);}
+.main{margin-left:260px;padding:3rem 4rem;}
+section{max-width:860px;margin:0 auto 5rem;}
+h1{font-family:'Syne',sans-serif;font-size:3.5rem;font-weight:800;line-height:1.1;margin-bottom:1.5rem;}
+h1 span{color:var(--accent);}
+h2{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:700;color:var(--accent);margin:2.5rem 0 1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
+h3{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:600;color:var(--accent2);margin:1.5rem 0 .75rem;}
+p{margin-bottom:1rem;color:var(--text);}
+code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);border:1px solid var(--border);padding:.15rem .4rem;border-radius:4px;font-size:.85em;color:var(--accent);}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;overflow-x:auto;margin:1rem 0;}
+pre code{background:none;border:none;padding:0;font-size:.88rem;color:#a5f3fc;}
+.info-box{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent2);border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0;}
+.warn-box{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent4);border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;}
+.card h4{font-family:'Syne',sans-serif;font-weight:700;margin-bottom:.5rem;color:var(--accent3);}
+table{width:100%;border-collapse:collapse;margin:1rem 0;}
+th{background:var(--surface2);padding:.75rem;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);border:1px solid var(--border);}
+td{padding:.75rem;border:1px solid var(--border);font-size:.9rem;}
+@media(max-width:768px){.sidebar{display:none;}.main{margin-left:0;padding:2rem 1rem;}.grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav class="sidebar">
+  <div class="logo-area"><div class="logo-text">🐙 GitHub Mastery</div><div class="logo-sub">version control & collaboration</div></div>
+  <div class="nav-section">Foundations</div>
+  <a class="nav-link" href="#intro">Introduction to Git & GitHub</a>
+  <a class="nav-link" href="#install">Installation & Setup</a>
+  <a class="nav-link" href="#basics">Core Git Commands</a>
+  <a class="nav-link" href="#branching">Branching Strategy</a>
+  <div class="nav-section">Collaboration</div>
+  <a class="nav-link" href="#remote">Remote Repositories</a>
+  <a class="nav-link" href="#pr">Pull Requests & Code Review</a>
+  <a class="nav-link" href="#merge">Merge & Rebase</a>
+  <a class="nav-link" href="#conflicts">Resolving Conflicts</a>
+  <div class="nav-section">Advanced</div>
+  <a class="nav-link" href="#workflow">GitHub Flow / Git Flow</a>
+  <a class="nav-link" href="#actions">GitHub Actions (CI/CD)</a>
+  <a class="nav-link" href="#hooks">Git Hooks</a>
+  <a class="nav-link" href="#stash">Stash, Tags & Releases</a>
+  <div class="nav-section">GATE Prep</div>
+  <a class="nav-link" href="#interview">Common Interview Questions</a>
+</nav>
+<main class="main">
+<section id="intro">
+<h1>Master <span>GitHub</span><br>Version Control & Collaboration</h1>
+<p>Git is the most widely used distributed version control system in the world. GitHub wraps Git with collaboration features — pull requests, issues, Actions, and more. As an AIML developer, mastering Git is non-negotiable.</p>
+<div class="info-box"><strong>Why Git?</strong> Every professional software project uses version control. Git lets you track changes, collaborate safely, revert mistakes, and ship confidently.</div>
+</section>
+
+<section id="install">
+<h2>Installation & Configuration</h2>
+<pre><code># Install on Ubuntu/Debian
+sudo apt install git
+
+# Verify
+git --version
+
+# FIRST THING: Configure your identity
+git config --global user.name "Simran Singh"
+git config --global user.email "your@email.com"
+git config --global core.editor "code --wait"   # VSCode as editor
+git config --list   # See all config</code></pre>
+<h3>SSH Key Setup (recommended)</h3>
+<pre><code># Generate SSH key
+ssh-keygen -t ed25519 -C "your@email.com"
+
+# Copy public key
+cat ~/.ssh/id_ed25519.pub
+# Paste this in GitHub → Settings → SSH Keys
+
+# Test connection
+ssh -T git@github.com</code></pre>
+</section>
+
+<section id="basics">
+<h2>Core Git Commands</h2>
+<div class="grid">
+<div class="card"><h4>Initialize</h4><code>git init</code> — create a new repo in current dir<br><br><code>git clone &lt;url&gt;</code> — copy existing repo</div>
+<div class="card"><h4>Staging & Committing</h4><code>git add .</code> — stage all changes<br><br><code>git commit -m "message"</code> — snapshot</div>
+<div class="card"><h4>Status & Logs</h4><code>git status</code> — what's changed<br><br><code>git log --oneline --graph</code> — visual history</div>
+<div class="card"><h4>Undoing Changes</h4><code>git restore file</code> — discard working changes<br><br><code>git reset HEAD~1</code> — undo last commit (keep changes)</div>
+</div>
+<pre><code># Complete workflow
+git init
+echo "# My Project" > README.md
+git add README.md
+git commit -m "feat: initial commit"
+
+# See what changed
+git diff
+git diff --staged   # after git add
+
+# Amend last commit message
+git commit --amend -m "corrected message"</code></pre>
+<h3>The Three Trees</h3>
+<table>
+<tr><th>Area</th><th>Description</th><th>Command to move</th></tr>
+<tr><td>Working Directory</td><td>Your actual files on disk</td><td>—</td></tr>
+<tr><td>Staging Area (Index)</td><td>What will go in next commit</td><td><code>git add</code></td></tr>
+<tr><td>Repository</td><td>Committed history</td><td><code>git commit</code></td></tr>
+</table>
+</section>
+
+<section id="branching">
+<h2>Branching Strategy</h2>
+<p>Branches let you develop features in isolation without breaking main/production code.</p>
+<pre><code># Create and switch to new branch
+git checkout -b feature/user-auth
+# or modern syntax:
+git switch -c feature/user-auth
+
+# List branches
+git branch        # local
+git branch -a     # all (including remote)
+
+# Switch branches
+git switch main
+
+# Delete branch (after merging)
+git branch -d feature/user-auth
+
+# Rename branch
+git branch -m old-name new-name</code></pre>
+<div class="info-box"><strong>Naming Convention:</strong> Use prefixes like <code>feature/</code>, <code>fix/</code>, <code>hotfix/</code>, <code>chore/</code>, <code>docs/</code> for clear communication in team projects.</div>
+</section>
+
+<section id="remote">
+<h2>Remote Repositories</h2>
+<pre><code># Add remote origin
+git remote add origin git@github.com:username/repo.git
+
+# View remotes
+git remote -v
+
+# Push branch to GitHub
+git push -u origin main     # -u sets upstream tracking
+git push                    # subsequent pushes
+
+# Pull latest changes
+git pull                    # fetch + merge
+git fetch                   # only download, don't merge
+
+# Push new branch
+git push origin feature/new-feature</code></pre>
+<h3>Fork & Contribute to Open Source</h3>
+<pre><code># 1. Fork on GitHub (click Fork button)
+# 2. Clone YOUR fork
+git clone git@github.com:yourname/project.git
+# 3. Add upstream remote
+git remote add upstream git@github.com:original/project.git
+# 4. Keep fork updated
+git fetch upstream
+git merge upstream/main</code></pre>
+</section>
+
+<section id="pr">
+<h2>Pull Requests & Code Review</h2>
+<p>A Pull Request (PR) is a proposal to merge your branch into another. It's the heart of GitHub collaboration.</p>
+<div class="grid">
+<div class="card"><h4>Good PR Checklist</h4>✅ Small, focused changes<br>✅ Descriptive title<br>✅ Linked to an Issue<br>✅ Tests passing<br>✅ Self-reviewed first</div>
+<div class="card"><h4>Reviewing PRs</h4>Look for: logic errors, security issues, code style, test coverage, documentation, performance implications</div>
+</div>
+<h3>PR Description Template</h3>
+<pre><code>## What does this PR do?
+Adds user authentication using JWT tokens.
+
+## How to test?
+1. POST /api/login with valid credentials
+2. Use returned token in Authorization header
+
+## Related Issues
+Closes #42
+
+## Screenshots (if UI changes)
+[add here]</code></pre>
+</section>
+
+<section id="merge">
+<h2>Merge & Rebase</h2>
+<pre><code># Merge feature into main (creates merge commit)
+git switch main
+git merge feature/user-auth
+
+# Rebase (replays commits on top of main — cleaner history)
+git switch feature/user-auth
+git rebase main
+
+# Squash merge (combines all feature commits into one)
+git merge --squash feature/user-auth
+git commit -m "feat: add user authentication"
+
+# Interactive rebase (edit/squash/reorder last N commits)
+git rebase -i HEAD~3</code></pre>
+<div class="warn-box"><strong>Golden Rule:</strong> Never rebase shared/public branches (main, develop). Only rebase your private feature branches before merging.</div>
+</section>
+
+<section id="conflicts">
+<h2>Resolving Merge Conflicts</h2>
+<pre><code># When you see:
+<<<<<<< HEAD
+your version of code
+=======
+incoming version of code
+>>>>>>> feature/branch
+
+# Steps:
+# 1. Open the file, decide which version (or combine both)
+# 2. Remove conflict markers <<<< ==== >>>>
+# 3. Stage resolved file
+git add conflicted-file.js
+# 4. Complete the merge
+git commit</code></pre>
+<div class="info-box"><strong>Pro tip:</strong> Use <code>git mergetool</code> or VSCode's built-in merge editor for visual conflict resolution.</div>
+</section>
+
+<section id="workflow">
+<h2>GitHub Flow vs Git Flow</h2>
+<table>
+<tr><th>Aspect</th><th>GitHub Flow</th><th>Git Flow</th></tr>
+<tr><td>Branches</td><td>main + feature branches</td><td>main, develop, feature, release, hotfix</td></tr>
+<tr><td>Complexity</td><td>Simple</td><td>Complex</td></tr>
+<tr><td>Best for</td><td>Continuous deployment</td><td>Versioned releases</td></tr>
+<tr><td>Deploy from</td><td>main (always deployable)</td><td>release branches</td></tr>
+</table>
+<p>For most projects (including your personal ones), <strong>GitHub Flow is recommended</strong>: create feature branch → PR → merge to main → deploy.</p>
+</section>
+
+<section id="actions">
+<h2>GitHub Actions (CI/CD)</h2>
+<p>Automate your workflows: run tests, deploy apps, lint code — triggered on push/PR/schedule.</p>
+<pre><code># .github/workflows/ci.yml
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - run: pytest tests/
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Deploy to Vercel/Heroku here"</code></pre>
+</section>
+
+<section id="stash">
+<h2>Stash, Tags & Releases</h2>
+<pre><code># STASH — temporarily save dirty work
+git stash                    # save current changes
+git stash pop                # restore latest stash
+git stash list               # see all stashes
+git stash apply stash@{1}    # apply specific stash
+
+# TAGS — mark release points
+git tag v1.0.0                          # lightweight tag
+git tag -a v1.0.0 -m "First release"   # annotated tag
+git push origin v1.0.0                 # push tag to GitHub
+git push origin --tags                 # push all tags
+
+# Checkout specific tag
+git checkout v1.0.0</code></pre>
+</section>
+
+<section id="interview">
+<h2>Common Interview Questions</h2>
+<div class="info-box"><strong>Q: Difference between git fetch and git pull?</strong><br>
+<strong>A:</strong> <code>git fetch</code> downloads remote changes but doesn't modify your working directory. <code>git pull</code> = <code>git fetch</code> + <code>git merge</code>. Fetch is safer to inspect changes first.</div>
+<div class="info-box"><strong>Q: What is HEAD in Git?</strong><br>
+<strong>A:</strong> HEAD is a pointer to the current commit you're working on. It normally points to the tip of the current branch. <code>git log --oneline</code> shows HEAD position.</div>
+<div class="info-box"><strong>Q: git reset vs git revert?</strong><br>
+<strong>A:</strong> <code>reset</code> rewrites history (dangerous on shared branches). <code>revert</code> creates a new commit that undoes changes — safe for public branches.</div>
+<div class="info-box"><strong>Q: What is a detached HEAD?</strong><br>
+<strong>A:</strong> When HEAD points directly to a commit instead of a branch. Happens when you <code>git checkout &lt;commit-hash&gt;</code>. Create a new branch to save work done in this state.</div>
+<div class="info-box"><strong>Q: Explain git cherry-pick</strong><br>
+<strong>A:</strong> Applies a specific commit from one branch to another. Useful for applying a hotfix to multiple branches: <code>git cherry-pick &lt;commit-hash&gt;</code></div>
+</section>
+</main>
+</body>
+</html>

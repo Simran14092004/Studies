@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deployment Mastery — From Dev to Production</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;--border:#1e2d45;--accent:#06b6d4;--accent2:#8b5cf6;--accent3:#10b981;--accent4:#f43f5e;--text:#e2e8f0;--text-muted:#7a8fa6;--code-bg:#0d1117;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Lora',serif;line-height:1.75;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;background:rgba(10,14,26,0.97);border-right:1px solid var(--border);padding:2rem 0;overflow-y:auto;z-index:100;}
+.sidebar::-webkit-scrollbar{width:4px;}.sidebar::-webkit-scrollbar-thumb{background:var(--border);}
+.logo-area{padding:0 1.5rem 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem;}
+.logo-text{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--accent);}
+.logo-sub{font-size:0.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
+.nav-section{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.12em;padding:1rem 1.5rem 0.4rem;}
+.nav-link{display:flex;align-items:center;gap:.6rem;padding:.45rem 1.5rem;color:var(--text-muted);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:.8rem;transition:all .2s;}
+.nav-link:hover,.nav-link.active{color:var(--accent);background:rgba(6,182,212,.06);}
+.main{margin-left:260px;padding:3rem 4rem;}
+section{max-width:860px;margin:0 auto 5rem;}
+h1{font-family:'Syne',sans-serif;font-size:3.5rem;font-weight:800;line-height:1.1;margin-bottom:1.5rem;}
+h1 span{color:var(--accent);}
+h2{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:700;color:var(--accent);margin:2.5rem 0 1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
+h3{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:600;color:var(--accent3);margin:1.5rem 0 .75rem;}
+p{margin-bottom:1rem;}
+code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);border:1px solid var(--border);padding:.15rem .4rem;border-radius:4px;font-size:.85em;color:var(--accent);}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;overflow-x:auto;margin:1rem 0;}
+pre code{background:none;border:none;padding:0;font-size:.88rem;color:#a5f3fc;}
+.info-box{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent3);border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0;}
+.warn-box{background:var(--surface);border-left:4px solid var(--accent4);border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;}
+.card h4{font-family:'Syne',sans-serif;font-weight:700;margin-bottom:.5rem;color:var(--accent2);}
+table{width:100%;border-collapse:collapse;margin:1rem 0;}
+th{background:var(--surface2);padding:.75rem;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);border:1px solid var(--border);}
+td{padding:.75rem;border:1px solid var(--border);font-size:.9rem;}
+@media(max-width:768px){.sidebar{display:none;}.main{margin-left:0;padding:2rem 1rem;}.grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav class="sidebar">
+  <div class="logo-area"><div class="logo-text">🚀 Deployment</div><div class="logo-sub">dev → production</div></div>
+  <div class="nav-section">Concepts</div>
+  <a class="nav-link" href="#intro">What is Deployment?</a>
+  <a class="nav-link" href="#sdlc">Dev → Staging → Prod</a>
+  <a class="nav-link" href="#cicd">CI/CD Pipeline</a>
+  <div class="nav-section">Platforms</div>
+  <a class="nav-link" href="#vercel">Vercel (Frontend)</a>
+  <a class="nav-link" href="#railway">Railway (Backend)</a>
+  <a class="nav-link" href="#render">Render</a>
+  <a class="nav-link" href="#docker">Docker Basics</a>
+  <a class="nav-link" href="#vps">VPS / Linux Server</a>
+  <div class="nav-section">Advanced</div>
+  <a class="nav-link" href="#nginx">Nginx & Reverse Proxy</a>
+  <a class="nav-link" href="#envvars">Env Variables & Secrets</a>
+  <a class="nav-link" href="#monitoring">Monitoring & Logs</a>
+  <a class="nav-link" href="#checklist">Pre-Deploy Checklist</a>
+</nav>
+<main class="main">
+<section id="intro">
+<h1>Mastering <span>Deployment</span><br>Ship Code with Confidence</h1>
+<p>Deployment is the process of releasing your application from a development environment to a live server where users can access it. Understanding this pipeline is critical for any developer.</p>
+<div class="grid">
+<div class="card"><h4>Development</h4>Your local machine. <code>localhost:3000</code>. Only you can see it. Changes happen here.</div>
+<div class="card"><h4>Staging</h4>A mirror of production. Used for final QA testing before releasing to real users.</div>
+<div class="card"><h4>Production</h4>The live application. Real users. Real data. Breaking things here has consequences.</div>
+<div class="card"><h4>CI/CD</h4>Automated pipelines that build, test, and deploy your code on every push.</div>
+</div>
+</section>
+
+<section id="sdlc">
+<h2>Dev → Staging → Production Flow</h2>
+<pre><code>Developer pushes code
+        ↓
+GitHub (source of truth)
+        ↓
+CI runs (tests, linting, build)
+        ↓ (if tests pass)
+Deploy to Staging
+        ↓ (QA approval)
+Deploy to Production
+        ↓
+Monitor for errors/performance</code></pre>
+<p>This pipeline ensures you never push broken code to users. Each stage acts as a safety net.</p>
+</section>
+
+<section id="cicd">
+<h2>CI/CD Pipeline</h2>
+<p><strong>CI (Continuous Integration):</strong> Automatically run tests whenever code is pushed.<br>
+<strong>CD (Continuous Delivery/Deployment):</strong> Automatically deploy when tests pass.</p>
+<pre><code># .github/workflows/deploy.yml
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run tests
+        run: npm test
+        
+      - name: Build
+        run: npm run build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Vercel
+        run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}</code></pre>
+</section>
+
+<section id="vercel">
+<h2>Vercel — Frontend Deployment</h2>
+<p>Vercel is the easiest way to deploy React, Next.js, Vue, and static HTML apps. Zero config, global CDN, free tier.</p>
+<pre><code># Method 1: CLI (Fastest)
+npm i -g vercel
+vercel login
+vercel              # deploy to preview
+vercel --prod       # deploy to production
+
+# Method 2: Connect GitHub repo
+# 1. Go to vercel.com → New Project
+# 2. Import from GitHub
+# 3. Configure build settings
+# 4. Every push to main auto-deploys!
+
+# vercel.json for configuration
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}</code></pre>
+<div class="info-box"><strong>Free Tier Limits:</strong> 100GB bandwidth/month, unlimited personal projects, automatic HTTPS, global CDN. Perfect for personal/portfolio projects.</div>
+</section>
+
+<section id="railway">
+<h2>Railway — Backend Deployment</h2>
+<p>Railway is the simplest way to deploy backend apps (Node.js, Python, Django, FastAPI) with databases included.</p>
+<pre><code># Deploy Node.js/Express app
+# 1. Push code to GitHub with a start script in package.json:
+{
+  "scripts": {
+    "start": "node server.js"
+  }
+}
+
+# 2. Connect Railway to GitHub repo
+# 3. Add environment variables in Railway dashboard
+# 4. Add a database (PostgreSQL, MySQL, Redis) with one click
+
+# For Python/FastAPI:
+# Procfile (create in root)
+web: uvicorn main:app --host 0.0.0.0 --port $PORT
+
+# requirements.txt must exist
+pip freeze > requirements.txt</code></pre>
+</section>
+
+<section id="docker">
+<h2>Docker — Containerization Basics</h2>
+<p>Docker packages your app and all its dependencies into a container that runs identically everywhere — no more "works on my machine"!</p>
+<pre><code># Dockerfile for a Python Flask app
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copy and install dependencies first (caching optimization)
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy application code
+COPY . .
+
+EXPOSE 5000
+CMD ["python", "app.py"]
+
+# Dockerfile for Node.js
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+EXPOSE 3000
+CMD ["node", "server.js"]</code></pre>
+<pre><code># Common Docker commands
+docker build -t my-app .          # Build image
+docker run -p 3000:3000 my-app    # Run container
+docker ps                          # List running containers
+docker stop container_id           # Stop container
+docker-compose up                  # Start multi-service setup
+docker-compose down                # Stop all services
+
+# docker-compose.yml (full stack example)
+version: '3.8'
+services:
+  web:
+    build: .
+    ports: ["3000:3000"]
+    env_file: .env
+    depends_on: [db]
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: secret</code></pre>
+</section>
+
+<section id="vps">
+<h2>VPS Deployment (Linux Server)</h2>
+<p>Virtual Private Servers (DigitalOcean, Linode, AWS EC2) give you full control. More work, but maximum flexibility.</p>
+<pre><code># 1. SSH into your server
+ssh root@your-server-ip
+
+# 2. Install Node.js
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install nodejs
+
+# 3. Clone your project
+git clone git@github.com:yourname/project.git
+cd project && npm install
+
+# 4. Install PM2 (keeps app running)
+npm i -g pm2
+pm2 start server.js --name "my-app"
+pm2 startup          # auto-start on server reboot
+pm2 save
+
+# 5. Check status
+pm2 status
+pm2 logs my-app</code></pre>
+</section>
+
+<section id="nginx">
+<h2>Nginx & Reverse Proxy</h2>
+<p>Nginx sits in front of your app, handling HTTP/HTTPS traffic and routing to your Node/Python process.</p>
+<pre><code># Install Nginx
+sudo apt install nginx
+
+# Configure site (/etc/nginx/sites-available/myapp)
+server {
+    listen 80;
+    server_name yourdomain.com www.yourdomain.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+
+# Enable the site
+sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/
+sudo nginx -t          # test config
+sudo systemctl reload nginx
+
+# Free SSL with Let's Encrypt
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d yourdomain.com</code></pre>
+</section>
+
+<section id="envvars">
+<h2>Environment Variables & Secrets</h2>
+<div class="warn-box"><strong>NEVER commit secrets to Git!</strong> No API keys, passwords, or database URLs in your code. Use .env files locally and platform secrets in production.</div>
+<pre><code># .env (local development — add to .gitignore!)
+DATABASE_URL=postgresql://localhost:5432/mydb
+JWT_SECRET=super-secret-key-here
+OPENAI_API_KEY=sk-...
+PORT=3000
+
+# .gitignore — ALWAYS include:
+.env
+.env.local
+.env.production
+
+# In Node.js (using dotenv)
+npm install dotenv
+require('dotenv').config()
+const dbUrl = process.env.DATABASE_URL
+
+# In Python
+from dotenv import load_dotenv
+import os
+load_dotenv()
+db_url = os.getenv("DATABASE_URL")</code></pre>
+<p>In Vercel: Settings → Environment Variables. In Railway: Variables tab. Never hardcode!</p>
+</section>
+
+<section id="checklist">
+<h2>Pre-Deploy Checklist</h2>
+<div class="info-box">
+✅ All tests passing<br>
+✅ Environment variables set in production<br>
+✅ Database migrations run<br>
+✅ .env not in git<br>
+✅ Build succeeds locally first<br>
+✅ Error handling & logging in place<br>
+✅ HTTPS/SSL configured<br>
+✅ Performance: images optimized, minified CSS/JS<br>
+✅ Security headers set<br>
+✅ Backup plan if deployment fails (rollback strategy)
+</div>
+<pre><code># Quick rollback with Vercel
+vercel rollback    # reverts to previous deployment
+
+# With Git (tag before deploying)
+git tag v1.2.0 && git push origin v1.2.0
+# If something breaks:
+git revert HEAD
+git push origin main</code></pre>
+</section>
+</main>
+</body>
+</html>

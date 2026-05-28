@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA in Java — GATE CSE 2027 Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;--border:#1e2d45;--accent:#f43f5e;--accent2:#fbbf24;--accent3:#a78bfa;--accent4:#10b981;--text:#e2e8f0;--text-muted:#7a8fa6;--code-bg:#0d1117;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Lora',serif;line-height:1.75;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;background:rgba(10,14,26,0.97);border-right:1px solid var(--border);padding:2rem 0;overflow-y:auto;z-index:100;}
+.sidebar::-webkit-scrollbar{width:4px;}.sidebar::-webkit-scrollbar-thumb{background:var(--border);}
+.logo-area{padding:0 1.5rem 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem;}
+.logo-text{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--accent);}
+.logo-sub{font-size:0.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
+.nav-section{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.12em;padding:1rem 1.5rem 0.4rem;}
+.nav-link{display:flex;align-items:center;gap:.6rem;padding:.45rem 1.5rem;color:var(--text-muted);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:.8rem;transition:all .2s;}
+.nav-link:hover,.nav-link.active{color:var(--accent);background:rgba(244,63,94,.06);}
+.main{margin-left:260px;padding:3rem 4rem;}
+section{max-width:860px;margin:0 auto 5rem;}
+h1{font-family:'Syne',sans-serif;font-size:3.2rem;font-weight:800;line-height:1.1;margin-bottom:1.5rem;}
+h1 span{color:var(--accent);}
+h2{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:700;color:var(--accent);margin:2.5rem 0 1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
+h3{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:600;color:var(--accent2);margin:1.5rem 0 .75rem;}
+p{margin-bottom:1rem;}
+code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);border:1px solid var(--border);padding:.15rem .4rem;border-radius:4px;font-size:.85em;color:var(--accent2);}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;overflow-x:auto;margin:1rem 0;}
+pre code{background:none;border:none;padding:0;font-size:.85rem;color:#bfdbfe;}
+.gate-box{background:rgba(244,63,94,.08);border:1px solid var(--accent);border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0;}
+.gate-box strong{color:var(--accent);}
+.info-box{background:var(--surface);border-left:4px solid var(--accent4);border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0;}
+.complexity{display:inline-block;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:.2rem .6rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent3);}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem;}
+.card h4{font-family:'Syne',sans-serif;font-weight:700;margin-bottom:.5rem;color:var(--accent3);}
+table{width:100%;border-collapse:collapse;margin:1rem 0;}
+th{background:var(--surface2);padding:.75rem;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--accent);border:1px solid var(--border);}
+td{padding:.75rem;border:1px solid var(--border);font-size:.9rem;}
+@media(max-width:768px){.sidebar{display:none;}.main{margin-left:0;padding:2rem 1rem;}.grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav class="sidebar">
+  <div class="logo-area"><div class="logo-text">☕ DSA in Java</div><div class="logo-sub">GATE CSE 2027 ready</div></div>
+  <div class="nav-section">Foundations</div>
+  <a class="nav-link" href="#complexity">Time & Space Complexity</a>
+  <a class="nav-link" href="#arrays">Arrays</a>
+  <a class="nav-link" href="#strings">Strings</a>
+  <div class="nav-section">Linear Structures</div>
+  <a class="nav-link" href="#linkedlist">Linked Lists</a>
+  <a class="nav-link" href="#stacks">Stacks</a>
+  <a class="nav-link" href="#queues">Queues</a>
+  <div class="nav-section">Non-Linear</div>
+  <a class="nav-link" href="#trees">Trees & BST</a>
+  <a class="nav-link" href="#heaps">Heaps</a>
+  <a class="nav-link" href="#graphs">Graphs</a>
+  <div class="nav-section">Algorithms</div>
+  <a class="nav-link" href="#sorting">Sorting Algorithms</a>
+  <a class="nav-link" href="#searching">Searching</a>
+  <a class="nav-link" href="#dp">Dynamic Programming</a>
+  <a class="nav-link" href="#greedy">Greedy Algorithms</a>
+  <div class="nav-section">GATE Questions</div>
+  <a class="nav-link" href="#gate-qs">Important GATE Qs</a>
+</nav>
+<main class="main">
+<section id="complexity">
+<h1>DSA in <span>Java</span><br>GATE CSE 2027 Prep</h1>
+<p>This is your GATE-focused DSA reference. Every concept is paired with Java implementation, time complexity analysis, and real GATE-style questions.</p>
+<div class="gate-box"><strong>🎯 GATE CSE Weight:</strong> DSA accounts for ~15-20 marks in GATE CSE. Topics: Arrays, Trees, Graphs, Sorting, Hashing, Heaps, DP are repeatedly tested.</div>
+
+<h2>Time & Space Complexity</h2>
+<table>
+<tr><th>Notation</th><th>Name</th><th>Example</th></tr>
+<tr><td><code>O(1)</code></td><td>Constant</td><td>Array access by index</td></tr>
+<tr><td><code>O(log n)</code></td><td>Logarithmic</td><td>Binary search, BST operations</td></tr>
+<tr><td><code>O(n)</code></td><td>Linear</td><td>Linear search, single loop</td></tr>
+<tr><td><code>O(n log n)</code></td><td>Linearithmic</td><td>Merge sort, Heap sort</td></tr>
+<tr><td><code>O(n²)</code></td><td>Quadratic</td><td>Bubble/Selection/Insertion sort</td></tr>
+<tr><td><code>O(2ⁿ)</code></td><td>Exponential</td><td>Naive recursive Fibonacci, subsets</td></tr>
+</table>
+<div class="gate-box"><strong>GATE 2023 Pattern:</strong> "What is the time complexity of the following code?" — Master reading nested loops, recursive calls, and amortized analysis.</div>
+</section>
+
+<section id="arrays">
+<h2>Arrays</h2>
+<pre><code>// 1D Array
+int[] arr = new int[5];
+int[] arr2 = {1, 2, 3, 4, 5};
+
+// 2D Array (Matrix)
+int[][] matrix = new int[3][4];
+matrix[0][1] = 5;
+
+// Common operations
+Arrays.sort(arr);                    // O(n log n)
+Arrays.binarySearch(arr, key);       // O(log n) — array must be sorted
+Arrays.fill(arr, 0);                 // fill with value
+Arrays.copyOf(arr, newLength);
+
+// Two-pointer technique (classic GATE topic)
+// Find pair with given sum in sorted array
+int left = 0, right = arr.length - 1;
+while (left < right) {
+    int sum = arr[left] + arr[right];
+    if (sum == target) return true;
+    else if (sum < target) left++;
+    else right--;
+}
+// Time: O(n), Space: O(1)</code></pre>
+<h3>Important Array Questions</h3>
+<pre><code>// Q: Find maximum subarray sum (Kadane's Algorithm)
+// GATE CLASSIC — O(n) time
+public static int maxSubarraySum(int[] arr) {
+    int maxSoFar = arr[0], maxEndingHere = arr[0];
+    for (int i = 1; i < arr.length; i++) {
+        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    }
+    return maxSoFar;
+}
+
+// Q: Rotate array by k positions
+// Reverse approach: O(n) time, O(1) space
+public static void rotate(int[] arr, int k) {
+    k = k % arr.length;
+    reverse(arr, 0, arr.length - 1);
+    reverse(arr, 0, k - 1);
+    reverse(arr, k, arr.length - 1);
+}</code></pre>
+</section>
+
+<section id="linkedlist">
+<h2>Linked Lists</h2>
+<pre><code>// Node definition
+class Node {
+    int data;
+    Node next;
+    Node(int data) { this.data = data; }
+}
+
+// LinkedList operations
+class LinkedList {
+    Node head;
+    
+    // Insert at beginning: O(1)
+    void insertFront(int data) {
+        Node newNode = new Node(data);
+        newNode.next = head;
+        head = newNode;
+    }
+    
+    // Detect cycle (Floyd's Algorithm) — GATE CLASSIC
+    boolean hasCycle() {
+        Node slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) return true;
+        }
+        return false;
+    }
+    
+    // Reverse linked list: O(n) time, O(1) space
+    Node reverse(Node head) {
+        Node prev = null, curr = head;
+        while (curr != null) {
+            Node next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+    
+    // Find middle node (fast-slow pointer)
+    Node findMiddle() {
+        Node slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+}</code></pre>
+<div class="gate-box"><strong>GATE Question:</strong> In a singly linked list, if you delete a node (not the last), given only pointer to that node (not head), how? → Copy next node's data to current, delete next node.</div>
+</section>
+
+<section id="stacks">
+<h2>Stacks</h2>
+<pre><code>// Using Java's Stack class
+Stack<Integer> stack = new Stack<>();
+stack.push(10);
+stack.pop();       // remove top
+stack.peek();      // view top without removing
+stack.isEmpty();
+
+// Better: Use Deque as Stack
+Deque<Integer> stack2 = new ArrayDeque<>();
+stack2.push(10);
+stack2.pop();
+stack2.peek();
+
+// CLASSIC: Balanced parentheses
+boolean isBalanced(String s) {
+    Deque<Character> stack = new ArrayDeque<>();
+    for (char c : s.toCharArray()) {
+        if (c == '(' || c == '[' || c == '{') stack.push(c);
+        else {
+            if (stack.isEmpty()) return false;
+            char top = stack.pop();
+            if (c == ')' && top != '(') return false;
+            if (c == ']' && top != '[') return false;
+            if (c == '}' && top != '{') return false;
+        }
+    }
+    return stack.isEmpty();
+}
+
+// GATE CLASSIC: Next Greater Element — O(n) with stack
+int[] nextGreater(int[] arr) {
+    int n = arr.length;
+    int[] result = new int[n];
+    Arrays.fill(result, -1);
+    Deque<Integer> stack = new ArrayDeque<>(); // stores indices
+    for (int i = 0; i < n; i++) {
+        while (!stack.isEmpty() && arr[i] > arr[stack.peek()])
+            result[stack.pop()] = arr[i];
+        stack.push(i);
+    }
+    return result;
+}</code></pre>
+</section>
+
+<section id="trees">
+<h2>Trees & Binary Search Trees</h2>
+<pre><code>class TreeNode {
+    int val;
+    TreeNode left, right;
+    TreeNode(int val) { this.val = val; }
+}
+
+// Tree Traversals (MUST KNOW FOR GATE)
+// Inorder: Left → Root → Right (gives sorted order for BST)
+void inorder(TreeNode root) {
+    if (root == null) return;
+    inorder(root.left);
+    System.out.print(root.val + " ");
+    inorder(root.right);
+}
+
+// BFS / Level Order Traversal
+void levelOrder(TreeNode root) {
+    if (root == null) return;
+    Queue<TreeNode> q = new LinkedList<>();
+    q.offer(root);
+    while (!q.isEmpty()) {
+        TreeNode node = q.poll();
+        System.out.print(node.val + " ");
+        if (node.left != null) q.offer(node.left);
+        if (node.right != null) q.offer(node.right);
+    }
+}
+
+// Height of binary tree
+int height(TreeNode root) {
+    if (root == null) return 0;
+    return 1 + Math.max(height(root.left), height(root.right));
+}
+
+// Check if BST is valid
+boolean isValidBST(TreeNode root, long min, long max) {
+    if (root == null) return true;
+    if (root.val <= min || root.val >= max) return false;
+    return isValidBST(root.left, min, root.val) 
+        && isValidBST(root.right, root.val, max);
+}
+// Call: isValidBST(root, Long.MIN_VALUE, Long.MAX_VALUE)</code></pre>
+<div class="gate-box"><strong>GATE Fact:</strong> For a BST with n nodes: average case operations O(log n), worst case O(n) (skewed tree). AVL trees maintain O(log n) guaranteed.</div>
+</section>
+
+<section id="sorting">
+<h2>Sorting Algorithms</h2>
+<table>
+<tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Space</th><th>Stable?</th></tr>
+<tr><td>Bubble Sort</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Yes</td></tr>
+<tr><td>Selection Sort</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>No</td></tr>
+<tr><td>Insertion Sort</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>Yes</td></tr>
+<tr><td>Merge Sort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>Yes</td></tr>
+<tr><td>Quick Sort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td>No</td></tr>
+<tr><td>Heap Sort</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(1)</td><td>No</td></tr>
+<tr><td>Counting Sort</td><td>O(n+k)</td><td>O(n+k)</td><td>O(n+k)</td><td>O(k)</td><td>Yes</td></tr>
+</table>
+<pre><code>// Merge Sort — O(n log n) always
+void mergeSort(int[] arr, int left, int right) {
+    if (left < right) {
+        int mid = (left + right) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+
+// Quick Sort — Partition step
+int partition(int[] arr, int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            int temp = arr[i]; arr[i] = arr[j]; arr[j] = temp;
+        }
+    }
+    int temp = arr[i+1]; arr[i+1] = arr[high]; arr[high] = temp;
+    return i + 1;
+}</code></pre>
+</section>
+
+<section id="dp">
+<h2>Dynamic Programming</h2>
+<p>DP solves problems by breaking them into overlapping subproblems and storing results (memoization/tabulation).</p>
+<pre><code>// 1. Fibonacci — Classic DP
+// Naive recursive: O(2^n) — DON'T USE
+// DP tabulation: O(n)
+int fib(int n) {
+    if (n <= 1) return n;
+    int[] dp = new int[n + 1];
+    dp[0] = 0; dp[1] = 1;
+    for (int i = 2; i <= n; i++)
+        dp[i] = dp[i-1] + dp[i-2];
+    return dp[n];
+}
+
+// 2. Longest Common Subsequence (LCS) — GATE CLASSIC
+int lcs(String s1, String s2) {
+    int m = s1.length(), n = s2.length();
+    int[][] dp = new int[m+1][n+1];
+    for (int i = 1; i <= m; i++)
+        for (int j = 1; j <= n; j++)
+            if (s1.charAt(i-1) == s2.charAt(j-1))
+                dp[i][j] = 1 + dp[i-1][j-1];
+            else
+                dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);
+    return dp[m][n];
+}
+
+// 3. 0/1 Knapsack — GATE CLASSIC
+int knapsack(int[] weights, int[] values, int capacity) {
+    int n = weights.length;
+    int[][] dp = new int[n+1][capacity+1];
+    for (int i = 1; i <= n; i++)
+        for (int w = 0; w <= capacity; w++) {
+            dp[i][w] = dp[i-1][w]; // don't take item i
+            if (weights[i-1] <= w)
+                dp[i][w] = Math.max(dp[i][w], 
+                    values[i-1] + dp[i-1][w - weights[i-1]]);
+        }
+    return dp[n][capacity];
+}
+
+// 4. Longest Increasing Subsequence (LIS) — O(n²)
+int lis(int[] arr) {
+    int n = arr.length;
+    int[] dp = new int[n];
+    Arrays.fill(dp, 1);
+    int maxLen = 1;
+    for (int i = 1; i < n; i++) {
+        for (int j = 0; j < i; j++)
+            if (arr[j] < arr[i])
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+        maxLen = Math.max(maxLen, dp[i]);
+    }
+    return maxLen;
+}</code></pre>
+</section>
+
+<section id="gate-qs">
+<h2>Important GATE Questions & Solutions</h2>
+
+<div class="gate-box"><strong>Q1 [GATE 2020]:</strong> What is the number of binary trees with 3 nodes?<br><br>
+<strong>A:</strong> Catalan number C(3) = C(2n,n)/(n+1) = C(6,3)/4 = 20/4 = 5. Answer: <strong>5</strong></div>
+
+<div class="gate-box"><strong>Q2 [GATE Classic]:</strong> Time complexity of building a heap from n elements?<br><br>
+<strong>A:</strong> O(n) — not O(n log n). Using the heapify-down approach on all non-leaf nodes gives O(n) total work due to the geometric series sum.</div>
+
+<div class="gate-box"><strong>Q3 [GATE 2022]:</strong> Inorder traversal of a BST gives? Which traversal gives sorted output?<br><br>
+<strong>A:</strong> Inorder (Left → Root → Right) of a BST always gives elements in sorted ascending order.</div>
+
+<div class="gate-box"><strong>Q4 [GATE Classic]:</strong> Worst case of Quick Sort and when does it occur?<br><br>
+<strong>A:</strong> O(n²) when the pivot is always the smallest or largest element (already sorted array with first/last pivot). Can be avoided with random pivot or median-of-three.</div>
+
+<div class="gate-box"><strong>Q5 [GATE 2019]:</strong> What is the output when postorder traversal is applied to: root=1, left=2, right=3, 2's left=4, 2's right=5?<br><br>
+<strong>A:</strong> Postorder: Left → Right → Root → Output: 4, 5, 2, 3, 1</div>
+
+<div class="gate-box"><strong>Q6 [GATE Classic]:</strong> Minimum number of comparisons to find max AND min of n elements simultaneously?<br><br>
+<strong>A:</strong> ⌊3n/2⌋ - 2 comparisons. Process elements in pairs: compare pair first, then compare larger with current max and smaller with current min.</div>
+
+<div class="gate-box"><strong>Q7 [GATE 2021]:</strong> Time complexity of Dijkstra's algorithm using binary heap?<br><br>
+<strong>A:</strong> O((V + E) log V) where V = vertices, E = edges. With adjacency matrix: O(V²).</div>
+
+<div class="gate-box"><strong>Q8 [GATE Classic — Hashing]:</strong> If a hash table has 7 slots and uses chaining, inserting keys 50, 700, 76, 85, 92, 73, 101 with h(k) = k mod 7, what is the average search time?<br><br>
+<strong>A:</strong> Calculate each: 50%7=1, 700%7=0, 76%7=6, 85%7=1, 92%7=1, 73%7=3, 101%7=3. Chains at slot 1: [50,85,92], slot 3: [73,101]. Average = (1+1+1+2+3+1+2)/7 ≈ 1.57</div>
+</section>
+</main>
+</body>
+</html>

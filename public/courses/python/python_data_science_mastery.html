@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python for Data Science — The Analytical Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060913;
+    --surface: #0f1524;
+    --surface2: #172033;
+    --border: #1c2a42;
+    --accent: #00e5bc;
+    --accent2: #ff5e7e;
+    --accent3: #ffc857;
+    --accent4: #b392ac;
+    --accent5: #38bdf8;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --code-bg: #090d16;
+    --project1: #00e5bc;
+    --project2: #38bdf8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', serif;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* Animated background mesh glow */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 20% 10%, rgba(0,229,188,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 70%, rgba(56,189,248,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 50% 40%, rgba(255,94,126,0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SIDEBAR NAV */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 280px;
+    background: rgba(6, 9, 19, 0.96);
+    border-right: 1px solid var(--border);
+    padding: 2rem 0;
+    overflow-y: auto;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+  }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .sidebar-logo {
+    padding: 0 1.5rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+  .sidebar-logo .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+  .sidebar-logo .logo-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 4px;
+  }
+
+  .nav-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 1.2rem 1.5rem 0.4rem;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 1.5rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    border-left: 2px solid transparent;
+  }
+  .nav-link:hover, .nav-link.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(0,229,188,0.04);
+  }
+  .nav-link .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .nav-project { color: var(--project1); }
+  .nav-project:hover, .nav-project.active {
+    color: var(--project1);
+    border-left-color: var(--project1);
+    background: rgba(0,229,188,0.04);
+  }
+  .nav-project2 { color: var(--project2); }
+  .nav-project2:hover, .nav-project2.active {
+    color: var(--project2);
+    border-left-color: var(--project2);
+    background: rgba(56,189,248,0.04);
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    margin-left: 280px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 6rem 4rem 4rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: 'DATA SCI';
+    position: absolute;
+    right: -2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Syne', sans-serif;
+    font-size: 13rem;
+    font-weight: 800;
+    color: rgba(0,229,188,0.03);
+    pointer-events: none;
+    letter-spacing: -0.05em;
+    white-space: nowrap;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(0,229,188,0.08);
+    border: 1px solid rgba(0,229,188,0.25);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.3rem 0.9rem;
+    border-radius: 50px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 600px;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 0.2rem;
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 4rem;
+    border-bottom: 1px solid var(--border);
+    animation: fadeUp 0.6s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    margin-bottom: 2.5rem;
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-top: 0.4rem;
+    white-space: nowrap;
+  }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .subsection { margin-bottom: 3rem; }
+  .subsection-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: var(--text);
+  }
+  .subsection-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ROADMAP GRAPHICS */
+  .roadmap { display: flex; flex-direction: column; margin: 2rem 0; position: relative; }
+  .roadmap::before {
+    content: ''; position: absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: var(--border);
+  }
+  .roadmap-item { display: flex; align-items: flex-start; gap: 1.2rem; padding: 1.2rem 0; }
+  .roadmap-dot {
+    width: 40px; height: 40px; border-radius: 50%; background: var(--surface2);
+    border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 700; color: var(--accent);
+    flex-shrink: 0; z-index: 1;
+  }
+  .roadmap-content { padding-top: 0.4rem; }
+  .roadmap-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.2rem; }
+  .roadmap-desc { font-size: 0.85rem; color: var(--text-muted); }
+
+  /* BANNERS FOR PROJECTS */
+  .project-banner { border-radius: 16px; padding: 2.5rem; margin: 2rem 0; position: relative; overflow: hidden; }
+  .project-banner-1 {
+    background: linear-gradient(135deg, rgba(0,229,188,0.1) 0%, rgba(0,229,188,0.02) 100%);
+    border: 1px solid rgba(0,229,188,0.2);
+  }
+  .project-banner-2 {
+    background: linear-gradient(135deg, rgba(56,189,248,0.1) 0%, rgba(56,189,248,0.02) 100%);
+    border: 1px solid rgba(56,189,248,0.2);
+  }
+  .project-banner::before {
+    content: attr(data-num); position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%);
+    font-family: 'Syne', sans-serif; font-size: 8rem; font-weight: 800; opacity: 0.04; line-height: 1;
+  }
+  .project-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.12em; padding: 0.25rem 0.7rem; border-radius: 50px; margin-bottom: 0.8rem; display: inline-block;
+  }
+  .project-banner-1 .project-tag { background: rgba(0,229,188,0.15); color: var(--project1); }
+  .project-banner-2 .project-tag { background: rgba(56,189,248,0.15); color: var(--project2); }
+  .project-title { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .project-banner-1 .project-title { color: var(--project1); }
+  .project-banner-2 .project-title { color: var(--project2); }
+  .project-desc { color: var(--text-muted); font-size: 0.92rem; max-width: 560px; margin-bottom: 1.2rem; }
+  .project-concepts { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .concept-pill {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; padding: 0.25rem 0.75rem;
+    border-radius: 50px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text-muted);
+  }
+
+  /* CONCEPT CARD GRIDS */
+  .concept-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+  .concept-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem;
+    transition: all 0.25s; position: relative; overflow: hidden;
+  }
+  .concept-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); opacity: 0; transition: opacity 0.25s;
+  }
+  .concept-card:hover { border-color: rgba(0,229,188,0.25); transform: translateY(-2px); }
+  .concept-card:hover::before { opacity: 1; }
+  .card-icon { font-size: 1.5rem; margin-bottom: 0.8rem; }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .card-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* CODE BLOCKS */
+  .code-block { background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 1.5rem 0; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+  .code-header { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 1.2rem; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); }
+  .code-header-left { display: flex; align-items: center; gap: 0.6rem; }
+  .code-dots { display: flex; gap: 5px; }
+  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .code-dot:nth-child(1) { background: #ff5f57; }
+  .code-dot:nth-child(2) { background: #febc2e; }
+  .code-dot:nth-child(3) { background: #28c840; }
+  .code-filename { font-size: 0.72rem; color: var(--text-muted); }
+  .code-lang { font-size: 0.68rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; }
+  pre { padding: 1.4rem; overflow-x: auto; line-height: 1.7; color: #e2e8f0; }
+  pre::-webkit-scrollbar { height: 4px; }
+  pre::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* Syntax Highlighting Tokens */
+  .kw { color: #c792ea; font-weight: 500; } 
+  .fn { color: #82aaff; } 
+  .st { color: #c3e88d; } 
+  .cm { color: #5c6370; font-style: italic; } 
+  .nm { color: #f78c6c; } 
+  .cl { color: #ffcb6b; } 
+  .op { color: #89ddff; } 
+
+  /* CALLOUT BOXES */
+  .callout { border-radius: 10px; padding: 1.2rem 1.5rem; margin: 1.5rem 0; border-left: 4px solid; font-size: 0.92rem; }
+  .callout-tip { background: rgba(0,229,188,0.05); border-color: var(--accent); }
+  .callout-tip strong { color: var(--accent); }
+  .callout-info { background: rgba(56,189,248,0.05); border-color: var(--accent5); }
+  .callout-info strong { color: var(--accent5); }
+  .callout-real { background: rgba(179,146,172,0.06); border-color: var(--accent4); }
+  .callout-real strong { color: var(--accent4); }
+
+  /* DATA TABLES */
+  .topic-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 1.5rem 0; }
+  .topic-table th { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 0.9rem 1.2rem; border-bottom: 2px solid var(--border); text-align: left; }
+  .topic-table td { padding: 0.85rem 1.2rem; border-bottom: 1px solid rgba(28,42,66,0.4); color: #94a3b8; vertical-align: middle; }
+  .topic-table tr:hover td { background: rgba(255,255,255,0.01); }
+  .topic-table .method { color: var(--accent5); font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+  .topic-table .profile { color: var(--accent3); font-family: 'JetBrains Mono', monospace; }
+
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.5rem 0; }
+  .compare-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.4rem; }
+  .compare-card-title { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.8rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+
+  /* FULL CODE MONOLITHS */
+  .full-project { border-radius: 16px; border: 1px solid; overflow: hidden; margin: 2.5rem 0; }
+  .full-project-1 { border-color: rgba(0,229,188,0.25); }
+  .full-project-2 { border-color: rgba(56,189,248,0.25); }
+  .full-project-header { padding: 1.5rem 2rem; border-bottom: 1px solid; }
+  .full-project-1 .full-project-header { background: rgba(0,229,188,0.04); border-color: rgba(0,229,188,0.15); }
+  .full-project-2 .full-project-header { background: rgba(56,189,248,0.04); border-color: rgba(56,189,248,0.15); }
+
+  code { background: rgba(56,189,248,0.08); color: var(--accent5); padding: 0.15em 0.45em; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; }
+
+  .footer { padding: 4rem; text-align: center; color: var(--text-muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; border-top: 1px solid var(--border); margin-top: 4rem; }
+
+  @media (max-width: 960px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .hero, .section { padding: 3rem 2rem; }
+    .hero h1 { font-size: 2.5rem; }
+    .compare-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR NAVIGATION -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">📊 Python for Data Science</div>
+    <div class="logo-sub">numpy → pandas → visualization</div>
+  </div>
+
+  <div class="nav-section-title">Overview</div>
+  <a href="#intro" class="nav-link"><span class="dot"></span>Introduction</a>
+  <a href="#roadmap" class="nav-link"><span class="dot"></span>Learning Roadmap</a>
+
+  <div class="nav-section-title">01 NumPy Infrastructure</div>
+  <a href="#numpy-base" class="nav-link"><span class="dot"></span>Contiguous Arrays</a>
+  <a href="#numpy-routines" class="nav-link"><span class="dot"></span>Creation & Reshaping</a>
+  <a href="#numpy-broadcasting" class="nav-link"><span class="dot"></span>Broadcasting Engine</a>
+  <a href="#numpy-masking" class="nav-link"><span class="dot"></span>Boolean Masking</a>
+
+  <div class="nav-section-title">02 Pandas Engine</div>
+  <a href="#pandas-architecture" class="nav-link"><span class="dot"></span>DataFrame Foundations</a>
+  <a href="#pandas-access" class="nav-link"><span class="dot"></span>Slicing: loc vs iloc</a>
+  <a href="#pandas-io" class="nav-link"><span class="dot"></span>I/O Data Pipelines</a>
+  <a href="#pandas-cleaning" class="nav-link"><span class="dot"></span>Missing Data Matrix</a>
+  <a href="#pandas-aggregations" class="nav-link"><span class="dot"></span>Split-Apply-Combine</a>
+
+  <div class="nav-section-title">03 Visual Engineering</div>
+  <a href="#viz-oo" class="nav-link"><span class="dot"></span>Object-Oriented Canvas</a>
+  <a href="#viz-gallery" class="nav-link"><span class="dot"></span>Structural Layouts</a>
+
+  <div class="nav-section-title">04 Case Projects</div>
+  <a href="#project1" class="nav-link nav-project"><span class="dot"></span>Project 1: Portfolio Analytics</a>
+  <a href="#project2" class="nav-link nav-project2"><span class="dot"></span>Project 2: Telecom Signal Diagnostic</a>
+</nav>
+
+<main class="main">
+
+  <!-- HERO PANEL -->
+  <section class="hero" id="intro">
+    <div class="hero-badge">⚡ Vectorized Operations & Structural Modeling</div>
+    <h1>Master <span>Data Science</span><br>Execution Environments</h1>
+    <p>A comprehensive professional handbook covering high-performance multi-dimensional matrices, data cleaning pipelines, split-apply-combine operational logic, and object-oriented visual rendering layouts.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Core Frameworks</div></div>
+      <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Vectorized Algorithms</div></div>
+      <div class="stat"><div class="stat-num">2</div><div class="stat-label">Production Projects</div></div>
+      <div class="stat"><div class="stat-num">O(1)</div><div class="stat-label">Memory Views</div></div>
+    </div>
+  </section>
+
+  <!-- LEARNING ROADMAP OVERVIEW -->
+  <section class="section" id="roadmap">
+    <div class="section-header">
+      <div class="section-num">00</div>
+      <div>
+        <div class="section-label">Pipeline Track</div>
+        <div class="section-title">Architectural Layout & End-to-End Analytics Case Systems</div>
+      </div>
+    </div>
+
+    <div class="project-banner project-banner-1" data-num="01">
+      <div class="project-tag">💼 Project 1 Implementation</div>
+      <div class="project-title">Automated Multi-Asset Investment Analytics Engine</div>
+      <div class="project-desc">Processes high-frequency time-series feeds to calculate log returns, annualized tracking metrics, risk profiles, and cross-asset correlation topology maps.</div>
+      <div class="project-concepts">
+        <span class="concept-pill">Geometric Brownian Motion</span><span class="concept-pill">Log Scaling Matrices</span>
+        <span class="concept-pill">Forward Filling Gaps</span><span class="concept-pill">Risk Frontier Scatter Map</span>
+        <span class="concept-pill">Seaborn Heatmaps</span>
+      </div>
+    </div>
+
+    <div class="project-banner project-banner-2" data-num="02">
+      <div class="project-tag">📡 Project 2 Implementation</div>
+      <div class="project-title">Telecom Signal Network Diagnostic Engine</div>
+      <div class="project-desc">Tracks dynamic changes in streaming signal strength to identify anomalies and pinpoint structural failures under sudden, extreme infrastructure stress.</div>
+      <div class="project-concepts">
+        <span class="concept-pill">Gaussian Noise Filters</span><span class="concept-pill">Rolling Window Windows</span>
+        <span class="concept-pill">Adaptive Lower Bounds</span><span class="concept-pill">Outlier Filtering Masks</span>
+        <span class="concept-pill">Area Variance Fills</span>
+      </div>
+    </div>
+
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <div class="roadmap-dot">01</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">NumPy Vectorization Infrastructure</div>
+          <div class="roadmap-desc">Contiguous memory, explicit dtypes, linear spacing generators, matrix transposition.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot">02</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Broadcasting Mechanics & Masking Views</div>
+          <div class="roadmap-desc">Mathematical stretching across mismatched sizes, Boolean indexing arrays, zero-copy layout manipulation.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot">03</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Pandas Tabular Transformation Architecture</div>
+          <div class="roadmap-desc">DataFrame structural alignment tracking markers, index modification, loc vs iloc execution blocks.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot">04</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Advanced Data Cleaning & Multi-Feature Aggregations</div>
+          <div class="roadmap-desc">Imputation logic, directional interpolation tracking, split-apply-combine multi-indexing layers.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot">05</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Matplotlib Visual Rendering Sub-Axes</div>
+          <div class="roadmap-desc">Object-oriented explicit canvases, subplots grid spec tracking layouts, custom production themes.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NUMPY CORES -->
+  <section class="section" id="numpy-base">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div>
+        <div class="section-label">Framework Infrastructure</div>
+        <div class="section-title">NumPy: Contiguous Multi-Dimensional Storage Vectors</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">📦 Memory Contiguity & Typing</div>
+      <p style="color:var(--text-muted); margin-bottom:1rem;">NumPy arrays wrap around a <strong>contiguous block of raw memory bytes</strong>. This spatial locality ensures immediate CPU cache utilization, entirely omitting the runtime type-checking overhead of native loop steps.</p>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">numpy_array_spec.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Instantiating high-performance ndarrays</span>
+base_vector = np.<span class="fn">array</span>([<span class="nm">10.5</span>, <span class="nm">20.3</span>, <span class="nm">30.8</span>, <span class="nm">40.2</span>, <span class="nm">50.9</span>], dtype=np.float64)
+matrix_2d = np.<span class="fn">array</span>([[<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>], [<span class="nm">4</span>, <span class="nm">5</span>, <span class="nm">6</span>]], dtype=np.int32)
+
+<span class="fn">print</span>(<span class="fn">type</span>(base_vector))  <span class="cm"># &lt;class 'numpy.ndarray'&gt;</span>
+<span class="fn">print</span>(base_vector.ndim)   <span class="cm"># 1 — Dimension count</span>
+<span class="fn">print</span>(matrix_2d.shape)    <span class="cm"># (2, 3) — Row-by-Column structural bounds</span>
+<span class="fn">print</span>(matrix_2d.dtype)    <span class="cm"># Uniform memory allocation</span></pre>
+      </div>
+      <div class="callout callout-real">
+        <strong>🏗️ Used in Case Project 1:</strong> Pre-allocating continuous blocks of stock returns matrices to process high-frequency portfolio computations without slow Python-level loops.
+      </div>
+    </div>
+
+    <div class="subsection" id="numpy-routines">
+      <div class="subsection-title">🔄 Creation Routines & Zero-Copy Reshaping</div>
+      <p style="color:var(--text-muted); margin-bottom:1rem;">Manual input entry becomes inefficient at scale. NumPy offers specialized matrix factories that allocate structural placeholders inside memory pools, which can then be realigned via zero-copy views.</p>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">matrix_factories.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="cm"># Factory Initializations</span>
+zero_matrix = np.<span class="fn">zeros</span>((<span class="nm">3</span>, <span class="nm">4</span>), dtype=np.float32)       <span class="cm"># Block allocations of 0.0</span>
+identity_matrix = np.<span class="fn">eye</span>(<span class="nm">3</span>)                            <span class="cm"># Linear algebraic Identity Matrix</span>
+linear_space = np.<span class="fn">linspace</span>(<span class="nm">0.0</span>, <span class="nm">1.0</span>, num=<span class="nm">5</span>)            <span class="cm"># 5 linearly split steps</span>
+stepped_range = np.<span class="fn">arange</span>(<span class="nm">10</span>, <span class="nm">50</span>, step=<span class="nm">5</span>)              <span class="cm"># Specialized range constructor</span>
+
+<span class="cm"># Structural Realignment View (Modifies only metadata without array duplicating)</span>
+flat_sequence = np.<span class="fn">arange</span>(<span class="nm">12</span>)
+grid_3x4 = flat_sequence.<span class="fn">reshape</span>(<span class="nm">3</span>, <span class="nm">4</span>)
+transposed_grid = grid_3x4.T                           <span class="cm"># Fast transposition view manipulation</span></pre>
+      </div>
+    </div>
+
+    <div class="subsection" id="numpy-broadcasting">
+      <div class="subsection-title">📡 Broadcasting Matrix Operations</div>
+      <p style="color:var(--text-muted); margin-bottom:1rem;">Broadcasting defines how NumPy runs arithmetic operations across arrays of mismatched shapes. Smaller matrices are logically stretched across absent dimensions to compute parallel operations.</p>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">broadcasting_engine.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="cm"># Element-wise Scalar stretching execution operations</span>
+prices = np.<span class="fn">array</span>([<span class="nm">100</span>, <span class="nm">200</span>, <span class="nm">300</span>])
+tax_factor = <span class="nm">1.05</span>
+final_prices = prices * tax_factor   <span class="cm"># Multiplied evenly across all elements</span>
+
+<span class="cm"># Multi-dimensional Array Broadcasting Rules</span>
+<span class="cm"># Dimension pairs match if they are completely equal, or if one of them is exactly 1.</span>
+matrix_data = np.<span class="fn">array</span>([[<span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>], [<span class="nm">40</span>, <span class="nm">50</span>, <span class="nm">60</span>]])  <span class="cm"># Shape: (2, 3)</span>
+row_vector  = np.<span class="fn">array</span>([<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>])                     <span class="cm"># Shape: (3,) -- Modeled to (1,3)</span>
+broadcast_sum = matrix_data + row_vector               <span class="cm"># Vector added to every matrix row</span></pre>
+      </div>
+    </div>
+
+    <div class="subsection" id="numpy-masking">
+      <div class="subsection-title">🎭 Advanced Slicing & Boolean Filtering Masks</div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">boolean_masking.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre>dataset = np.<span class="fn">array</span>([[<span class="nm">5</span>, <span class="nm">12</span>, <span class="nm">18</span>, <span class="nm">24</span>], [<span class="nm">32</span>, <span class="nm">41</span>, <span class="nm">9</span>, <span class="nm">15</span>], [<span class="nm">62</span>, <span class="nm">71</span>, <span class="nm">83</span>, <span class="nm">4</span>]])
+
+<span class="cm"># Slice Extraction: [Row boundaries, Column boundaries]</span>
+sub_block = dataset[<span class="nm">0</span>:<span class="nm">2</span>, <span class="nm">1</span>:<span class="nm">3</span>]  <span class="cm"># Isolates upper sub-coordinates grid block</span>
+
+<span class="cm"># Conditional Vectorized Boolean Filtering Masks</span>
+outlier_condition = dataset > <span class="nm">40</span>
+filtered_elements = dataset[outlier_condition]  <span class="cm"># Extracts values matching True flags</span></pre>
+      </div>
+    </div>
+
+    <table class="topic-table">
+      <thead>
+        <tr><th>Array Operation / Utility Method</th><th>Underlying Action</th><th>Memory & Compute Profile</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="method">np.ndarray.reshape(r, c)</td><td>Alters coordinate dimensions</td><td class="profile"><strong>O(1)</strong> — Modifies structural metadata parameters without duplicating internal bytes.</td></tr>
+        <tr><td class="method">matrix_a @ matrix_b</td><td>Vectorized matrix dot-product</td><td class="profile"><strong>O(N³)</strong> — Runs highly parallelized BLAS/LAPACK Fortran-level instructions.</td></tr>
+        <tr><td class="method">array[array > limit]</td><td>Boolean lookup abstraction</td><td class="profile"><strong>O(N)</strong> — Evaluates logical flags across sequential layouts to extract a flat array match.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- PANDAS CORES -->
+  <section class="section" id="pandas-architecture">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div>
+        <div class="section-label">Framework Infrastructure</div>
+        <div class="section-title">Pandas: Structured Tabular Manipulation Architecture</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">🔑 Series, DataFrames & Tracking Markers</div>
+      <p style="color:var(--text-muted); margin-bottom:1rem;">Pandas projects NumPy technology onto labels and indices. A <code>Series</code> handles one-dimensional indexed datasets, while a <code>DataFrame</code> structures tabular data, aligning explicit column tracking markers with underlying matrix arrays.</p>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">pandas_struct.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="cm"># Series Explicit Index Mapping</span>
+revenue = pd.<span class="cl">Series</span>([<span class="nm">4500</span>, <span class="nm">6200</span>, <span class="nm">8100</span>], index=[<span class="st">'Q1'</span>, <span class="st">'Q2'</span>, <span class="st">'Q3'</span>], name=<span class="st">"Net_Yield"</span>)
+
+<span class="cm"># Structuring Unified Tabular DataFrames</span>
+corporate_registry = {
+    <span class="st">"Ticker"</span>: [<span class="st">"AAPL"</span>, <span class="st">"MSFT"</span>, <span class="st">"GOOG"</span>],
+    <span class="st">"MarketCap"</span>: [<span class="nm">3000</span>, <span class="nm">2800</span>, <span class="nm">1700</span>],
+    <span class="st">"Sector"</span>: [<span class="st">"Tech"</span>, <span class="st">"Tech"</span>, <span class="st">"Tech"</span>]
+}
+df = pd.<span class="cl">DataFrame</span>(corporate_registry)</pre>
+      </div>
+    </div>
+
+    <div class="subsection" id="pandas-access">
+      <div class="subsection-title">📍 Index Access Protocols: loc vs iloc</div>
+      <div class="compare-grid">
+        <div class="compare-card">
+          <div class="compare-card-title" style="color:var(--accent)">🏷️ Label Binding Alignment: .loc</div>
+          <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1rem;">Enforces data selection strictly by explicit row names and categorical column strings.</p>
+          <div class="code-block" style="margin:0;"><pre style="padding:0.8rem 1rem;">df.index = [<span class="st">'Row_1'</span>, <span class="st">'Row_2'</span>, <span class="st">'Row_3'</span>]
+val = df.loc[<span class="st">'Row_1'</span>, <span class="st">'MarketCap'</span>]</pre></div>
+        </div>
+        <div class="compare-card">
+          <div class="compare-card-title" style="color:var(--accent5)">🔢 Target Integer Index Positions: .iloc</div>
+          <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1rem;">Ignores structural name labels entirely, mapping coordinate paths directly to integer positions.</p>
+          <div class="code-block" style="margin:0;"><pre style="padding:0.8rem 1rem;">val = df.iloc[<span class="nm">0</span>, <span class="nm">1</span>] <span class="cm"># Row position 0, Col position 1</span></pre></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection" id="pandas-io">
+      <div class="subsection-title">📥 Data Pipeline Ingestion & Scanning</div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">data_pipeline_io.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="kw">try</span>:
+    raw_df = pd.<span class="fn">read_csv</span>(<span class="st">"enterprise_metrics.csv"</span>, encoding=<span class="st">"utf-8"</span>)
+<span class="kw">except</span> <span class="cl">FileNotFoundError</span>:
+    raw_df = pd.<span class="cl">DataFrame</span>({<span class="st">"Metric_ID"</span>: [<span class="nm">101</span>, <span class="nm">102</span>, <span class="nm">103</span>], <span class="st">"Value"</span>: [<span class="nm">92.4</span>, <span class="kw">None</span>, <span class="nm">108.1</span>]})
+
+<span class="cm"># Pipeline Inspection Methods</span>
+raw_df.<span class="fn">info</span>()       <span class="cm"># Displays information about structure and memory</span>
+raw_df.<span class="fn">head</span>(<span class="nm">5</span>)      <span class="cm"># Extracts top 5 rows</span>
+raw_df.<span class="fn">describe</span>()  <span class="cm"># Outputs structural summary stats</span></pre>
+      </div>
+    </div>
+
+    <div class="subsection" id="pandas-cleaning">
+      <div class="subsection-title">🧹 Cleaning pipelines & Missing Data Matrices</div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">data_cleansing.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="cm"># Dropping rows missing structural tracking labels</span>
+clean_df = raw_df.<span class="fn">dropna</span>(subset=[<span class="st">"Metric_ID"</span>])
+
+<span class="cm"># Vectorized Missing-Value Imputation</span>
+raw_df[<span class="st">"Value"</span>] = raw_df[<span class="st">"Value"</span>].<span class="fn">fillna</span>(raw_df[<span class="st">"Value"</span>].<span class="fn">mean</span>())
+
+<span class="cm"># Element-wise Mapping Function Chains</span>
+raw_df[<span class="st">"Normalized"</span>] = raw_df[<span class="st">"Value"</span>].<span class="fn">apply</span>(<span class="kw">lambda</span> x: (x - <span class="nm">100</span>) / <span class="nm">15</span> <span class="kw">if</span> x > <span class="nm">100</span> <span class="kw">else</span> x)</pre>
+      </div>
+    </div>
+
+    <div class="subsection" id="pandas-aggregations">
+      <div class="subsection-title">🔄 Split-Apply-Combine Routines</div>
+      <p style="color:var(--text-muted); margin-bottom:1rem;">The split-apply-combine routine lets you segment records by variable properties, calculate group-level distributions, and merge distinct tables without losing index context.</p>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">group_aggregations.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre>store_data = pd.<span class="cl">DataFrame</span>({
+    <span class="st">"Region"</span>: [<span class="st">"North"</span>, <span class="st">"North"</span>, <span class="st">"South"</span>, <span class="st">"South"</span>],
+    <span class="st">"Sales"</span>: [<span class="nm">12000</span>, <span class="nm">15000</span>, <span class="nm">9000</span>, <span class="nm">21000</span>],
+    <span class="st">"Cost"</span>: [<span class="nm">8000</span>, <span class="nm">11000</span>, <span class="nm">5000</span>, <span class="nm">14000</span>]
+})
+
+<span class="cm"># Grouping & Advanced Multi-Feature Aggregations</span>
+regional_perf = store_data.<span class="fn">groupby</span>(<span class="st">"Region"</span>).<span class="fn">agg</span>({
+    <span class="st">"Sales"</span>: [<span class="st">"sum"</span>, <span class="st">"mean"</span>],
+    <span class="st">"Cost"</span>: <span class="st">"mean"</span>
+})
+
+<span class="cm"># Merging Tables on Explicit Structural Keys</span>
+inventory_df = pd.<span class="cl">DataFrame</span>({<span class="st">"Region"</span>: [<span class="st">"North"</span>, <span class="st">"South"</span>], <span class="st">"Stock"</span>: [<span class="nm">500</span>, <span class="nm">750</span>]})
+merged_master = pd.<span class="fn">merge</span>(store_data, inventory_df, on=<span class="st">"Region"</span>, how=<span class="st">"inner"</span>)</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISUALIZATIONS MATPLOTLIB -->
+  <section class="section" id="viz-oo">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div>
+        <div class="section-label">Data Visualization</div>
+        <div class="section-title">Matplotlib: Visual Engineering Infrastructure</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">🎨 Object-Oriented Canvas Architecture</div>
+      <p style="color:var(--text-muted); margin-bottom:1rem;">Avoid using implicit state global commands (<code>plt.plot</code>). Instead, use the Object-Oriented infrastructure by instantiating an explicit top-level <code>Figure</code> object along with separate target reference sub-axes <code>Ax</code>. This gives you full design control over title placements, precise spatial boundaries, and visual styling layers.</p>
+      
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">canvas_instantiation.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> seaborn <span class="kw">as</span> sns
+
+<span class="cm"># Applying professional visual tokens</span>
+sns.<span class="fn">set_theme</span>(style=<span class="st">"darkgrid"</span>)
+
+<span class="cm"># Instantiating Top-Level Canvas & Subplot Tracking Markers</span>
+fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="nm">8</span>, <span class="nm">5</span>), dpi=<span class="nm">100</span>)
+x_axis = np.<span class="fn">linspace</span>(<span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">100</span>)
+ax.<span class="fn">plot</span>(x_axis, np.<span class="fn">sin</span>(x_axis), label=<span class="st">"Phase Wave"</span>, color=<span class="st">"#00e5bc"</span>, lw=<span class="nm">2.5</span>)
+
+<span class="cm"># Injecting Contextual Reference Labels</span>
+ax.<span class="fn">set_title</span>(<span class="st">"Network Phase Velocity Vectors"</span>, fontsize=<span class="nm">14</span>, fontweight=<span class="st">'bold'</span>, pad=<span class="nm">15</span>)
+ax.<span class="fn">set_xlabel</span>(<span class="st">"Execution Window Timeline (ms)"</span>)
+ax.<span class="fn">legend</span>(loc=<span class="st">"upper right"</span>)</pre>
+      </div>
+    </div>
+
+    <div class="subsection" id="viz-gallery">
+      <div class="subsection-title">📊 Multi-Axis Layout Formats</div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">chart_distribution_layers.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="cm"># Creating a 2x2 Subplot Grid Canvas Layout</span>
+fig, axes = plt.<span class="fn">subplots</span>(<span class="nm">2</span>, <span class="nm">2</span>, figsize=(<span class="nm">12</span>, <span class="nm">10</span>))
+
+<span class="cm"># [0, 0] Distribution Frequency Histogram Layer</span>
+axes[<span class="nm">0</span>, <span class="nm">0</span>].<span class="fn">hist</span>(np.random.<span class="fn">normal</span>(<span class="nm">100</span>, <span class="nm">15</span>, <span class="nm">1000</span>), bins=<span class="nm">30</span>, color=<span class="st">"#38bdf8"</span>)
+axes[<span class="nm">0</span>, <span class="nm">0</span>].<span class="fn">set_title</span>(<span class="st">"Performance Frequency Spread"</span>)
+
+<span class="cm"># [0, 1] Categorical Bar Chart Representation</span>
+axes[<span class="nm">0</span>, <span class="nm">1</span>].<span class="fn">bar</span>([<span class="st">'Retail'</span>, <span class="st">'Tech'</span>, <span class="st">'Energy'</span>], [<span class="nm">450</span>, <span class="nm">920</span>, <span class="nm">310</span>], color=[<span class="st">"#ff5e7e"</span>, <span class="st">"#00e5bc"</span>, <span class="st">"#ffc857"</span>])
+axes[<span class="nm">0</span>, <span class="nm">1</span>].<span class="fn">set_title</span>(<span class="st">"Capital Allocation Breakdown"</span>)
+
+<span class="cm"># [1, 0] Relational Multivariate Scatter Tracking Plots</span>
+axes[<span class="nm">1</span>, <span class="nm">0</span>].<span class="fn">scatter</span>(np.random.<span class="fn">rand</span>(<span class="nm">50</span>), np.random.<span class="fn">rand</span>(<span class="nm">50</span>), color=<span class="st">"#b392ac"</span>, alpha=<span class="nm">0.8</span>)
+axes[<span class="nm">1</span>, <span class="nm">0</span>].<span class="fn">set_title</span>(<span class="st">"Yield Volatility Dynamics"</span>)
+
+<span class="cm"># [1, 1] Continuous Time-Series Filled Area Boundaries</span>
+axes[<span class="nm">1</span>, <span class="nm">1</span>].<span class="fn">fill_between</span>(np.<span class="fn">arange</span>(<span class="nm">10</span>), np.random.<span class="fn">rand</span>(<span class="nm">10</span>), color=<span class="st">"#00e5bc"</span>, alpha=<span class="nm">0.2</span>)
+axes[<span class="nm">1</span>, <span class="nm">1</span>].<span class="fn">set_title</span>(<span class="st">"Compounded Growth Variance Profile"</span>)
+
+plt.<span class="fn">tight_layout</span>()</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASE PROJECTS MONOLITHS -->
+  <section class="section" id="project1">
+    <div class="section-header">
+      <div class="section-num" style="border-color:var(--project1); color:var(--project1)">P1</div>
+      <div>
+        <div class="section-label" style="color:var(--project1)">Project Milestone 1 — Production Implementation Blueprint</div>
+        <div class="section-title">💼 Automated Multi-Asset Investment Analytics Engine</div>
+      </div>
+    </div>
+
+    <p style="color:var(--text-muted); margin-bottom:1.5rem;">A complete financial tracking script leveraging <strong>NumPy array vectors, missing value pipelines, forward-filling data transformations, log returns processing matrices, and multi-axes performance dashboards.</strong></p>
+
+    <div class="full-project full-project-1">
+      <div class="full-project-header">
+        <div class="project-tag">portfolio_analytics.py — End-to-End System Script</div>
+      </div>
+      <div class="code-block" style="border-radius:0; border:none; margin:0;">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">portfolio_analytics_engine.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="cm"># PROJECT 1: Multi-Asset Analytics Engine Implementation</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> seaborn <span class="kw">as</span> sns
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    np.random.seed(<span class="nm">42</span>)
+    timeline_points = <span class="nm">252</span>
+    date_sequence = pd.<span class="fn">date_range</span>(end=datetime.today(), periods=timeline_points, freq=<span class="st">'B'</span>)
+
+    <span class="cm"># Geometric Brownian Motion metrics inside array memory blocks</span>
+    tech_shocks = np.random.<span class="fn">normal</span>(<span class="nm">0.0005</span>, <span class="nm">0.012</span>, timeline_points)
+    energy_shocks = np.random.<span class="fn">normal</span>(<span class="nm">0.0002</span>, <span class="nm">0.015</span>, timeline_points)
+    retail_shocks = np.random.<span class="fn">normal</span>(<span class="nm">0.0003</span>, <span class="nm">0.009</span>, timeline_points)
+
+    tech_prices = <span class="nm">150</span> * np.<span class="fn">exp</span>(np.<span class="fn">cumsum</span>(tech_shocks))
+    energy_prices = <span class="nm">80</span> * np.<span class="fn">exp</span>(np.<span class="fn">cumsum</span>(energy_shocks))
+    retail_prices = <span class="nm">110</span> * np.<span class="fn">exp</span>(np.<span class="fn">cumsum</span>(retail_shocks))
+
+    tech_prices[<span class="nm">15</span>:<span class="nm">18</span>] = np.nan
+    energy_prices[<span class="nm">110</span>:<span class="nm">112</span>] = np.nan
+
+    raw_portfolio_data = pd.<span class="cl">DataFrame</span>({
+        <span class="st">"AAPL_Tech"</span>: tech_prices, <span class="st">"XOM_Energy"</span>: energy_prices, <span class="st">"WMT_Retail"</span>: retail_prices
+    }, index=date_sequence)
+
+    sanitized_portfolio = raw_portfolio_data.<span class="fn">ffill</span>()
+    log_returns_matrix = np.<span class="fn">log</span>(sanitized_portfolio / sanitized_portfolio.<span class="fn">shift</span>(<span class="nm">1</span>)).<span class="fn">dropna</span>()
+
+    annualized_returns = log_returns_matrix.<span class="fn">mean</span>() * <span class="nm">252</span>
+    annualized_volatility = log_returns_matrix.<span class="fn">std</span>() * np.<span class="fn">sqrt</span>(<span class="nm">252</span>)
+
+    summary_analytics_df = pd.<span class="cl">DataFrame</span>({
+        <span class="st">"Annualized Return"</span>: annualized_returns,
+        <span class="st">"Annualized Volatility"</span>: annualized_volatility,
+        <span class="st">"Sharpe Ratio"</span>: (annualized_returns - <span class="nm">0.04</span>) / annualized_volatility
+    })
+
+    fig = plt.<span class="fn">figure</span>(figsize=(<span class="nm">14</span>, <span class="nm">10</span>))
+    grid_spec = fig.<span class="fn">add_gridspec</span>(<span class="nm">2</span>, <span class="nm">2</span>)
+
+    ax_trends = fig.<span class="fn">add_subplot</span>(grid_spec[<span class="nm">0</span>, :])
+    normalized_growth = sanitized_portfolio / sanitized_portfolio.<span class="fn">iloc</span>[<span class="nm">0</span>] * <span class="nm">100</span>
+    ax_trends.<span class="fn">plot</span>(normalized_growth.index, normalized_growth[<span class="st">"AAPL_Tech"</span>], label=<span class="st">"Tech"</span>, color=<span class="st">"#00e5bc"</span>)
+    ax_trends.<span class="fn">plot</span>(normalized_growth.index, normalized_growth[<span class="st">"XOM_Energy"</span>], label=<span class="st">"Energy"</span>, color=<span class="st">"#ff5e7e"</span>)
+    ax_trends.<span class="fn">set_title</span>( <span class="st">"Asset Performance Path Tracking Profile"</span>, fontsize=<span class="nm">12</span>, fontweight=<span class="st">'bold'</span>)
+    ax_trends.<span class="fn">legend</span>()
+
+    ax_heatmap = fig.<span class="fn">add_subplot</span>(grid_spec[<span class="nm">1</span>, <span class="nm">0</span>])
+    sns.<span class="fn">heatmap</span>(log_returns_matrix.<span class="fn">corr</span>(), annot=<span class="kw">True</span>, cmap=<span class="st">"coolwarm"</span>, ax=ax_heatmap, cbar=<span class="kw">True</span>)
+
+    ax_risk = fig.<span class="fn">add_subplot</span>(grid_spec[<span class="nm">1</span>, <span class="nm">1</span>])
+    ax_risk.<span class="fn">scatter</span>(summary_analytics_df[<span class="st">"Annualized Volatility"</span>], summary_analytics_df[<span class="st">"Annualized Return"</span>], s=<span class="nm">300</span>, color=<span class="st">"#00e5bc"</span>)
+    
+    plt.<span class="fn">tight_layout</span>()
+    plt.<span class="fn">show</span>()</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASE PROJECTS 2 TELECOM -->
+  <section class="section" id="project2">
+    <div class="section-header">
+      <div class="section-num" style="border-color:var(--project2); color:var(--project2)">P2</div>
+      <div>
+        <div class="section-label" style="color:var(--project2)">Project Milestone 2 — Production Implementation Blueprint</div>
+        <div class="section-title">📋 Telecom Signal Quality & Anomaly Diagnostic Engine</div>
+      </div>
+    </div>
+
+    <p style="color:var(--text-muted); margin-bottom:1.5rem;">A streaming signal analysis engine that utilizes <strong>rolling variance windows, adaptive lower boundary thresholds, Boolean masking, and shaded area variance callouts to detect critical hardware failures under sudden, extreme infrastructure stress.</strong></p>
+
+    <div class="full-project full-project-2">
+      <div class="full-project-header">
+        <div class="project-tag">network_signal_diagnostics.py — End-to-End System Script</div>
+      </div>
+      <div class="code-block" style="border-radius:0; border:none; margin:0;">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">network_signal_diagnostics.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="cm"># PROJECT 2: Telecom Signal Diagnostic System</span>
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    np.random.seed(<span class="nm">88</span>)
+    data_stream_points = <span class="nm">500</span>
+    timeline_axis = pd.<span class="fn">date_range</span>(start=<span class="st">"2026-01-01"</span>, periods=data_stream_points, freq=<span class="st">"T"</span>)
+
+    clean_signal = <span class="nm">50</span> + np.<span class="fn">sin</span>(np.<span class="fn">linspace</span>(<span class="nm">0</span>, <span class="nm">20</span>, data_stream_points)) * <span class="nm">15</span>
+    raw_signal_stream = clean_signal + np.random.<span class="fn">normal</span>(<span class="nm">0</span>, <span class="nm">3</span>, data_stream_points)
+
+    <span class="cm"># Hardware drop drops simulation injection</span>
+    raw_signal_stream[<span class="nm">120</span>:<span class="nm">135</span>] -= <span class="nm">25</span>
+    raw_signal_stream[<span class="nm">340</span>:<span class="nm">355</span>] -= <span class="nm">32</span>
+
+    telecom_network_df = pd.<span class="cl">DataFrame</span>({<span class="st">"DBm_Signal_Strength"</span>: raw_signal_stream}, index=timeline_axis)
+
+    rolling_window_size = <span class="nm">20</span>
+    telecom_network_df[<span class="st">"Rolling_Mean"</span>] = telecom_network_df[<span class="st">"DBm_Signal_Strength"</span>].<span class="fn">rolling</span>(window=rolling_window_size, min_periods=<span class="nm">1</span>).<span class="fn">mean</span>()
+    telecom_network_df[<span class="st">"Rolling_Std"</span>] = telecom_network_df[<span class="st">"DBm_Signal_Strength"</span>].<span class="fn">rolling</span>(window=rolling_window_size, min_periods=<span class="nm">1</span>).<span class="fn">std</span>()
+
+    telecom_network_df[<span class="st">"Lower_Control_Bound"</span>] = telecom_network_df[<span class="st">"Rolling_Mean"</span>] - (<span class="nm">2.5</span> * telecom_network_df[<span class="st">"Rolling_Std"</span>])
+
+    anomaly_mask = telecom_network_df[<span class="st">"DBm_Signal_Strength"</span>] < telecom_network_df[<span class="st">"Lower_Control_Bound"</span>]
+    anomalies_extracted = telecom_network_df[anomaly_mask]
+
+    fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="nm">15</span>, <span class="nm">6</span>), dpi=<span class="nm">100</span>)
+    ax.<span class="fn">plot</span>(telecom_network_df.index, telecom_network_df[<span class="st">"DBm_Signal_Strength"</span>], color=<span class="st">"#64748b"</span>, alpha=<span class="nm">0.4</span>)
+    ax.<span class="fn">plot</span>(telecom_network_df.index, telecom_network_df[<span class="st">"Rolling_Mean"</span>], color=<span class="st">"#38bdf8"</span>, lw=<span class="nm">2</span>)
+    
+    ax.<span class="fn">scatter</span>(anomalies_extracted.index, anomalies_extracted[<span class="st">"DBm_Signal_Strength"</span>], color=<span class="st">"#ff5e7e"</span>, s=<span class="nm">40</span>)
+    ax.<span class="fn">fill_between</span>(telecom_network_df.index, telecom_network_df[<span class="st">"DBm_Signal_Strength"</span>], telecom_network_df[<span class="st">"Lower_Control_Bound"</span>], 
+                    where=telecom_network_df[<span class="st">"DBm_Signal_Strength"</span>] < telecom_network_df[<span class="st">"Lower_Control_Bound"</span>], color=<span class="st">"#ff5e7e"</span>, alpha=<span class="nm">0.25</span>)
+
+    ax.<span class="fn">set_title</span>(<span class="st">"Backbone Network Streaming Anomaly Diagnostics"</span>, fontsize=<span class="nm">13</span>, fontweight=<span class="st">'bold'</span>)
+    plt.<span class="fn">tight_layout</span>()
+    plt.<span class="fn">show</span>()</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div style="margin-bottom:0.5rem; color:var(--accent);">🐍 Python for Data Science and Analytics</div>
+    <div>Structured Concept Modules — From Memory Strides to Production Dashboards</div>
+    <div style="margin-top:0.5rem; color:var(--text-muted); font-size:0.72rem;">NumPy Contiguity → Broadcasting Engine → Slicing loc/iloc → Missing Data Matrices → Multi-Axes Canvases</div>
+  </div>
+
+</main>
+
+<script>
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -60% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

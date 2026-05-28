@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simran Learns — Personal Study Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── DESIGN SYSTEM ─── */
+:root {
+  --bg: #080b14;
+  --surface: #0e1320;
+  --surface2: #141b2d;
+  --surface3: #1a2340;
+  --border: #1e2d45;
+  --border2: #243352;
+  --accent: #6366f1;
+  --accent-glow: rgba(99,102,241,0.3);
+  --gold: #f59e0b;
+  --gold-dim: rgba(245,158,11,0.15);
+  --green: #10b981;
+  --red: #f43f5e;
+  --cyan: #06b6d4;
+  --purple: #a78bfa;
+  --text: #e8edf5;
+  --text2: #9aa5b8;
+  --text3: #5a6a82;
+  --note-yellow: #2a2410;
+  --note-border: #f59e0b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── NOISE TEXTURE OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+/* ─── TOP BAR ─── */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 64px;
+  background: rgba(8,11,20,0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  z-index: 200;
+  gap: 1rem;
+}
+
+.topbar-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #6366f1 0%, #a78bfa 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+}
+
+.topbar-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text3);
+  margin-top: 1px;
+}
+
+.topbar-spacer { flex: 1; }
+
+.topbar-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.topbar-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.back-btn {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ─── DASHBOARD ─── */
+#dashboard {
+  padding: 88px 2.5rem 3rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.hero {
+  text-align: center;
+  padding: 3rem 0 3.5rem;
+  position: relative;
+}
+
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.0;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.hero-title .hi { color: var(--gold); }
+.hero-title .name { 
+  background: linear-gradient(135deg, #6366f1, #a78bfa, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-desc {
+  color: var(--text2);
+  font-size: 1.05rem;
+  max-width: 520px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.6;
+}
+
+.gate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(244,63,94,0.1);
+  border: 1px solid rgba(244,63,94,0.3);
+  color: #f43f5e;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  letter-spacing: 0.05em;
+}
+
+/* ─── STATS BAR ─── */
+.stats-bar {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  min-width: 120px;
+  transition: all 0.2s;
+}
+.stat:hover { border-color: var(--border2); transform: translateY(-2px); }
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #6366f1, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label { font-size: 0.75rem; color: var(--text3); margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+
+/* ─── SECTION HEADINGS ─── */
+.section-heading {
+  font-family: 'Syne', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text2);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.section-heading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ─── COURSE GRID ─── */
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 3rem;
+}
+
+.course-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.course-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--card-accent, var(--accent));
+  border-radius: 16px 16px 0 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.course-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px var(--card-accent, var(--accent)), 0 0 30px rgba(99,102,241,0.1);
+}
+
+.course-card:hover::before { opacity: 1; }
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  background: var(--card-icon-bg, rgba(99,102,241,0.1));
+}
+
+.card-category {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--card-accent, var(--accent));
+  margin-bottom: 0.4rem;
+}
+
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.card-desc {
+  font-size: 0.85rem;
+  color: var(--text2);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.card-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.note-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.card-open-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--card-accent, var(--accent));
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* ─── MULTI-LESSON SECTION ─── */
+.lesson-group {
+  margin-bottom: 1rem;
+}
+
+.lesson-group-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.lesson-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.lesson-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.lesson-item:hover {
+  border-color: var(--border2);
+  background: var(--surface2);
+  transform: translateY(-2px);
+}
+.lesson-item-icon { font-size: 1.1rem; }
+.lesson-item-name { font-size: 0.88rem; font-weight: 500; }
+.lesson-item-type { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--text3); }
+
+/* ─── COURSE VIEWER ─── */
+#viewer { display: none; height: 100vh; padding-top: 64px; }
+
+.viewer-layout {
+  display: flex;
+  height: 100%;
+}
+
+/* ─── IFRAME AREA ─── */
+.iframe-area {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.course-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #0a0e1a;
+}
+
+/* ─── NOTES PANEL ─── */
+.notes-panel {
+  width: 360px;
+  min-width: 280px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.3s;
+}
+
+.notes-panel.collapsed { width: 44px; min-width: 44px; }
+
+.notes-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.notes-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gold);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.notes-panel.collapsed .notes-title,
+.notes-panel.collapsed .notes-body { display: none; }
+
+.toggle-panel-btn {
+  background: none;
+  border: none;
+  color: var(--text3);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+.toggle-panel-btn:hover { color: var(--text); }
+
+.notes-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.notes-body::-webkit-scrollbar { width: 4px; }
+.notes-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+/* ─── STICKY NOTE ─── */
+.sticky-note {
+  background: var(--note-yellow);
+  border: 1px solid rgba(245,158,11,0.25);
+  border-top: 3px solid var(--gold);
+  border-radius: 0 0 8px 8px;
+  padding: 0.75rem;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  animation: noteSlideIn 0.2s ease;
+}
+
+@keyframes noteSlideIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.note-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  color: rgba(245,158,11,0.5);
+  margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.note-content {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: rgba(245,158,11,0.9);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.note-delete-btn {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: rgba(245,158,11,0.3);
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  transition: color 0.2s;
+}
+.note-delete-btn:hover { color: var(--red); }
+
+/* ─── ADD NOTE FORM ─── */
+.add-note-section {
+  padding: 1rem;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.note-course-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+  opacity: 0.7;
+}
+
+.note-textarea {
+  width: 100%;
+  background: var(--note-yellow);
+  border: 1px solid rgba(245,158,11,0.25);
+  border-radius: 8px;
+  padding: 0.75rem;
+  color: rgba(245,158,11,0.9);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  resize: none;
+  outline: none;
+  min-height: 80px;
+  transition: border-color 0.2s;
+}
+.note-textarea:focus { border-color: var(--gold); }
+.note-textarea::placeholder { color: rgba(245,158,11,0.3); }
+
+.add-note-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.3);
+  color: var(--gold);
+  padding: 0.6rem;
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.add-note-btn:hover { background: rgba(245,158,11,0.18); border-color: var(--gold); }
+
+.empty-notes {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text3);
+  font-size: 0.82rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+.empty-notes .emoji { font-size: 2rem; display: block; margin-bottom: 0.75rem; opacity: 0.5; }
+
+/* ─── NOTES FILTER ─── */
+.notes-filter {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.filter-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.filter-btn.active, .filter-btn:hover {
+  background: var(--gold-dim);
+  border-color: rgba(245,158,11,0.4);
+  color: var(--gold);
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.course-card {
+  animation: fadeInUp 0.4s ease both;
+}
+.course-card:nth-child(1) { animation-delay: 0.05s; }
+.course-card:nth-child(2) { animation-delay: 0.1s; }
+.course-card:nth-child(3) { animation-delay: 0.15s; }
+.course-card:nth-child(4) { animation-delay: 0.2s; }
+.course-card:nth-child(5) { animation-delay: 0.25s; }
+.course-card:nth-child(6) { animation-delay: 0.3s; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .notes-panel { display: none; }
+  .notes-panel.show-mobile { display: flex; position: fixed; bottom: 0; left: 0; right: 0; width: 100%; height: 60vh; border: none; border-top: 1px solid var(--border); z-index: 300; }
+}
+
+@media (max-width: 600px) {
+  #dashboard { padding: 80px 1rem 2rem; }
+  .hero-title { font-size: 2.2rem; }
+  .courses-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── NOTES SEARCH ─── */
+.notes-search {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.notes-search input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.notes-search input:focus { border-color: var(--gold); }
+.notes-search input::placeholder { color: var(--text3); }
+
+/* ─── TOAST ─── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  z-index: 9999;
+  animation: fadeInUp 0.3s ease;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  display: none;
+}
+
+/* ─── GATE COUNTDOWN ─── */
+.gate-countdown {
+  background: var(--surface);
+  border: 1px solid rgba(244,63,94,0.2);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.countdown-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--red);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.countdown-time {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--red);
+}
+.countdown-detail { font-size: 0.8rem; color: var(--text2); flex: 1; }
+.countdown-quote { font-size: 0.82rem; color: var(--text2); font-style: italic; border-left: 2px solid rgba(244,63,94,0.3); padding-left: 0.75rem; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div>
+    <div class="topbar-logo">✦ Simran Learns</div>
+    <div class="topbar-sub">personal knowledge hub</div>
+  </div>
+  <div class="topbar-spacer"></div>
+  <button class="back-btn" id="backBtn" onclick="goHome()">
+    ← Back to Dashboard
+  </button>
+  <button class="topbar-btn" onclick="toggleAllNotes()">📌 All Notes</button>
+</header>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="hero">
+    <div class="hero-eyebrow">✦ personal study platform ✦</div>
+    <h1 class="hero-title">
+      <span class="hi">नमस्ते,</span><br>
+      <span class="name">Simran Singh</span> 👩‍💻
+    </h1>
+    <p class="hero-desc">
+      Your personal learning hub. Every course, every note, in one place.
+      Built for <strong>AIML B.Tech</strong> growth and <strong>GATE CSE 2027</strong> prep.
+    </p>
+    <div class="gate-badge">🎯 GATE CSE 2027 Target — Licensed to Simran Singh</div>
+  </div>
+
+  <!-- GATE COUNTDOWN -->
+  <div class="gate-countdown">
+    <div>
+      <div class="countdown-label">⏳ Days to GATE 2027</div>
+      <div class="countdown-time" id="gateCountdown">—</div>
+    </div>
+    <div class="countdown-detail">
+      GATE CSE 2027 is estimated in <strong>February 2027</strong>.<br>
+      Every day of focused study counts. Stay consistent, Simran! 🔥
+    </div>
+    <div class="countdown-quote" id="dailyQuote">Loading your daily motivation...</div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num" id="totalCoursesCount">11</div>
+      <div class="stat-label">Course Files</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="totalNotesCount">0</div>
+      <div class="stat-label">Your Notes</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Topics</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="streakCount">1</div>
+      <div class="stat-label">Day Streak 🔥</div>
+    </div>
+  </div>
+
+  <!-- COURSES -->
+  <div class="section-heading">Your Courses</div>
+  <div class="courses-grid" id="coursesGrid">
+    <!-- Populated by JS -->
+  </div>
+
+  <div class="section-heading">Add Your Own Course</div>
+  <div style="background:var(--surface);border:1px dashed var(--border2);border-radius:14px;padding:2rem;text-align:center;margin-bottom:3rem;">
+    <div style="font-size:2rem;margin-bottom:.75rem;">📂</div>
+    <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.5rem;">Drop an HTML course file here</div>
+    <div style="font-size:0.85rem;color:var(--text2);margin-bottom:1.25rem;">Any HTML study file will open in the viewer with full sticky-note support</div>
+    <input type="file" id="courseFileInput" accept=".html" style="display:none" onchange="openLocalFile(event)">
+    <button class="topbar-btn" onclick="document.getElementById('courseFileInput').click()" style="font-size:0.85rem;padding:0.6rem 1.5rem;">
+      + Open HTML Course File
+    </button>
+  </div>
+</div>
+
+<!-- COURSE VIEWER -->
+<div id="viewer">
+  <div class="viewer-layout">
+    <div class="iframe-area">
+      <iframe id="courseIframe" class="course-iframe" src="about:blank" title="Course Content"></iframe>
+    </div>
+    <div class="notes-panel" id="notesPanel">
+      <div class="notes-header">
+        <span style="font-size:1.1rem;">📌</span>
+        <span class="notes-title">Sticky Notes</span>
+        <button class="toggle-panel-btn" onclick="toggleNotesPanel()" title="Toggle panel">⇥</button>
+      </div>
+      <div class="notes-search">
+        <input type="text" placeholder="Search notes..." id="noteSearchInput" oninput="renderNotes()">
+      </div>
+      <div class="notes-filter" id="notesFilter">
+        <button class="filter-btn active" onclick="setNoteFilter('all', this)">All</button>
+        <button class="filter-btn" onclick="setNoteFilter('current', this)">This Course</button>
+      </div>
+      <div class="notes-body" id="notesBody"></div>
+      <div class="add-note-section">
+        <div class="note-course-label" id="noteCourseLabel">📍 Note for: —</div>
+        <textarea class="note-textarea" id="noteInput" placeholder="Write your note here... ✏️&#10;&#10;Tip: Press Ctrl+Enter to save" rows="4"></textarea>
+        <button class="add-note-btn" onclick="saveNote()">
+          ✦ Save Sticky Note
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+
+const COURSES = [
+  {
+    id: 'python-mastery',
+    title: 'Python Mastery',
+    subtitle: 'From Zero to DSA',
+    category: 'Python',
+    icon: '🐍',
+    iconBg: 'rgba(16,185,129,0.1)',
+    accent: '#10b981',
+    desc: 'Complete Python from basics to data structures, OOP, decorators & more.',
+    tags: ['Python', 'DSA', 'OOP', 'Algorithms'],
+    file: 'courses/python/python_mastery_notes.html',
+    gateRelevant: true,
+  },
+  {
+    id: 'python-ds',
+    title: 'Python Data Science',
+    subtitle: 'Mastery Handbook',
+    category: 'Python / AIML',
+    icon: '📊',
+    iconBg: 'rgba(99,102,241,0.1)',
+    accent: '#6366f1',
+    desc: 'NumPy, Pandas, Matplotlib, Seaborn — the full data science toolkit.',
+    tags: ['NumPy', 'Pandas', 'Matplotlib', 'Data'],
+    file: 'courses/python/python_data_science_mastery.html',
+  },
+  {
+    id: 'ml-handbook',
+    title: 'ML with Python',
+    subtitle: 'Complete Handbook',
+    category: 'Machine Learning',
+    icon: '🤖',
+    iconBg: 'rgba(167,139,250,0.1)',
+    accent: '#a78bfa',
+    desc: 'Scikit-learn, supervised/unsupervised learning, model evaluation.',
+    tags: ['ML', 'Scikit-learn', 'Models', 'AIML'],
+    file: 'courses/python/machine_learning_with_python_handbook.html',
+  },
+  {
+    id: 'practical-ml',
+    title: 'Practical ML',
+    subtitle: 'End-to-End Projects',
+    category: 'Machine Learning',
+    icon: '🧪',
+    iconBg: 'rgba(6,182,212,0.1)',
+    accent: '#06b6d4',
+    desc: 'Build real ML projects: classification, regression, clustering, pipelines.',
+    tags: ['Projects', 'Pipeline', 'Sklearn', 'AIML'],
+    file: 'courses/python/practical_machine_learning_course.html',
+  },
+  {
+    id: 'deep-learning',
+    title: 'Deep Learning',
+    subtitle: 'Image Processing',
+    category: 'Deep Learning',
+    icon: '🧠',
+    iconBg: 'rgba(244,63,94,0.1)',
+    accent: '#f43f5e',
+    desc: 'CNNs, TensorFlow/Keras, OpenCV — computer vision and neural networks.',
+    tags: ['CNN', 'TensorFlow', 'OpenCV', 'AIML'],
+    file: 'courses/python/deepLearning_ImageProcessing.html',
+  },
+  {
+    id: 'php-study',
+    title: 'PHP + Laravel',
+    subtitle: 'Study Guide',
+    category: 'Web Backend',
+    icon: '🐘',
+    iconBg: 'rgba(139,92,246,0.1)',
+    accent: '#8b5cf6',
+    desc: 'PHP fundamentals and Laravel framework — MVC, Eloquent, Blade, APIs.',
+    tags: ['PHP', 'Laravel', 'MVC', 'Eloquent'],
+    file: 'courses/php-laravel/php_laravel_study_guide.html',
+  },
+  {
+    id: 'php-projects',
+    title: 'PHP + Laravel',
+    subtitle: 'Project Guide',
+    category: 'Web Backend',
+    icon: '🏗️',
+    iconBg: 'rgba(139,92,246,0.1)',
+    accent: '#8b5cf6',
+    desc: 'Build real-world Laravel projects with authentication, APIs, and deployment.',
+    tags: ['Laravel', 'Projects', 'REST API', 'Auth'],
+    file: 'courses/php-laravel/php_laravel_project_guide.html',
+  },
+  {
+    id: 'computer-networks',
+    title: 'Computer Networks',
+    subtitle: 'GATE Reference',
+    category: 'GATE CSE Core',
+    icon: '🌐',
+    iconBg: 'rgba(56,189,248,0.1)',
+    accent: '#38bdf8',
+    desc: 'OSI model, TCP/IP, routing, subnetting — comprehensive GATE prep.',
+    tags: ['OSI', 'TCP/IP', 'GATE', 'Networking'],
+    file: 'courses/computer-networks/Computer_Network.html',
+    gateRelevant: true,
+  },
+  {
+    id: 'github-mastery',
+    title: 'GitHub Mastery',
+    subtitle: 'Version Control',
+    category: 'Dev Tools',
+    icon: '🐙',
+    iconBg: 'rgba(245,158,11,0.1)',
+    accent: '#f59e0b',
+    desc: 'Git internals, branching, PRs, GitHub Actions CI/CD — from beginner to pro.',
+    tags: ['Git', 'GitHub', 'CI/CD', 'Actions'],
+    file: 'courses/github/github_mastery.html',
+  },
+  {
+    id: 'deployment',
+    title: 'Deployment',
+    subtitle: 'Dev to Production',
+    category: 'DevOps',
+    icon: '🚀',
+    iconBg: 'rgba(6,182,212,0.1)',
+    accent: '#06b6d4',
+    desc: 'Vercel, Railway, Docker, Nginx — deploy anything, anywhere, confidently.',
+    tags: ['Vercel', 'Docker', 'DevOps', 'Nginx'],
+    file: 'courses/deployment/deployment_guide.html',
+  },
+  {
+    id: 'dsa-java',
+    title: 'DSA in Java',
+    subtitle: 'GATE CSE 2027',
+    category: 'GATE CSE Core',
+    icon: '☕',
+    iconBg: 'rgba(244,63,94,0.1)',
+    accent: '#f43f5e',
+    desc: 'Arrays, Trees, Graphs, Sorting, DP — with real GATE questions & solutions.',
+    tags: ['Java', 'GATE', 'DSA', 'Algorithms'],
+    file: 'courses/dsa-java/dsa_java.html',
+    gateRelevant: true,
+  },
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let currentCourseId = null;
+let noteFilter = 'all';
+let notesPanelCollapsed = false;
+
+function loadNotes() {
+  try { return JSON.parse(localStorage.getItem('simran_notes') || '[]'); } catch { return []; }
+}
+function saveNotes(notes) {
+  localStorage.setItem('simran_notes', JSON.stringify(notes));
+  updateNoteStats();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderCourses();
+  updateGateCountdown();
+  updateNoteStats();
+  setDailyQuote();
+  updateStreak();
+
+  document.getElementById('noteInput').addEventListener('keydown', e => {
+    if (e.ctrlKey && e.key === 'Enter') saveNote();
+  });
+});
+
+// ─── RENDER COURSES ───────────────────────────────────────────────────────────
+function renderCourses() {
+  const grid = document.getElementById('coursesGrid');
+  const notes = loadNotes();
+  
+  grid.innerHTML = COURSES.map(c => {
+    const noteCount = notes.filter(n => n.courseId === c.id).length;
+    return `
+    <div class="course-card" style="--card-accent:${c.accent};--card-icon-bg:${c.iconBg}" 
+         onclick="openCourse('${c.id}')">
+      <div class="card-icon">${c.icon}</div>
+      <div class="card-category">${c.category} ${c.gateRelevant ? '• 🎯 GATE' : ''}</div>
+      <div class="card-title">${c.title}<br><small style="font-weight:400;opacity:0.7;font-size:0.85em">${c.subtitle}</small></div>
+      <div class="card-desc">${c.desc}</div>
+      <div class="card-tags">${c.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      <div class="card-footer">
+        <div class="note-count">${noteCount > 0 ? `📌 ${noteCount} note${noteCount>1?'s':''}` : '📌 No notes yet'}</div>
+        <div class="card-open-btn">Open →</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── OPEN COURSE ──────────────────────────────────────────────────────────────
+function openCourse(courseId) {
+  const course = COURSES.find(c => c.id === courseId);
+  if (!course) return;
+  currentCourseId = courseId;
+
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('viewer').style.display = 'block';
+  document.getElementById('backBtn').style.display = 'flex';
+  document.getElementById('courseIframe').src = course.file;
+  document.getElementById('noteCourseLabel').textContent = `📍 Note for: ${course.title}`;
+
+  renderNotes();
+  document.getElementById('notesPanel').classList.remove('collapsed');
+  notesPanelCollapsed = false;
+}
+
+function openLocalFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const id = 'local_' + Date.now();
+  currentCourseId = id;
+  
+  COURSES.push({
+    id, title: file.name.replace('.html',''), subtitle: 'Local File',
+    category: 'Custom', icon: '📄', iconBg: 'rgba(99,102,241,0.1)',
+    accent: '#6366f1', desc: 'Your custom course file', tags: ['Custom'],
+    file: url
+  });
+
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('viewer').style.display = 'block';
+  document.getElementById('backBtn').style.display = 'flex';
+  document.getElementById('courseIframe').src = url;
+  document.getElementById('noteCourseLabel').textContent = `📍 Note for: ${file.name}`;
+  renderNotes();
+}
+
+function goHome() {
+  document.getElementById('viewer').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  document.getElementById('backBtn').style.display = 'none';
+  document.getElementById('courseIframe').src = 'about:blank';
+  currentCourseId = null;
+  renderCourses();
+}
+
+// ─── NOTES ────────────────────────────────────────────────────────────────────
+function saveNote() {
+  const input = document.getElementById('noteInput');
+  const text = input.value.trim();
+  if (!text) { showToast('✏️ Write something first!'); return; }
+  
+  const notes = loadNotes();
+  const course = COURSES.find(c => c.id === currentCourseId);
+  notes.unshift({
+    id: Date.now(),
+    courseId: currentCourseId || 'general',
+    courseName: course ? course.title : 'General',
+    text,
+    createdAt: new Date().toISOString()
+  });
+  saveNotes(notes);
+  input.value = '';
+  renderNotes();
+  showToast('📌 Note saved!');
+}
+
+function deleteNote(id) {
+  const notes = loadNotes().filter(n => n.id !== id);
+  saveNotes(notes);
+  renderNotes();
+  renderCourses();
+}
+
+function renderNotes() {
+  const body = document.getElementById('notesBody');
+  const searchTerm = (document.getElementById('noteSearchInput')?.value || '').toLowerCase();
+  let notes = loadNotes();
+
+  if (noteFilter === 'current' && currentCourseId) {
+    notes = notes.filter(n => n.courseId === currentCourseId);
+  }
+  if (searchTerm) {
+    notes = notes.filter(n => n.text.toLowerCase().includes(searchTerm) || n.courseName.toLowerCase().includes(searchTerm));
+  }
+
+  if (notes.length === 0) {
+    body.innerHTML = `<div class="empty-notes"><span class="emoji">📌</span>${
+      noteFilter === 'current' ? "No notes for this course yet.<br>Write your first note below!" : "No notes yet.<br>Start annotating your courses!"
+    }</div>`;
+    return;
+  }
+
+  body.innerHTML = notes.map(n => `
+    <div class="sticky-note">
+      <div class="note-meta">
+        <span>${n.courseName}</span>
+        <span>${formatDate(n.createdAt)}</span>
+      </div>
+      <div class="note-content">${escapeHtml(n.text)}</div>
+      <button class="note-delete-btn" onclick="deleteNote(${n.id})" title="Delete note">✕</button>
+    </div>
+  `).join('');
+}
+
+function setNoteFilter(filter, btn) {
+  noteFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderNotes();
+}
+
+function toggleNotesPanel() {
+  notesPanelCollapsed = !notesPanelCollapsed;
+  document.getElementById('notesPanel').classList.toggle('collapsed', notesPanelCollapsed);
+}
+
+function toggleAllNotes() {
+  if (document.getElementById('viewer').style.display === 'block') {
+    noteFilter = 'all';
+    document.querySelectorAll('.filter-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    renderNotes();
+    if (notesPanelCollapsed) toggleNotesPanel();
+  } else {
+    showToast('📖 Open a course first to see notes');
+  }
+}
+
+// ─── GATE COUNTDOWN ───────────────────────────────────────────────────────────
+function updateGateCountdown() {
+  const gateDate = new Date('2027-02-07T00:00:00');
+  const now = new Date();
+  const diff = gateDate - now;
+  const days = Math.floor(diff / (1000*60*60*24));
+  const el = document.getElementById('gateCountdown');
+  if (el) el.textContent = `${days} days`;
+}
+
+function updateNoteStats() {
+  const notes = loadNotes();
+  const el = document.getElementById('totalNotesCount');
+  if (el) el.textContent = notes.length;
+}
+
+function updateStreak() {
+  const today = new Date().toDateString();
+  const lastVisit = localStorage.getItem('simran_last_visit');
+  let streak = parseInt(localStorage.getItem('simran_streak') || '1');
+  
+  if (lastVisit && lastVisit !== today) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (lastVisit === yesterday.toDateString()) {
+      streak += 1;
+    } else {
+      streak = 1;
+    }
+  }
+  
+  localStorage.setItem('simran_last_visit', today);
+  localStorage.setItem('simran_streak', streak);
+  const el = document.getElementById('streakCount');
+  if (el) el.textContent = streak;
+}
+
+const QUOTES = [
+  "The expert in anything was once a beginner. 🌱",
+  "Code, commit, push, repeat. You're getting better every day. 💪",
+  "GATE 2027 is not a dream — it's a deadline with a plan. 🎯",
+  "Deep learning starts with deep focus. 🧠",
+  "Every algorithm you understand is a door that stays open. 🔑",
+  "Build in public. Learn in private. Grow everywhere. 🚀",
+  "Consistency compounds. Show up today, Simran. ✨",
+  "Data doesn't lie. Neither does your preparation. 📊",
+];
+
+function setDailyQuote() {
+  const el = document.getElementById('dailyQuote');
+  if (el) {
+    const idx = new Date().getDate() % QUOTES.length;
+    el.textContent = '"' + QUOTES[idx] + '"';
+  }
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-IN', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+
+function escapeHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.style.display = 'none', 2500);
+}
+</script>
+</body>
+</html>

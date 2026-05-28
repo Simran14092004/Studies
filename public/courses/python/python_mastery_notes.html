@@ -1,0 +1,2777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Mastery — From Basics to DSA</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e2d45;
+    --accent: #00d4aa;
+    --accent2: #ff6b6b;
+    --accent3: #ffd166;
+    --accent4: #a78bfa;
+    --accent5: #38bdf8;
+    --text: #e2e8f0;
+    --text-muted: #7a8fa6;
+    --code-bg: #0d1117;
+    --project1: #ff6b6b;
+    --project2: #00d4aa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', serif;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ─── ANIMATED BACKGROUND ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 40% at 10% 20%, rgba(0,212,170,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 90% 80%, rgba(167,139,250,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 50% 50%, rgba(56,189,248,0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── SIDEBAR NAV ─── */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 270px;
+    background: rgba(10,14,26,0.97);
+    border-right: 1px solid var(--border);
+    padding: 2rem 0;
+    overflow-y: auto;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+  }
+
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .sidebar-logo {
+    padding: 0 1.5rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+  .sidebar-logo .logo-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+  .sidebar-logo .logo-sub {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 2px;
+  }
+
+  .nav-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 1rem 1.5rem 0.4rem;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 1.5rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    border-left: 2px solid transparent;
+  }
+  .nav-link:hover, .nav-link.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(0,212,170,0.05);
+  }
+  .nav-link .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .nav-project {
+    color: var(--project1);
+  }
+  .nav-project:hover, .nav-project.active {
+    color: var(--project1);
+    border-left-color: var(--project1);
+    background: rgba(255,107,107,0.05);
+  }
+  .nav-project2 { color: var(--project2); }
+  .nav-project2:hover, .nav-project2.active {
+    color: var(--project2);
+    border-left-color: var(--project2);
+    background: rgba(0,212,170,0.05);
+  }
+
+  /* ─── MAIN CONTENT ─── */
+  .main {
+    margin-left: 270px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 5rem 4rem 4rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: 'PYTHON';
+    position: absolute;
+    right: -2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Syne', sans-serif;
+    font-size: 14rem;
+    font-weight: 800;
+    color: rgba(0,212,170,0.04);
+    pointer-events: none;
+    letter-spacing: -0.05em;
+    white-space: nowrap;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(0,212,170,0.1);
+    border: 1px solid rgba(0,212,170,0.3);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.3rem 0.9rem;
+    border-radius: 50px;
+    margin-bottom: 1.5rem;
+    animation: pulse-border 2s ease-in-out infinite;
+  }
+  @keyframes pulse-border {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,212,170,0.2); }
+    50% { box-shadow: 0 0 0 8px rgba(0,212,170,0); }
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 560px;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+  }
+  .stat {
+    text-align: left;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 0.2rem;
+  }
+
+  /* ─── SECTION ─── */
+  .section {
+    padding: 3.5rem 4rem;
+    border-bottom: 1px solid var(--border);
+    animation: fadeUp 0.5s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    margin-bottom: 2.5rem;
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-top: 0.4rem;
+    white-space: nowrap;
+  }
+  .section-title-wrap {}
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  /* ─── CONCEPT CARDS ─── */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .concept-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.4rem;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .concept-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .concept-card:hover { border-color: rgba(0,212,170,0.3); transform: translateY(-2px); }
+  .concept-card:hover::before { opacity: 1; }
+
+  .card-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    color: var(--text);
+  }
+  .card-desc {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ─── CODE BLOCK ─── */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 1.2rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+  }
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1.1rem;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+  .code-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .code-dots {
+    display: flex; gap: 5px;
+  }
+  .code-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .code-dot:nth-child(1) { background: #ff5f57; }
+  .code-dot:nth-child(2) { background: #febc2e; }
+  .code-dot:nth-child(3) { background: #28c840; }
+  .code-filename {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+  .code-lang {
+    font-size: 0.68rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  pre {
+    padding: 1.2rem 1.4rem;
+    overflow-x: auto;
+    line-height: 1.7;
+    color: #e2e8f0;
+  }
+  pre::-webkit-scrollbar { height: 4px; }
+  pre::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  /* Syntax highlighting */
+  .kw { color: #c792ea; font-weight: 500; }   /* keyword */
+  .fn { color: #82aaff; }                       /* function */
+  .st { color: #c3e88d; }                       /* string */
+  .cm { color: #546e7a; font-style: italic; }   /* comment */
+  .nm { color: #f78c6c; }                       /* number */
+  .cl { color: #ffcb6b; }                       /* class */
+  .op { color: #89ddff; }                       /* operator/special */
+
+  /* ─── CALLOUT BOXES ─── */
+  .callout {
+    border-radius: 10px;
+    padding: 1.1rem 1.4rem;
+    margin: 1.2rem 0;
+    border-left: 4px solid;
+    font-size: 0.9rem;
+  }
+  .callout-tip {
+    background: rgba(0,212,170,0.08);
+    border-color: var(--accent);
+  }
+  .callout-tip strong { color: var(--accent); }
+  .callout-warn {
+    background: rgba(255,209,102,0.08);
+    border-color: var(--accent3);
+  }
+  .callout-warn strong { color: var(--accent3); }
+  .callout-info {
+    background: rgba(56,189,248,0.08);
+    border-color: var(--accent5);
+  }
+  .callout-info strong { color: var(--accent5); }
+  .callout-real {
+    background: rgba(167,139,250,0.08);
+    border-color: var(--accent4);
+  }
+  .callout-real strong { color: var(--accent4); }
+
+  /* ─── TOPIC TABLE ─── */
+  .topic-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.87rem;
+    margin: 1.2rem 0;
+  }
+  .topic-table th {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    padding: 0.8rem 1rem;
+    border-bottom: 2px solid var(--border);
+    text-align: left;
+  }
+  .topic-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    color: var(--text-muted);
+    vertical-align: top;
+  }
+  .topic-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .topic-table .method { color: var(--accent5); font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; }
+  .topic-table .result { color: var(--accent3); font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; }
+
+  /* ─── PROJECT BANNER ─── */
+  .project-banner {
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin: 2rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-banner-1 {
+    background: linear-gradient(135deg, rgba(255,107,107,0.12) 0%, rgba(255,107,107,0.04) 100%);
+    border: 1px solid rgba(255,107,107,0.25);
+  }
+  .project-banner-2 {
+    background: linear-gradient(135deg, rgba(0,212,170,0.12) 0%, rgba(0,212,170,0.04) 100%);
+    border: 1px solid rgba(0,212,170,0.25);
+  }
+  .project-banner::before {
+    content: attr(data-num);
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Syne', sans-serif;
+    font-size: 8rem;
+    font-weight: 800;
+    opacity: 0.06;
+    line-height: 1;
+  }
+  .project-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 50px;
+    margin-bottom: 0.8rem;
+    display: inline-block;
+  }
+  .project-banner-1 .project-tag { background: rgba(255,107,107,0.15); color: var(--project1); }
+  .project-banner-2 .project-tag { background: rgba(0,212,170,0.15); color: var(--project2); }
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+  }
+  .project-banner-1 .project-title { color: var(--project1); }
+  .project-banner-2 .project-title { color: var(--project2); }
+  .project-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    max-width: 520px;
+    margin-bottom: 1rem;
+  }
+  .project-concepts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .concept-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.22rem 0.7rem;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  /* ─── ALGO CARD ─── */
+  .algo-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1.2rem 0;
+  }
+  .algo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.4rem;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid var(--border);
+  }
+  .algo-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .complexity-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 50px;
+    background: rgba(0,212,170,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(0,212,170,0.2);
+  }
+  .complexity-bad {
+    background: rgba(255,107,107,0.1);
+    color: var(--project1);
+    border-color: rgba(255,107,107,0.2);
+  }
+
+  /* ─── PROGRESS BAR ROADMAP ─── */
+  .roadmap {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+  .roadmap::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .roadmap-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    padding: 1rem 0;
+    position: relative;
+  }
+  .roadmap-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .roadmap-content { padding-top: 0.6rem; }
+  .roadmap-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+  }
+  .roadmap-desc {
+    font-size: 0.83rem;
+    color: var(--text-muted);
+  }
+
+  /* ─── INLINE CODE ─── */
+  code {
+    background: rgba(0,212,170,0.1);
+    color: var(--accent);
+    padding: 0.15em 0.45em;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 2rem 0;
+  }
+
+  /* ─── SUBSECTION ─── */
+  .subsection { margin-bottom: 2.5rem; }
+  .subsection-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .subsection-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ─── COMPARISON GRID ─── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.2rem 0;
+  }
+  .compare-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+  }
+  .compare-card-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ─── MATPLOTLIB SECTION ─── */
+  .viz-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+  .viz-preview {
+    background: #fff;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+  }
+  .viz-info { padding: 1.2rem; }
+  .viz-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  /* ─── FULL CODE PROJECT ─── */
+  .full-project {
+    border-radius: 16px;
+    border: 1px solid;
+    overflow: hidden;
+    margin: 2rem 0;
+  }
+  .full-project-1 { border-color: rgba(255,107,107,0.3); }
+  .full-project-2 { border-color: rgba(0,212,170,0.3); }
+  .full-project-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid;
+  }
+  .full-project-1 .full-project-header {
+    background: rgba(255,107,107,0.07);
+    border-color: rgba(255,107,107,0.2);
+  }
+  .full-project-2 .full-project-header {
+    background: rgba(0,212,170,0.07);
+    border-color: rgba(0,212,170,0.2);
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    padding: 3rem 4rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .hero, .section { padding: 2.5rem 1.5rem; }
+    .hero h1 { font-size: 2.2rem; }
+    .compare-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Scroll highlight nav */
+  .section[data-id] { scroll-margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     SIDEBAR NAVIGATION
+═══════════════════════════════════════════════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-text">🐍 Python Mastery</div>
+    <div class="logo-sub">basics → dsa → visualization</div>
+  </div>
+
+  <div class="nav-section-title">Getting Started</div>
+  <a href="#intro" class="nav-link"><span class="dot"></span>Introduction & Setup</a>
+  <a href="#roadmap" class="nav-link"><span class="dot"></span>Learning Roadmap</a>
+
+  <div class="nav-section-title">Core Python</div>
+  <a href="#basics" class="nav-link"><span class="dot"></span>Variables & Data Types</a>
+  <a href="#operators" class="nav-link"><span class="dot"></span>Operators</a>
+  <a href="#control" class="nav-link"><span class="dot"></span>Control Flow</a>
+  <a href="#functions" class="nav-link"><span class="dot"></span>Functions</a>
+  <a href="#strings" class="nav-link"><span class="dot"></span>Strings</a>
+  <a href="#collections" class="nav-link"><span class="dot"></span>Lists, Tuples, Sets, Dicts</a>
+  <a href="#comprehensions" class="nav-link"><span class="dot"></span>Comprehensions</a>
+  <a href="#fileio" class="nav-link"><span class="dot"></span>File I/O</a>
+  <a href="#exceptions" class="nav-link"><span class="dot"></span>Exception Handling</a>
+
+  <div class="nav-section-title">OOP</div>
+  <a href="#oop" class="nav-link"><span class="dot"></span>Classes & Objects</a>
+  <a href="#inheritance" class="nav-link"><span class="dot"></span>Inheritance</a>
+  <a href="#advanced-oop" class="nav-link"><span class="dot"></span>Decorators & Magic Methods</a>
+
+  <div class="nav-section-title">Advanced Python</div>
+  <a href="#iterators" class="nav-link"><span class="dot"></span>Iterators & Generators</a>
+  <a href="#modules" class="nav-link"><span class="dot"></span>Modules & Packages</a>
+  <a href="#lambda" class="nav-link"><span class="dot"></span>Lambda & Functional</a>
+
+  <div class="nav-section-title">Data Structures</div>
+  <a href="#arrays" class="nav-link"><span class="dot"></span>Arrays & Linked Lists</a>
+  <a href="#stacks-queues" class="nav-link"><span class="dot"></span>Stacks & Queues</a>
+  <a href="#trees" class="nav-link"><span class="dot"></span>Trees & BST</a>
+  <a href="#graphs" class="nav-link"><span class="dot"></span>Graphs</a>
+  <a href="#hashing" class="nav-link"><span class="dot"></span>Hashing</a>
+
+  <div class="nav-section-title">Algorithms</div>
+  <a href="#sorting" class="nav-link"><span class="dot"></span>Sorting Algorithms</a>
+  <a href="#searching" class="nav-link"><span class="dot"></span>Searching</a>
+  <a href="#recursion" class="nav-link"><span class="dot"></span>Recursion & Backtracking</a>
+  <a href="#dp" class="nav-link"><span class="dot"></span>Dynamic Programming</a>
+
+  <div class="nav-section-title">Visualization</div>
+  <a href="#matplotlib" class="nav-link"><span class="dot"></span>Matplotlib Basics</a>
+  <a href="#plots" class="nav-link"><span class="dot"></span>Chart Types</a>
+  <a href="#styling" class="nav-link"><span class="dot"></span>Styling & Subplots</a>
+
+  <div class="nav-section-title">Projects</div>
+  <a href="#project1" class="nav-link nav-project"><span class="dot"></span>Project 1: Student Analytics</a>
+  <a href="#project2" class="nav-link nav-project2"><span class="dot"></span>Project 2: Task Manager DSA</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+═══════════════════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- HERO -->
+  <section class="hero" id="intro">
+    <div class="hero-badge">✦ Complete Python Learning Notes</div>
+    <h1>Master <span>Python</span><br>From Zero to DSA</h1>
+    <p>Your complete guide covering Python basics, Object-Oriented Programming, Data Structures & Algorithms, and Matplotlib — all tied to 2 real-world projects.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">12+</div><div class="stat-label">Topics Covered</div></div>
+      <div class="stat"><div class="stat-num">60+</div><div class="stat-label">Code Examples</div></div>
+      <div class="stat"><div class="stat-num">2</div><div class="stat-label">Real Projects</div></div>
+      <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Possibilities</div></div>
+    </div>
+  </section>
+
+  <!-- PROJECTS OVERVIEW -->
+  <section class="section" id="roadmap">
+    <div class="section-header">
+      <div class="section-num">00</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Overview</div>
+        <div class="section-title">Two Projects, All Concepts</div>
+      </div>
+    </div>
+
+    <div class="project-banner project-banner-1" data-num="01">
+      <div class="project-tag">🎓 Project 1</div>
+      <div class="project-title">Student Grade Analytics System</div>
+      <div class="project-desc">A complete system to store, process, analyze student records — with graphs, file storage, and OOP design. Every Python concept finds a home here.</div>
+      <div class="project-concepts">
+        <span class="concept-pill">Variables</span><span class="concept-pill">Lists & Dicts</span>
+        <span class="concept-pill">Functions</span><span class="concept-pill">OOP / Classes</span>
+        <span class="concept-pill">File I/O</span><span class="concept-pill">Exceptions</span>
+        <span class="concept-pill">Matplotlib</span><span class="concept-pill">Sorting</span>
+      </div>
+    </div>
+
+    <div class="project-banner project-banner-2" data-num="02">
+      <div class="project-tag">📋 Project 2</div>
+      <div class="project-title">Smart Task Manager with DSA</div>
+      <div class="project-desc">A CLI task manager using real data structures — priority queue (heap), undo stack, task graph for dependencies. DSA concepts with real purpose.</div>
+      <div class="project-concepts">
+        <span class="concept-pill">Linked List</span><span class="concept-pill">Stack (Undo)</span>
+        <span class="concept-pill">Heap / Priority Queue</span><span class="concept-pill">Graph (Dependencies)</span>
+        <span class="concept-pill">BFS/DFS</span><span class="concept-pill">Hashing</span>
+        <span class="concept-pill">Recursion</span><span class="concept-pill">Lambda</span>
+      </div>
+    </div>
+
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <div class="roadmap-dot">01</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Python Fundamentals</div>
+          <div class="roadmap-desc">Variables, types, operators, control flow, functions, strings</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot">02</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Collections & File I/O</div>
+          <div class="roadmap-desc">Lists, dicts, tuples, sets, comprehensions, file handling, exceptions</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot">03</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Object-Oriented Programming</div>
+          <div class="roadmap-desc">Classes, inheritance, encapsulation, decorators, magic methods</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot">04</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Data Structures</div>
+          <div class="roadmap-desc">Arrays, linked lists, stacks, queues, trees, graphs, hash maps</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot">05</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Algorithms</div>
+          <div class="roadmap-desc">Sorting, searching, recursion, dynamic programming</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot">06</div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Data Visualization</div>
+          <div class="roadmap-desc">Matplotlib — plots, charts, subplots, styling</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 1: VARIABLES & DATA TYPES ═══ -->
+  <section class="section" id="basics" data-id="basics">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Core Python</div>
+        <div class="section-title">Variables & Data Types</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">📦 What is a Variable?</div>
+      <p style="color:var(--text-muted); margin-bottom:1rem;">A variable is a name that points to a value stored in memory. Python is <strong>dynamically typed</strong> — you don't declare types.</p>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">variables.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="cm"># Basic variable assignment</span>
+name = <span class="st">"Arjun"</span>           <span class="cm"># str</span>
+age = <span class="nm">20</span>                 <span class="cm"># int</span>
+gpa = <span class="nm">8.75</span>              <span class="cm"># float</span>
+is_enrolled = <span class="kw">True</span>      <span class="cm"># bool</span>
+score = <span class="kw">None</span>            <span class="cm"># NoneType</span>
+
+<span class="cm"># Type checking</span>
+<span class="fn">print</span>(<span class="fn">type</span>(name))       <span class="cm"># &lt;class 'str'&gt;</span>
+<span class="fn">print</span>(<span class="fn">type</span>(gpa))        <span class="cm"># &lt;class 'float'&gt;</span>
+
+<span class="cm"># Multiple assignment</span>
+x, y, z = <span class="nm">10</span>, <span class="nm">20</span>, <span class="nm">30</span>
+
+<span class="cm"># Type conversion (casting)</span>
+marks = <span class="fn">int</span>(<span class="st">"95"</span>)       <span class="cm"># str → int</span>
+percent = <span class="fn">float</span>(marks)  <span class="cm"># int → float</span>
+text = <span class="fn">str</span>(<span class="nm">42</span>)           <span class="cm"># int → str</span></pre>
+      </div>
+
+      <div class="callout callout-real">
+        <strong>🏗️ Used in Project 1 (Grade Analytics):</strong> Student name, roll number, marks, and attendance are stored as variables — the building blocks of the entire system.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">🔢 Data Types Overview</div>
+      <div class="concept-grid">
+        <div class="concept-card"><div class="card-icon">🔤</div><div class="card-title">str</div><div class="card-desc">Text data. Immutable sequence of characters. <code>"Hello"</code>, <code>'World'</code></div></div>
+        <div class="concept-card"><div class="card-icon">🔢</div><div class="card-title">int</div><div class="card-desc">Whole numbers, any size. <code>42</code>, <code>-100</code>, <code>0</code></div></div>
+        <div class="concept-card"><div class="card-icon">🌊</div><div class="card-title">float</div><div class="card-desc">Decimal numbers. <code>3.14</code>, <code>-0.5</code>, <code>1e10</code></div></div>
+        <div class="concept-card"><div class="card-icon">✅</div><div class="card-title">bool</div><div class="card-desc">True or False. Used in conditions. <code>True</code>, <code>False</code></div></div>
+        <div class="concept-card"><div class="card-icon">🕳️</div><div class="card-title">None</div><div class="card-desc">Represents "nothing" or absence of value. Like null in other languages.</div></div>
+        <div class="concept-card"><div class="card-icon">🔢</div><div class="card-title">complex</div><div class="card-desc">Complex numbers. <code>3 + 4j</code>. Used in signal processing, physics.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION: OPERATORS ═══ -->
+  <section class="section" id="operators">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Core Python</div>
+        <div class="section-title">Operators</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">operators.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># ── Arithmetic ──────────────────────────────</span>
+a, b = <span class="nm">17</span>, <span class="nm">5</span>
+<span class="fn">print</span>(a + b)   <span class="cm"># 22  — addition</span>
+<span class="fn">print</span>(a - b)   <span class="cm"># 12  — subtraction</span>
+<span class="fn">print</span>(a * b)   <span class="cm"># 85  — multiplication</span>
+<span class="fn">print</span>(a / b)   <span class="cm"># 3.4 — true division</span>
+<span class="fn">print</span>(a // b)  <span class="cm"># 3   — floor division</span>
+<span class="fn">print</span>(a % b)   <span class="cm"># 2   — modulus (remainder)</span>
+<span class="fn">print</span>(a ** b)  <span class="cm"># 1419857 — exponent (17^5)</span>
+
+<span class="cm"># ── Comparison ──────────────────────────────</span>
+<span class="fn">print</span>(a > b)   <span class="cm"># True</span>
+<span class="fn">print</span>(a == b)  <span class="cm"># False</span>
+<span class="fn">print</span>(a != b)  <span class="cm"># True</span>
+
+<span class="cm"># ── Logical ─────────────────────────────────</span>
+x = <span class="nm">85</span>
+<span class="fn">print</span>(x > <span class="nm">60</span> <span class="kw">and</span> x < <span class="nm">100</span>)  <span class="cm"># True — passed</span>
+<span class="fn">print</span>(x < <span class="nm">40</span> <span class="kw">or</span> x > <span class="nm">80</span>)    <span class="cm"># True — excellent</span>
+<span class="fn">print</span>(<span class="kw">not</span> (x == <span class="nm">100</span>))       <span class="cm"># True</span>
+
+<span class="cm"># ── Assignment Operators ─────────────────────</span>
+score = <span class="nm">50</span>
+score += <span class="nm">10</span>   <span class="cm"># score = 60</span>
+score *= <span class="nm">2</span>    <span class="cm"># score = 120</span>
+score //= <span class="nm">3</span>   <span class="cm"># score = 40</span>
+
+<span class="cm"># ── Identity & Membership ────────────────────</span>
+grades = [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>]
+<span class="fn">print</span>(<span class="st">"A"</span> <span class="kw">in</span> grades)        <span class="cm"># True</span>
+<span class="fn">print</span>(<span class="kw">None</span> <span class="kw">is</span> <span class="kw">None</span>)        <span class="cm"># True</span></pre>
+    </div>
+
+    <div class="callout callout-tip">
+      <strong>💡 Tip:</strong> The modulus operator <code>%</code> is extremely useful — use <code>n % 2 == 0</code> to check if a number is even. Used in DSA frequently!
+    </div>
+  </section>
+
+  <!-- ═══ SECTION: CONTROL FLOW ═══ -->
+  <section class="section" id="control">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Core Python</div>
+        <div class="section-title">Control Flow</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">🔀 if / elif / else</div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">grade_calculator.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="kw">def</span> <span class="fn">get_grade</span>(marks):
+    <span class="kw">if</span> marks >= <span class="nm">90</span>:
+        <span class="kw">return</span> <span class="st">"A+"</span>
+    <span class="kw">elif</span> marks >= <span class="nm">80</span>:
+        <span class="kw">return</span> <span class="st">"A"</span>
+    <span class="kw">elif</span> marks >= <span class="nm">70</span>:
+        <span class="kw">return</span> <span class="st">"B"</span>
+    <span class="kw">elif</span> marks >= <span class="nm">60</span>:
+        <span class="kw">return</span> <span class="st">"C"</span>
+    <span class="kw">elif</span> marks >= <span class="nm">40</span>:
+        <span class="kw">return</span> <span class="st">"D"</span>
+    <span class="kw">else</span>:
+        <span class="kw">return</span> <span class="st">"F — Fail"</span>
+
+<span class="cm"># Ternary (one-liner) if</span>
+status = <span class="st">"Pass"</span> <span class="kw">if</span> marks >= <span class="nm">40</span> <span class="kw">else</span> <span class="st">"Fail"</span></pre>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">🔄 Loops</div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">loops.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="cm"># ── for loop ─────────────────────────────</span>
+students = [<span class="st">"Riya"</span>, <span class="st">"Arjun"</span>, <span class="st">"Meera"</span>]
+<span class="kw">for</span> student <span class="kw">in</span> students:
+    <span class="fn">print</span>(<span class="st">f"Hello, </span>{student}<span class="st">"</span>)
+
+<span class="cm"># range() — iterate with index</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">5</span>):      <span class="cm"># 0 1 2 3 4</span>
+    <span class="fn">print</span>(i)
+
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, <span class="nm">11</span>, <span class="nm">2</span>):  <span class="cm"># 1 3 5 7 9 (step=2)</span>
+    <span class="fn">print</span>(i)
+
+<span class="cm"># enumerate — index + value</span>
+<span class="kw">for</span> idx, name <span class="kw">in</span> <span class="fn">enumerate</span>(students):
+    <span class="fn">print</span>(<span class="st">f"</span>{idx+<span class="nm">1</span>}<span class="st">. </span>{name}<span class="st">"</span>)
+
+<span class="cm"># ── while loop ───────────────────────────</span>
+attempts = <span class="nm">0</span>
+<span class="kw">while</span> attempts < <span class="nm">3</span>:
+    <span class="fn">print</span>(<span class="st">f"Attempt </span>{attempts + <span class="nm">1</span>}<span class="st">"</span>)
+    attempts += <span class="nm">1</span>
+
+<span class="cm"># break and continue</span>
+<span class="kw">for</span> mark <span class="kw">in</span> [<span class="nm">85</span>, <span class="nm">92</span>, <span class="nm">-1</span>, <span class="nm">78</span>]:
+    <span class="kw">if</span> mark == -<span class="nm">1</span>:
+        <span class="kw">break</span>         <span class="cm"># stop loop</span>
+    <span class="kw">if</span> mark < <span class="nm">0</span>:
+        <span class="kw">continue</span>      <span class="cm"># skip iteration</span>
+    <span class="fn">print</span>(mark)</pre>
+      </div>
+      <div class="callout callout-real">
+        <strong>🏗️ Used in Project 1:</strong> Looping through all students to calculate class average, find highest scorer, and generate grade reports.
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION: FUNCTIONS ═══ -->
+  <section class="section" id="functions">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Core Python</div>
+        <div class="section-title">Functions</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">functions.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># ── Basic function ──────────────────────────</span>
+<span class="kw">def</span> <span class="fn">greet</span>(name):
+    <span class="st">"""Greet a student — this is a docstring."""</span>
+    <span class="kw">return</span> <span class="st">f"Welcome, </span>{name}<span class="st">!"</span>
+
+<span class="cm"># ── Default arguments ───────────────────────</span>
+<span class="kw">def</span> <span class="fn">calculate_gpa</span>(marks, total=<span class="nm">100</span>, scale=<span class="nm">10</span>):
+    <span class="kw">return</span> (marks / total) * scale
+
+<span class="fn">calculate_gpa</span>(<span class="nm">85</span>)           <span class="cm"># 8.5</span>
+<span class="fn">calculate_gpa</span>(<span class="nm">85</span>, scale=<span class="nm">4</span>) <span class="cm"># 3.4 (US scale)</span>
+
+<span class="cm"># ── *args — variable positional arguments ────</span>
+<span class="kw">def</span> <span class="fn">average</span>(*marks):
+    <span class="kw">return</span> <span class="fn">sum</span>(marks) / <span class="fn">len</span>(marks)
+
+<span class="fn">average</span>(<span class="nm">80</span>, <span class="nm">90</span>, <span class="nm">75</span>)         <span class="cm"># 81.67</span>
+
+<span class="cm"># ── **kwargs — variable keyword arguments ────</span>
+<span class="kw">def</span> <span class="fn">student_info</span>(**details):
+    <span class="kw">for</span> key, val <span class="kw">in</span> details.<span class="fn">items</span>():
+        <span class="fn">print</span>(<span class="st">f"  </span>{key}<span class="st">: </span>{val}<span class="st">"</span>)
+
+<span class="fn">student_info</span>(name=<span class="st">"Riya"</span>, gpa=<span class="nm">9.1</span>, year=<span class="nm">2</span>)
+
+<span class="cm"># ── Returning multiple values ────────────────</span>
+<span class="kw">def</span> <span class="fn">stats</span>(nums):
+    <span class="kw">return</span> <span class="fn">min</span>(nums), <span class="fn">max</span>(nums), <span class="fn">sum</span>(nums)/<span class="fn">len</span>(nums)
+
+lo, hi, avg = <span class="fn">stats</span>([<span class="nm">70</span>, <span class="nm">85</span>, <span class="nm">92</span>, <span class="nm">60</span>])</pre>
+    </div>
+
+    <div class="callout callout-tip">
+      <strong>💡 Scope — LEGB Rule:</strong> Python looks for variables in: <strong>L</strong>ocal → <strong>E</strong>nclosing → <strong>G</strong>lobal → <strong>B</strong>uilt-in. A variable inside a function is local and can't be accessed outside.
+    </div>
+  </section>
+
+  <!-- ═══ SECTION: STRINGS ═══ -->
+  <section class="section" id="strings">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Core Python</div>
+        <div class="section-title">Strings</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">strings.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre>s = <span class="st">"Hello, Python!"</span>
+
+<span class="cm"># ── Indexing & Slicing ──────────────────────</span>
+<span class="fn">print</span>(s[<span class="nm">0</span>])       <span class="cm"># 'H'</span>
+<span class="fn">print</span>(s[-<span class="nm">1</span>])      <span class="cm"># '!' (last char)</span>
+<span class="fn">print</span>(s[<span class="nm">0</span>:<span class="nm">5</span>])     <span class="cm"># 'Hello'</span>
+<span class="fn">print</span>(s[::<span class="nm">2</span>])     <span class="cm"># every 2nd char</span>
+<span class="fn">print</span>(s[::-<span class="nm">1</span>])    <span class="cm"># reverse string</span>
+
+<span class="cm"># ── Common Methods ──────────────────────────</span>
+<span class="fn">print</span>(s.<span class="fn">upper</span>())           <span class="cm"># "HELLO, PYTHON!"</span>
+<span class="fn">print</span>(s.<span class="fn">lower</span>())           <span class="cm"># "hello, python!"</span>
+<span class="fn">print</span>(s.<span class="fn">replace</span>(<span class="st">"Python"</span>, <span class="st">"World"</span>))
+<span class="fn">print</span>(s.<span class="fn">split</span>(<span class="st">","</span>))        <span class="cm"># ['Hello', ' Python!']</span>
+<span class="fn">print</span>(s.<span class="fn">strip</span>())           <span class="cm"># remove whitespace</span>
+<span class="fn">print</span>(s.<span class="fn">startswith</span>(<span class="st">"He"</span>)) <span class="cm"># True</span>
+<span class="fn">print</span>(s.<span class="fn">count</span>(<span class="st">"l"</span>))        <span class="cm"># 2</span>
+<span class="fn">print</span>(<span class="st">","</span>.<span class="fn">join</span>([<span class="st">"a"</span>,<span class="st">"b"</span>])) <span class="cm"># "a,b"</span>
+
+<span class="cm"># ── f-strings (most modern way) ─────────────</span>
+name, score = <span class="st">"Arjun"</span>, <span class="nm">9.2</span>
+<span class="fn">print</span>(<span class="st">f"Student: </span>{name}<span class="st"> | GPA: </span>{score:.2f}<span class="st">"</span>)
+
+<span class="cm"># ── Multi-line strings ──────────────────────</span>
+report = <span class="st">"""
+Name:  Arjun
+Grade: A+
+GPA:   9.2
+"""</span></pre>
+    </div>
+
+    <table class="topic-table">
+      <tr><th>Method</th><th>Description</th><th>Example Output</th></tr>
+      <tr><td class="method">s.find("py")</td><td>Index of first occurrence, -1 if not found</td><td class="result">7</td></tr>
+      <tr><td class="method">s.isdigit()</td><td>True if all chars are digits</td><td class="result">False</td></tr>
+      <tr><td class="method">s.isalpha()</td><td>True if all chars are letters</td><td class="result">False</td></tr>
+      <tr><td class="method">s.title()</td><td>Capitalizes first letter of each word</td><td class="result">"Hello, Python!"</td></tr>
+      <tr><td class="method">s.center(20, "-")</td><td>Centers string with padding char</td><td class="result">"---Hello, Python!---"</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══ SECTION: COLLECTIONS ═══ -->
+  <section class="section" id="collections">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Core Python</div>
+        <div class="section-title">Lists, Tuples, Sets & Dicts</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">📋 List — Ordered, Mutable</div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">lists.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre>marks = [<span class="nm">85</span>, <span class="nm">92</span>, <span class="nm">78</span>, <span class="nm">95</span>, <span class="nm">60</span>]
+
+<span class="cm"># Access & modify</span>
+marks[<span class="nm">0</span>]              <span class="cm"># 85</span>
+marks[-<span class="nm">1</span>]             <span class="cm"># 60</span>
+marks[<span class="nm">1</span>:<span class="nm">3</span>]            <span class="cm"># [92, 78]</span>
+
+<span class="cm"># Methods</span>
+marks.<span class="fn">append</span>(<span class="nm">88</span>)       <span class="cm"># add to end</span>
+marks.<span class="fn">insert</span>(<span class="nm">2</span>, <span class="nm">70</span>)   <span class="cm"># insert at index</span>
+marks.<span class="fn">remove</span>(<span class="nm">60</span>)      <span class="cm"># remove value</span>
+marks.<span class="fn">pop</span>()           <span class="cm"># remove last</span>
+marks.<span class="fn">sort</span>()          <span class="cm"># sort ascending</span>
+marks.<span class="fn">sort</span>(reverse=<span class="kw">True</span>)  <span class="cm"># sort descending</span>
+marks.<span class="fn">reverse</span>()       <span class="cm"># reverse in place</span>
+<span class="fn">len</span>(marks)            <span class="cm"># length</span>
+<span class="fn">max</span>(marks), <span class="fn">min</span>(marks) <span class="cm"># max / min</span>
+<span class="nm">85</span> <span class="kw">in</span> marks            <span class="cm"># membership check</span>
+
+<span class="cm"># Nested list (2D array)</span>
+matrix = [[<span class="nm">1</span>,<span class="nm">2</span>],[<span class="nm">3</span>,<span class="nm">4</span>],[<span class="nm">5</span>,<span class="nm">6</span>]]
+matrix[<span class="nm">1</span>][<span class="nm">0</span>]          <span class="cm"># 3</span></pre>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">🔑 Dictionary — Key-Value Pairs</div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">dicts.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre>student = {
+    <span class="st">"name"</span>: <span class="st">"Riya"</span>,
+    <span class="st">"roll"</span>: <span class="nm">101</span>,
+    <span class="st">"marks"</span>: {<span class="st">"Math"</span>: <span class="nm">92</span>, <span class="st">"Science"</span>: <span class="nm">88</span>},
+    <span class="st">"active"</span>: <span class="kw">True</span>
+}
+
+<span class="cm"># Access</span>
+student[<span class="st">"name"</span>]              <span class="cm"># "Riya"</span>
+student.<span class="fn">get</span>(<span class="st">"gpa"</span>, <span class="nm">0</span>)        <span class="cm"># 0 (safe, no KeyError)</span>
+
+<span class="cm"># Modify</span>
+student[<span class="st">"gpa"</span>] = <span class="nm">9.1</span>
+student.<span class="fn">update</span>({<span class="st">"year"</span>: <span class="nm">2</span>})
+
+<span class="cm"># Iterate</span>
+<span class="kw">for</span> key, val <span class="kw">in</span> student.<span class="fn">items</span>():
+    <span class="fn">print</span>(<span class="st">f"</span>{key}<span class="st"> → </span>{val}<span class="st">"</span>)
+
+student.<span class="fn">keys</span>()    <span class="cm"># dict_keys(['name', 'roll', ...])</span>
+student.<span class="fn">values</span>()  <span class="cm"># dict_values([...])</span>
+student.<span class="fn">pop</span>(<span class="st">"active"</span>)  <span class="cm"># remove key</span></pre>
+      </div>
+      <div class="callout callout-real">
+        <strong>🏗️ Used in Project 1:</strong> Each student is a dictionary. The class register is a list of student dicts. <strong>Used in Project 2:</strong> Tasks are stored as dicts with id, priority, and dependencies.
+      </div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-card-title" style="color:var(--accent4)">🔵 Tuple — Ordered, Immutable</div>
+        <div class="code-block" style="margin-top:0.5rem;">
+          <pre style="padding:0.8rem 1rem;">coords = (<span class="nm">28.6</span>, <span class="nm">77.2</span>)  <span class="cm"># Delhi</span>
+lat, lon = coords      <span class="cm"># unpack</span>
+<span class="cm"># coords[0] = 30 → Error!</span>
+dims = (<span class="nm">1920</span>, <span class="nm">1080</span>)
+<span class="fn">print</span>(dims.<span class="fn">count</span>(<span class="nm">1920</span>)) <span class="cm"># 1</span></pre>
+        </div>
+        <p style="font-size:0.83rem; color:var(--text-muted); margin-top:0.5rem;">Use when data shouldn't change. Faster than lists. Good for coordinates, RGB colors.</p>
+      </div>
+      <div class="compare-card">
+        <div class="compare-card-title" style="color:var(--accent3)">🟡 Set — Unordered, Unique</div>
+        <div class="code-block" style="margin-top:0.5rem;">
+          <pre style="padding:0.8rem 1rem;">a = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">3</span>}  <span class="cm"># {1, 2, 3}</span>
+b = {<span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>}
+a & b   <span class="cm"># intersection {2,3}</span>
+a | b   <span class="cm"># union {1,2,3,4}</span>
+a - b   <span class="cm"># difference {1}</span>
+<span class="nm">5</span> <span class="kw">in</span> a  <span class="cm"># O(1) lookup!</span></pre>
+        </div>
+        <p style="font-size:0.83rem; color:var(--text-muted); margin-top:0.5rem;">O(1) lookup. Remove duplicates. Check common/unique students.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION: COMPREHENSIONS ═══ -->
+  <section class="section" id="comprehensions">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Core Python</div>
+        <div class="section-title">Comprehensions</div>
+      </div>
+    </div>
+    <p style="color:var(--text-muted); margin-bottom:1.5rem;">Compact, readable way to build lists/dicts/sets from iterables. Pythonic and fast.</p>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">comprehensions.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># ── List Comprehension ──────────────────────</span>
+<span class="cm"># [expression for item in iterable if condition]</span>
+
+marks = [<span class="nm">85</span>, <span class="nm">42</span>, <span class="nm">92</span>, <span class="nm">38</span>, <span class="nm">78</span>]
+
+<span class="cm"># Square each mark</span>
+squared = [m**<span class="nm">2</span> <span class="kw">for</span> m <span class="kw">in</span> marks]
+
+<span class="cm"># Only passing marks (>= 40)</span>
+passing = [m <span class="kw">for</span> m <span class="kw">in</span> marks <span class="kw">if</span> m >= <span class="nm">40</span>]
+
+<span class="cm"># Grade labels</span>
+grades = [<span class="st">"Pass"</span> <span class="kw">if</span> m >= <span class="nm">40</span> <span class="kw">else</span> <span class="st">"Fail"</span> <span class="kw">for</span> m <span class="kw">in</span> marks]
+
+<span class="cm"># Flatten 2D list</span>
+matrix = [[<span class="nm">1</span>,<span class="nm">2</span>],[<span class="nm">3</span>,<span class="nm">4</span>],[<span class="nm">5</span>,<span class="nm">6</span>]]
+flat = [n <span class="kw">for</span> row <span class="kw">in</span> matrix <span class="kw">for</span> n <span class="kw">in</span> row]
+
+<span class="cm"># ── Dict Comprehension ──────────────────────</span>
+students = [<span class="st">"Riya"</span>, <span class="st">"Arjun"</span>, <span class="st">"Meera"</span>]
+marks_list = [<span class="nm">88</span>, <span class="nm">92</span>, <span class="nm">76</span>]
+
+grade_map = {s: m <span class="kw">for</span> s, m <span class="kw">in</span> <span class="fn">zip</span>(students, marks_list)}
+<span class="cm"># {'Riya': 88, 'Arjun': 92, 'Meera': 76}</span>
+
+<span class="cm"># ── Set Comprehension ───────────────────────</span>
+unique_grades = {<span class="fn">get_grade</span>(m) <span class="kw">for</span> m <span class="kw">in</span> marks}
+
+<span class="cm"># ── Generator Expression ────────────────────</span>
+<span class="cm"># Like list comp but lazy (memory efficient)</span>
+total = <span class="fn">sum</span>(m <span class="kw">for</span> m <span class="kw">in</span> marks <span class="kw">if</span> m >= <span class="nm">40</span>)</pre>
+    </div>
+    <div class="callout callout-tip">
+      <strong>💡 Rule of thumb:</strong> If you're writing a loop just to build a list, use a list comprehension instead. But if the logic is complex (3+ lines), stick to a regular loop for clarity.
+    </div>
+  </section>
+
+  <!-- ═══ SECTION: FILE I/O ═══ -->
+  <section class="section" id="fileio">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Core Python</div>
+        <div class="section-title">File I/O</div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">file_operations.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># ── Writing a file ──────────────────────────</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"grades.txt"</span>, <span class="st">"w"</span>) <span class="kw">as</span> f:
+    f.<span class="fn">write</span>(<span class="st">"Name,Marks,Grade\n"</span>)
+    f.<span class="fn">write</span>(<span class="st">"Riya,88,A\n"</span>)
+
+<span class="cm"># Modes: "w" write | "r" read | "a" append | "x" create</span>
+
+<span class="cm"># ── Reading a file ──────────────────────────</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"grades.txt"</span>, <span class="st">"r"</span>) <span class="kw">as</span> f:
+    content = f.<span class="fn">read</span>()       <span class="cm"># entire file as string</span>
+    lines = f.<span class="fn">readlines</span>()   <span class="cm"># list of lines</span>
+
+<span class="cm"># ── Line-by-line (memory efficient) ─────────</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"grades.txt"</span>) <span class="kw">as</span> f:
+    <span class="kw">for</span> line <span class="kw">in</span> f:
+        <span class="fn">print</span>(line.<span class="fn">strip</span>())
+
+<span class="cm"># ── CSV with csv module ──────────────────────</span>
+<span class="kw">import</span> csv
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"students.csv"</span>, <span class="st">"w"</span>, newline=<span class="st">""</span>) <span class="kw">as</span> f:
+    writer = csv.<span class="fn">DictWriter</span>(f, fieldnames=[<span class="st">"name"</span>, <span class="st">"marks"</span>])
+    writer.<span class="fn">writeheader</span>()
+    writer.<span class="fn">writerow</span>({<span class="st">"name"</span>: <span class="st">"Arjun"</span>, <span class="st">"marks"</span>: <span class="nm">92</span>})
+
+<span class="cm"># ── JSON (structured data) ───────────────────</span>
+<span class="kw">import</span> json
+data = {<span class="st">"students"</span>: [{<span class="st">"name"</span>: <span class="st">"Riya"</span>, <span class="st">"gpa"</span>: <span class="nm">9.1</span>}]}
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"data.json"</span>, <span class="st">"w"</span>) <span class="kw">as</span> f:
+    json.<span class="fn">dump</span>(data, f, indent=<span class="nm">2</span>)
+
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"data.json"</span>) <span class="kw">as</span> f:
+    loaded = json.<span class="fn">load</span>(f)</pre>
+    </div>
+    <div class="callout callout-tip">
+      <strong>💡 Always use <code>with</code> statement:</strong> It automatically closes the file even if an error occurs. Never use <code>f = open()</code> without <code>with</code>.
+    </div>
+  </section>
+
+  <!-- ═══ SECTION: EXCEPTIONS ═══ -->
+  <section class="section" id="exceptions">
+    <div class="section-header">
+      <div class="section-num">09</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Core Python</div>
+        <div class="section-title">Exception Handling</div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">exceptions.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># ── Basic try/except ────────────────────────</span>
+<span class="kw">try</span>:
+    marks = <span class="fn">int</span>(<span class="fn">input</span>(<span class="st">"Enter marks: "</span>))
+    result = <span class="nm">100</span> / marks
+<span class="kw">except</span> <span class="cl">ValueError</span>:
+    <span class="fn">print</span>(<span class="st">"Please enter a valid number!"</span>)
+<span class="kw">except</span> <span class="cl">ZeroDivisionError</span>:
+    <span class="fn">print</span>(<span class="st">"Marks can't be zero!"</span>)
+<span class="kw">except</span> <span class="cl">Exception</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="st">f"Unexpected error: </span>{e}<span class="st">"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"Success!"</span>)   <span class="cm"># runs if no exception</span>
+<span class="kw">finally</span>:
+    <span class="fn">print</span>(<span class="st">"Always runs"</span>) <span class="cm"># cleanup code</span>
+
+<span class="cm"># ── Custom Exception ─────────────────────────</span>
+<span class="kw">class</span> <span class="cl">InvalidMarksError</span>(<span class="cl">Exception</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, marks):
+        <span class="fn">super</span>().<span class="fn">__init__</span>(<span class="st">f"Invalid marks: </span>{marks}<span class="st">. Must be 0-100."</span>)
+
+<span class="kw">def</span> <span class="fn">validate_marks</span>(m):
+    <span class="kw">if</span> <span class="kw">not</span> (<span class="nm">0</span> <= m <= <span class="nm">100</span>):
+        <span class="kw">raise</span> <span class="cl">InvalidMarksError</span>(m)
+    <span class="kw">return</span> m</pre>
+    </div>
+    <div class="callout callout-warn">
+      <strong>⚠️ Never use bare <code>except:</code></strong> — it catches everything including system errors like <code>KeyboardInterrupt</code>. Always specify the exception type.
+    </div>
+  </section>
+
+  <!-- ═══ SECTION: OOP ═══ -->
+  <section class="section" id="oop">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <div class="section-title-wrap">
+        <div class="section-label">OOP</div>
+        <div class="section-title">Classes & Objects</div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">student_class.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="kw">class</span> <span class="cl">Student</span>:
+    <span class="cm"># Class variable (shared by all)</span>
+    institution = <span class="st">"IIT Varanasi"</span>
+    _count = <span class="nm">0</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, name, roll, marks):
+        <span class="cm"># Instance variables</span>
+        <span class="kw">self</span>.name = name
+        <span class="kw">self</span>.roll = roll
+        <span class="kw">self</span>._marks = marks  <span class="cm"># _ means "protected"</span>
+        <span class="cl">Student</span>._count += <span class="nm">1</span>
+
+    <span class="cm"># Property (computed attribute)</span>
+    <span class="op">@property</span>
+    <span class="kw">def</span> <span class="fn">gpa</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="fn">round</span>(<span class="fn">sum</span>(<span class="kw">self</span>._marks) / <span class="fn">len</span>(<span class="kw">self</span>._marks) / <span class="nm">10</span>, <span class="nm">2</span>)
+
+    <span class="cm"># Regular method</span>
+    <span class="kw">def</span> <span class="fn">add_mark</span>(<span class="kw">self</span>, mark):
+        <span class="kw">if</span> <span class="nm">0</span> <= mark <= <span class="nm">100</span>:
+            <span class="kw">self</span>._marks.<span class="fn">append</span>(mark)
+
+    <span class="cm"># Class method</span>
+    <span class="op">@classmethod</span>
+    <span class="kw">def</span> <span class="fn">total_students</span>(<span class="cl">cls</span>):
+        <span class="kw">return</span> <span class="cl">cls</span>._count
+
+    <span class="cm"># Static method (no self/cls)</span>
+    <span class="op">@staticmethod</span>
+    <span class="kw">def</span> <span class="fn">letter_grade</span>(avg):
+        <span class="kw">return</span> <span class="st">"A"</span> <span class="kw">if</span> avg >= <span class="nm">80</span> <span class="kw">else</span> <span class="st">"B"</span> <span class="kw">if</span> avg >= <span class="nm">60</span> <span class="kw">else</span> <span class="st">"C"</span>
+
+    <span class="cm"># Magic method — string representation</span>
+    <span class="kw">def</span> <span class="fn">__str__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="st">f"Student({self.name}, GPA: {self.gpa})"</span>
+
+    <span class="kw">def</span> <span class="fn">__repr__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="st">f"Student(name={self.name!r}, roll={self.roll})"</span>
+
+<span class="cm"># Usage</span>
+s1 = <span class="cl">Student</span>(<span class="st">"Riya"</span>, <span class="nm">101</span>, [<span class="nm">88</span>, <span class="nm">92</span>, <span class="nm">85</span>])
+<span class="fn">print</span>(s1.gpa)             <span class="cm"># 8.83</span>
+<span class="fn">print</span>(s1)                 <span class="cm"># Student(Riya, GPA: 8.83)</span>
+<span class="fn">print</span>(<span class="cl">Student</span>.<span class="fn">total_students</span>()) <span class="cm"># 1</span></pre>
+    </div>
+
+    <div class="concept-grid">
+      <div class="concept-card"><div class="card-icon">🔒</div><div class="card-title">Encapsulation</div><div class="card-desc">Hide internal data using <code>_protected</code> and <code>__private</code>. Expose through methods/properties.</div></div>
+      <div class="concept-card"><div class="card-icon">🏗️</div><div class="card-title">@property</div><div class="card-desc">Create computed attributes accessed like variables. <code>s.gpa</code> instead of <code>s.get_gpa()</code></div></div>
+      <div class="concept-card"><div class="card-icon">🔧</div><div class="card-title">@classmethod</div><div class="card-desc">Operates on the class itself. Good for factory methods and tracking class state.</div></div>
+      <div class="concept-card"><div class="card-icon">⚡</div><div class="card-title">@staticmethod</div><div class="card-desc">Utility function inside a class. No access to <code>self</code> or <code>cls</code>.</div></div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION: INHERITANCE ═══ -->
+  <section class="section" id="inheritance">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <div class="section-title-wrap">
+        <div class="section-label">OOP</div>
+        <div class="section-title">Inheritance & Polymorphism</div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">inheritance.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="kw">class</span> <span class="cl">Person</span>:       <span class="cm"># Parent / Base class</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, name, age):
+        <span class="kw">self</span>.name = name
+        <span class="kw">self</span>.age = age
+
+    <span class="kw">def</span> <span class="fn">introduce</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="st">f"Hi, I'm </span>{<span class="kw">self</span>.name}<span class="st">"</span>
+
+<span class="kw">class</span> <span class="cl">Student</span>(<span class="cl">Person</span>):  <span class="cm"># Child / Derived class</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, name, age, roll):
+        <span class="fn">super</span>().<span class="fn">__init__</span>(name, age)  <span class="cm"># call parent __init__</span>
+        <span class="kw">self</span>.roll = roll
+
+    <span class="kw">def</span> <span class="fn">introduce</span>(<span class="kw">self</span>):       <span class="cm"># Override</span>
+        base = <span class="fn">super</span>().<span class="fn">introduce</span>()
+        <span class="kw">return</span> <span class="st">f"</span>{base}<span class="st">, Roll No: </span>{<span class="kw">self</span>.roll}<span class="st">"</span>
+
+<span class="kw">class</span> <span class="cl">Teacher</span>(<span class="cl">Person</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, name, age, subject):
+        <span class="fn">super</span>().<span class="fn">__init__</span>(name, age)
+        <span class="kw">self</span>.subject = subject
+
+    <span class="kw">def</span> <span class="fn">introduce</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="st">f"I teach </span>{<span class="kw">self</span>.subject}<span class="st">"</span>
+
+<span class="cm"># Polymorphism — same function, different behavior</span>
+people = [<span class="cl">Student</span>(<span class="st">"Riya"</span>, <span class="nm">20</span>, <span class="nm">101</span>), <span class="cl">Teacher</span>(<span class="st">"Dr. Sharma"</span>, <span class="nm">45</span>, <span class="st">"Math"</span>)]
+<span class="kw">for</span> p <span class="kw">in</span> people:
+    <span class="fn">print</span>(p.<span class="fn">introduce</span>())   <span class="cm"># Different output!</span>
+
+<span class="cm"># isinstance check</span>
+<span class="fn">isinstance</span>(<span class="cl">Student</span>(...), <span class="cl">Person</span>)  <span class="cm"># True</span></pre>
+    </div>
+    <div class="callout callout-real">
+      <strong>🏗️ Used in Project 2:</strong> <code>Task</code> is the base class. <code>PriorityTask</code> and <code>RecurringTask</code> extend it — polymorphically behaving differently in the scheduler.
+    </div>
+  </section>
+
+  <!-- ═══ SECTION: ADVANCED OOP ═══ -->
+  <section class="section" id="advanced-oop">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <div class="section-title-wrap">
+        <div class="section-label">OOP</div>
+        <div class="section-title">Decorators & Magic Methods</div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">magic_methods.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="kw">class</span> <span class="cl">Gradebook</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>):
+        <span class="kw">self</span>._data = {}
+
+    <span class="kw">def</span> <span class="fn">__setitem__</span>(<span class="kw">self</span>, key, val):   <span class="cm"># gb["Riya"] = 88</span>
+        <span class="kw">self</span>._data[key] = val
+
+    <span class="kw">def</span> <span class="fn">__getitem__</span>(<span class="kw">self</span>, key):         <span class="cm"># gb["Riya"]</span>
+        <span class="kw">return</span> <span class="kw">self</span>._data[key]
+
+    <span class="kw">def</span> <span class="fn">__len__</span>(<span class="kw">self</span>):                  <span class="cm"># len(gb)</span>
+        <span class="kw">return</span> <span class="fn">len</span>(<span class="kw">self</span>._data)
+
+    <span class="kw">def</span> <span class="fn">__contains__</span>(<span class="kw">self</span>, key):        <span class="cm"># "Riya" in gb</span>
+        <span class="kw">return</span> key <span class="kw">in</span> <span class="kw">self</span>._data
+
+    <span class="kw">def</span> <span class="fn">__iter__</span>(<span class="kw">self</span>):                 <span class="cm"># for s in gb</span>
+        <span class="kw">return</span> <span class="fn">iter</span>(<span class="kw">self</span>._data)
+
+<span class="cm"># ── Decorator (function that wraps a function) ──</span>
+<span class="kw">def</span> <span class="fn">validate_marks</span>(func):
+    <span class="kw">def</span> <span class="fn">wrapper</span>(marks):
+        <span class="kw">if</span> <span class="kw">not</span> (<span class="nm">0</span> <= marks <= <span class="nm">100</span>):
+            <span class="kw">raise</span> <span class="cl">ValueError</span>(<span class="st">"Marks must be 0-100"</span>)
+        <span class="kw">return</span> <span class="fn">func</span>(marks)
+    <span class="kw">return</span> wrapper
+
+<span class="op">@validate_marks</span>   <span class="cm"># = get_grade = validate_marks(get_grade)</span>
+<span class="kw">def</span> <span class="fn">get_grade</span>(marks):
+    <span class="kw">return</span> <span class="st">"A"</span> <span class="kw">if</span> marks >= <span class="nm">80</span> <span class="kw">else</span> <span class="st">"B"</span></pre>
+    </div>
+    <div class="callout callout-info">
+      <strong>ℹ️ Key Magic Methods:</strong> <code>__str__</code> (print), <code>__repr__</code> (debug), <code>__eq__</code> (==), <code>__lt__</code> (&lt;), <code>__add__</code> (+), <code>__len__</code> (len()), <code>__iter__</code> (for loop), <code>__enter__/__exit__</code> (with statement)
+    </div>
+  </section>
+
+  <!-- ═══ SECTION: ITERATORS & GENERATORS ═══ -->
+  <section class="section" id="iterators">
+    <div class="section-header">
+      <div class="section-num">13</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Advanced Python</div>
+        <div class="section-title">Iterators & Generators</div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">generators.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># ── Generator function (uses yield) ─────────</span>
+<span class="kw">def</span> <span class="fn">fibonacci</span>(n):
+    a, b = <span class="nm">0</span>, <span class="nm">1</span>
+    <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(n):
+        <span class="kw">yield</span> a           <span class="cm"># pauses here, returns a</span>
+        a, b = b, a + b   <span class="cm"># resumes next call</span>
+
+<span class="kw">for</span> num <span class="kw">in</span> <span class="fn">fibonacci</span>(<span class="nm">10</span>):
+    <span class="fn">print</span>(num, end=<span class="st">" "</span>)  <span class="cm"># 0 1 1 2 3 5 8 13 21 34</span>
+
+<span class="cm"># Memory: generator yields one at a time vs list stores all!</span>
+gen = <span class="fn">fibonacci</span>(<span class="nm">1000000</span>)   <span class="cm"># uses tiny memory</span>
+lst = [<span class="fn">fibonacci</span>(<span class="nm">1000000</span>)]  <span class="cm"># would use HUGE memory</span>
+
+<span class="cm"># ── Custom Iterator ──────────────────────────</span>
+<span class="kw">class</span> <span class="cl">CountDown</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, start):
+        <span class="kw">self</span>.current = start
+
+    <span class="kw">def</span> <span class="fn">__iter__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="kw">self</span>
+
+    <span class="kw">def</span> <span class="fn">__next__</span>(<span class="kw">self</span>):
+        <span class="kw">if</span> <span class="kw">self</span>.current <= <span class="nm">0</span>:
+            <span class="kw">raise</span> <span class="cl">StopIteration</span>
+        <span class="kw">self</span>.current -= <span class="nm">1</span>
+        <span class="kw">return</span> <span class="kw">self</span>.current + <span class="nm">1</span>
+
+<span class="kw">for</span> n <span class="kw">in</span> <span class="cl">CountDown</span>(<span class="nm">5</span>): <span class="fn">print</span>(n)  <span class="cm"># 5 4 3 2 1</span></pre>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION: LAMBDA ═══ -->
+  <section class="section" id="lambda">
+    <div class="section-header">
+      <div class="section-num">14</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Advanced Python</div>
+        <div class="section-title">Lambda & Functional Tools</div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">functional.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># Lambda — anonymous one-line function</span>
+square = <span class="kw">lambda</span> x: x**<span class="nm">2</span>
+add = <span class="kw">lambda</span> a, b: a + b
+grade = <span class="kw">lambda</span> m: <span class="st">"Pass"</span> <span class="kw">if</span> m >= <span class="nm">40</span> <span class="kw">else</span> <span class="st">"Fail"</span>
+
+<span class="cm"># Sort list of dicts by key</span>
+students = [{<span class="st">"name"</span>: <span class="st">"Riya"</span>, <span class="st">"gpa"</span>: <span class="nm">8.5</span>}, {<span class="st">"name"</span>: <span class="st">"Arjun"</span>, <span class="st">"gpa"</span>: <span class="nm">9.2</span>}]
+students.<span class="fn">sort</span>(key=<span class="kw">lambda</span> s: s[<span class="st">"gpa"</span>], reverse=<span class="kw">True</span>)
+
+<span class="cm"># ── map() — apply function to all items ──────</span>
+marks = [<span class="nm">70</span>, <span class="nm">85</span>, <span class="nm">60</span>, <span class="nm">92</span>]
+out_of_150 = <span class="fn">list</span>(<span class="fn">map</span>(<span class="kw">lambda</span> m: m * <span class="nm">1.5</span>, marks))
+
+<span class="cm"># ── filter() — keep items matching condition ─</span>
+toppers = <span class="fn">list</span>(<span class="fn">filter</span>(<span class="kw">lambda</span> m: m >= <span class="nm">85</span>, marks))
+
+<span class="cm"># ── reduce() — accumulate to single value ────</span>
+<span class="kw">from</span> functools <span class="kw">import</span> reduce
+total = <span class="fn">reduce</span>(<span class="kw">lambda</span> acc, m: acc + m, marks, <span class="nm">0</span>)
+
+<span class="cm"># ── sorted() with key ────────────────────────</span>
+words = [<span class="st">"banana"</span>, <span class="st">"apple"</span>, <span class="st">"cherry"</span>]
+<span class="fn">sorted</span>(words, key=<span class="fn">len</span>)  <span class="cm"># by length</span></pre>
+    </div>
+    <div class="callout callout-real">
+      <strong>🏗️ Used in Project 2:</strong> Tasks are sorted by priority using <code>lambda t: t.priority</code> — the core of the priority queue display.
+    </div>
+  </section>
+
+  <!-- ═══ DSA: ARRAYS & LINKED LISTS ═══ -->
+  <section class="section" id="arrays">
+    <div class="section-header">
+      <div class="section-num">15</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Data Structures</div>
+        <div class="section-title">Arrays & Linked Lists</div>
+      </div>
+    </div>
+
+    <div class="callout callout-info">
+      <strong>ℹ️ Python lists ARE dynamic arrays</strong> — they resize automatically. Under the hood: contiguous memory, O(1) access by index, O(n) insert/delete in middle.
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">🔗 Singly Linked List</div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">linked_list.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="kw">class</span> <span class="cl">Node</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, data):
+        <span class="kw">self</span>.data = data
+        <span class="kw">self</span>.next = <span class="kw">None</span>
+
+<span class="kw">class</span> <span class="cl">LinkedList</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>):
+        <span class="kw">self</span>.head = <span class="kw">None</span>
+
+    <span class="kw">def</span> <span class="fn">append</span>(<span class="kw">self</span>, data):        <span class="cm"># O(n)</span>
+        node = <span class="cl">Node</span>(data)
+        <span class="kw">if</span> <span class="kw">not</span> <span class="kw">self</span>.head:
+            <span class="kw">self</span>.head = node; <span class="kw">return</span>
+        curr = <span class="kw">self</span>.head
+        <span class="kw">while</span> curr.next:
+            curr = curr.next
+        curr.next = node
+
+    <span class="kw">def</span> <span class="fn">prepend</span>(<span class="kw">self</span>, data):       <span class="cm"># O(1)</span>
+        node = <span class="cl">Node</span>(data)
+        node.next = <span class="kw">self</span>.head
+        <span class="kw">self</span>.head = node
+
+    <span class="kw">def</span> <span class="fn">delete</span>(<span class="kw">self</span>, data):
+        curr = <span class="kw">self</span>.head
+        <span class="kw">if</span> curr <span class="kw">and</span> curr.data == data:
+            <span class="kw">self</span>.head = curr.next; <span class="kw">return</span>
+        <span class="kw">while</span> curr.next:
+            <span class="kw">if</span> curr.next.data == data:
+                curr.next = curr.next.next; <span class="kw">return</span>
+            curr = curr.next
+
+    <span class="kw">def</span> <span class="fn">__str__</span>(<span class="kw">self</span>):
+        vals, curr = [], <span class="kw">self</span>.head
+        <span class="kw">while</span> curr:
+            vals.<span class="fn">append</span>(<span class="fn">str</span>(curr.data))
+            curr = curr.next
+        <span class="kw">return</span> <span class="st">" → "</span>.<span class="fn">join</span>(vals) + <span class="st">" → None"</span></pre>
+      </div>
+      <div class="callout callout-real">
+        <strong>🏗️ Used in Project 2:</strong> Task history (undo chain) is implemented as a linked list. Each action points to the previous state.
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DSA: STACKS & QUEUES ═══ -->
+  <section class="section" id="stacks-queues">
+    <div class="section-header">
+      <div class="section-num">16</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Data Structures</div>
+        <div class="section-title">Stacks & Queues</div>
+      </div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-card-title" style="color:var(--accent2)">📚 Stack — LIFO</div>
+        <div class="code-block" style="margin-top:0.6rem">
+          <pre style="padding:0.8rem 1rem;"><span class="cm"># List as Stack</span>
+stack = []
+stack.<span class="fn">append</span>(<span class="st">"action1"</span>)  <span class="cm"># push O(1)</span>
+stack.<span class="fn">append</span>(<span class="st">"action2"</span>)
+stack.<span class="fn">pop</span>()             <span class="cm"># pop O(1)</span>
+stack[-<span class="nm">1</span>]               <span class="cm"># peek</span>
+
+<span class="cm"># Real uses:</span>
+<span class="cm"># ✓ Undo/Redo</span>
+<span class="cm"># ✓ Browser back button</span>
+<span class="cm"># ✓ Function call stack</span>
+<span class="cm"># ✓ Balanced parentheses</span></pre>
+        </div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-card-title" style="color:var(--accent3)">🚶 Queue — FIFO</div>
+        <div class="code-block" style="margin-top:0.6rem">
+          <pre style="padding:0.8rem 1rem;"><span class="kw">from</span> collections <span class="kw">import</span> deque
+queue = <span class="fn">deque</span>()
+queue.<span class="fn">append</span>(<span class="st">"task1"</span>)   <span class="cm"># enqueue O(1)</span>
+queue.<span class="fn">append</span>(<span class="st">"task2"</span>)
+queue.<span class="fn">popleft</span>()         <span class="cm"># dequeue O(1)</span>
+queue[<span class="nm">0</span>]                <span class="cm"># front peek</span>
+
+<span class="cm"># Real uses:</span>
+<span class="cm"># ✓ BFS traversal</span>
+<span class="cm"># ✓ Print spooler</span>
+<span class="cm"># ✓ Request queue</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">⚡ Priority Queue (Heap)</div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">priority_queue.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="kw">import</span> heapq
+
+<span class="cm"># Min-heap (smallest priority first)</span>
+pq = []
+heapq.<span class="fn">heappush</span>(pq, (<span class="nm">3</span>, <span class="st">"Low priority task"</span>))
+heapq.<span class="fn">heappush</span>(pq, (<span class="nm">1</span>, <span class="st">"URGENT task"</span>))
+heapq.<span class="fn">heappush</span>(pq, (<span class="nm">2</span>, <span class="st">"Medium task"</span>))
+
+top = heapq.<span class="fn">heappop</span>(pq)  <span class="cm"># (1, "URGENT task")</span>
+<span class="fn">print</span>(pq[<span class="nm">0</span>])             <span class="cm"># peek — (2, "Medium task")</span>
+
+<span class="cm"># Convert list to heap</span>
+tasks = [(<span class="nm">5</span>, <span class="st">"review"</span>), (<span class="nm">1</span>, <span class="st">"deploy"</span>), (<span class="nm">3</span>, <span class="st">"test"</span>)]
+heapq.<span class="fn">heapify</span>(tasks)     <span class="cm"># O(n)</span>
+
+<span class="cm"># nlargest / nsmallest</span>
+heapq.<span class="fn">nlargest</span>(<span class="nm">2</span>, tasks, key=<span class="kw">lambda</span> x: x[<span class="nm">0</span>])</pre>
+      </div>
+      <div class="callout callout-real">
+        <strong>🏗️ Used in Project 2:</strong> The core task scheduler uses a min-heap. When you "Get Next Task", it pops the highest priority (lowest number) task in O(log n).
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DSA: TREES ═══ -->
+  <section class="section" id="trees">
+    <div class="section-header">
+      <div class="section-num">17</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Data Structures</div>
+        <div class="section-title">Trees & Binary Search Tree</div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">bst.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="kw">class</span> <span class="cl">BSTNode</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, val):
+        <span class="kw">self</span>.val = val
+        <span class="kw">self</span>.left = <span class="kw">self</span>.right = <span class="kw">None</span>
+
+<span class="kw">class</span> <span class="cl">BST</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>):
+        <span class="kw">self</span>.root = <span class="kw">None</span>
+
+    <span class="kw">def</span> <span class="fn">insert</span>(<span class="kw">self</span>, val):    <span class="cm"># O(log n) avg</span>
+        <span class="kw">self</span>.root = <span class="kw">self</span>.<span class="fn">_insert</span>(<span class="kw">self</span>.root, val)
+
+    <span class="kw">def</span> <span class="fn">_insert</span>(<span class="kw">self</span>, node, val):
+        <span class="kw">if</span> <span class="kw">not</span> node: <span class="kw">return</span> <span class="cl">BSTNode</span>(val)
+        <span class="kw">if</span> val < node.val: node.left  = <span class="kw">self</span>.<span class="fn">_insert</span>(node.left, val)
+        <span class="kw">elif</span> val > node.val: node.right = <span class="kw">self</span>.<span class="fn">_insert</span>(node.right, val)
+        <span class="kw">return</span> node
+
+    <span class="kw">def</span> <span class="fn">search</span>(<span class="kw">self</span>, val):   <span class="cm"># O(log n)</span>
+        curr = <span class="kw">self</span>.root
+        <span class="kw">while</span> curr:
+            <span class="kw">if</span> val == curr.val: <span class="kw">return</span> <span class="kw">True</span>
+            curr = curr.left <span class="kw">if</span> val < curr.val <span class="kw">else</span> curr.right
+        <span class="kw">return</span> <span class="kw">False</span>
+
+    <span class="cm"># In-order traversal → sorted output!</span>
+    <span class="kw">def</span> <span class="fn">inorder</span>(<span class="kw">self</span>, node, result=[]):
+        <span class="kw">if</span> node:
+            <span class="kw">self</span>.<span class="fn">inorder</span>(node.left, result)
+            result.<span class="fn">append</span>(node.val)
+            <span class="kw">self</span>.<span class="fn">inorder</span>(node.right, result)
+        <span class="kw">return</span> result</pre>
+    </div>
+
+    <table class="topic-table">
+      <tr><th>Traversal</th><th>Order</th><th>Use Case</th></tr>
+      <tr><td class="method">Inorder (L→Root→R)</td><td>Sorted ascending</td><td>BST sorted output</td></tr>
+      <tr><td class="method">Preorder (Root→L→R)</td><td>Root first</td><td>Copy/serialize tree</td></tr>
+      <tr><td class="method">Postorder (L→R→Root)</td><td>Root last</td><td>Delete tree, evaluate expressions</td></tr>
+      <tr><td class="method">Level-order (BFS)</td><td>Level by level</td><td>Find shortest path in tree</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══ DSA: GRAPHS ═══ -->
+  <section class="section" id="graphs">
+    <div class="section-header">
+      <div class="section-num">18</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Data Structures</div>
+        <div class="section-title">Graphs — BFS & DFS</div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">graph.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="kw">from</span> collections <span class="kw">import</span> defaultdict, deque
+
+<span class="kw">class</span> <span class="cl">Graph</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>):
+        <span class="kw">self</span>.adj = <span class="fn">defaultdict</span>(<span class="fn">list</span>)  <span class="cm"># adjacency list</span>
+
+    <span class="kw">def</span> <span class="fn">add_edge</span>(<span class="kw">self</span>, u, v):
+        <span class="kw">self</span>.adj[u].<span class="fn">append</span>(v)
+        <span class="kw">self</span>.adj[v].<span class="fn">append</span>(u)  <span class="cm"># undirected</span>
+
+    <span class="cm"># ── BFS — Level by level, shortest path ──</span>
+    <span class="kw">def</span> <span class="fn">bfs</span>(<span class="kw">self</span>, start):
+        visited = {start}
+        queue = <span class="fn">deque</span>([start])
+        order = []
+        <span class="kw">while</span> queue:
+            node = queue.<span class="fn">popleft</span>()
+            order.<span class="fn">append</span>(node)
+            <span class="kw">for</span> neighbor <span class="kw">in</span> <span class="kw">self</span>.adj[node]:
+                <span class="kw">if</span> neighbor <span class="kw">not</span> <span class="kw">in</span> visited:
+                    visited.<span class="fn">add</span>(neighbor)
+                    queue.<span class="fn">append</span>(neighbor)
+        <span class="kw">return</span> order
+
+    <span class="cm"># ── DFS — Go deep first ──────────────────</span>
+    <span class="kw">def</span> <span class="fn">dfs</span>(<span class="kw">self</span>, node, visited=<span class="kw">None</span>):
+        <span class="kw">if</span> visited <span class="kw">is</span> <span class="kw">None</span>: visited = <span class="fn">set</span>()
+        visited.<span class="fn">add</span>(node)
+        <span class="fn">print</span>(node, end=<span class="st">" "</span>)
+        <span class="kw">for</span> nb <span class="kw">in</span> <span class="kw">self</span>.adj[node]:
+            <span class="kw">if</span> nb <span class="kw">not</span> <span class="kw">in</span> visited:
+                <span class="kw">self</span>.<span class="fn">dfs</span>(nb, visited)
+
+<span class="cm"># Usage — task dependency graph</span>
+g = <span class="cl">Graph</span>()
+g.<span class="fn">add_edge</span>(<span class="st">"Design"</span>, <span class="st">"Code"</span>)
+g.<span class="fn">add_edge</span>(<span class="st">"Code"</span>, <span class="st">"Test"</span>)
+g.<span class="fn">add_edge</span>(<span class="st">"Test"</span>, <span class="st">"Deploy"</span>)
+<span class="fn">print</span>(g.<span class="fn">bfs</span>(<span class="st">"Design"</span>))   <span class="cm"># ['Design', 'Code', 'Test', 'Deploy']</span></pre>
+    </div>
+    <div class="callout callout-real">
+      <strong>🏗️ Used in Project 2:</strong> Task dependencies are a directed graph. BFS finds which tasks must be completed before a given task. DFS detects circular dependencies (deadlocks).
+    </div>
+  </section>
+
+  <!-- ═══ DSA: HASHING ═══ -->
+  <section class="section" id="hashing">
+    <div class="section-header">
+      <div class="section-num">19</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Data Structures</div>
+        <div class="section-title">Hashing & Hash Maps</div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">hashing.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># Python dict IS a hash map — O(1) avg get/set</span>
+task_map = {}
+task_map[<span class="st">"T001"</span>] = {<span class="st">"title"</span>: <span class="st">"Deploy"</span>, <span class="st">"done"</span>: <span class="kw">False</span>}
+task_map[<span class="st">"T002"</span>] = {<span class="st">"title"</span>: <span class="st">"Test"</span>, <span class="st">"done"</span>: <span class="kw">True</span>}
+
+<span class="cm"># O(1) lookup by ID!</span>
+<span class="fn">print</span>(task_map[<span class="st">"T001"</span>][<span class="st">"title"</span>])  <span class="cm"># "Deploy"</span>
+
+<span class="cm"># ── Counter — frequency hash map ─────────────</span>
+<span class="kw">from</span> collections <span class="kw">import</span> Counter
+grades = [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"A"</span>, <span class="st">"C"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>]
+count = <span class="cl">Counter</span>(grades)   <span class="cm"># {'A':3, 'B':2, 'C':1}</span>
+count.<span class="fn">most_common</span>(<span class="nm">2</span>)      <span class="cm"># [('A', 3), ('B', 2)]</span>
+
+<span class="cm"># ── defaultdict — no KeyError ────────────────</span>
+<span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+dept_students = <span class="fn">defaultdict</span>(<span class="fn">list</span>)
+dept_students[<span class="st">"CS"</span>].<span class="fn">append</span>(<span class="st">"Riya"</span>)
+dept_students[<span class="st">"CS"</span>].<span class="fn">append</span>(<span class="st">"Arjun"</span>)
+dept_students[<span class="st">"Math"</span>].<span class="fn">append</span>(<span class="st">"Meera"</span>)
+
+<span class="cm"># ── Two Sum with hashing — classic DSA ──────</span>
+<span class="kw">def</span> <span class="fn">two_sum</span>(nums, target):
+    seen = {}
+    <span class="kw">for</span> i, n <span class="kw">in</span> <span class="fn">enumerate</span>(nums):
+        complement = target - n
+        <span class="kw">if</span> complement <span class="kw">in</span> seen:
+            <span class="kw">return</span> [seen[complement], i]
+        seen[n] = i
+    <span class="kw">return</span> []   <span class="cm"># O(n) vs O(n²) brute force!</span></pre>
+    </div>
+  </section>
+
+  <!-- ═══ DSA: SORTING ═══ -->
+  <section class="section" id="sorting">
+    <div class="section-header">
+      <div class="section-num">20</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Algorithms</div>
+        <div class="section-title">Sorting Algorithms</div>
+      </div>
+    </div>
+
+    <div class="algo-card">
+      <div class="algo-header"><div class="algo-name">🫧 Bubble Sort</div><span class="complexity-badge">O(n²) time</span></div>
+      <pre style="padding:1.2rem; background:var(--code-bg); font-family:'JetBrains Mono',monospace; font-size:0.83rem; overflow-x:auto;"><span class="kw">def</span> <span class="fn">bubble_sort</span>(arr):
+    n = <span class="fn">len</span>(arr)
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(n):
+        swapped = <span class="kw">False</span>
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">0</span>, n-i-<span class="nm">1</span>):
+            <span class="kw">if</span> arr[j] > arr[j+<span class="nm">1</span>]:
+                arr[j], arr[j+<span class="nm">1</span>] = arr[j+<span class="nm">1</span>], arr[j]
+                swapped = <span class="kw">True</span>
+        <span class="kw">if</span> <span class="kw">not</span> swapped: <span class="kw">break</span>  <span class="cm"># early exit if sorted!</span></pre>
+    </div>
+
+    <div class="algo-card">
+      <div class="algo-header"><div class="algo-name">✂️ Merge Sort</div><span class="complexity-badge">O(n log n) time</span></div>
+      <pre style="padding:1.2rem; background:var(--code-bg); font-family:'JetBrains Mono',monospace; font-size:0.83rem; overflow-x:auto;"><span class="kw">def</span> <span class="fn">merge_sort</span>(arr):
+    <span class="kw">if</span> <span class="fn">len</span>(arr) <= <span class="nm">1</span>: <span class="kw">return</span> arr
+    mid = <span class="fn">len</span>(arr) // <span class="nm">2</span>
+    left  = <span class="fn">merge_sort</span>(arr[:mid])
+    right = <span class="fn">merge_sort</span>(arr[mid:])
+    <span class="kw">return</span> <span class="fn">merge</span>(left, right)
+
+<span class="kw">def</span> <span class="fn">merge</span>(l, r):
+    result, i, j = [], <span class="nm">0</span>, <span class="nm">0</span>
+    <span class="kw">while</span> i < <span class="fn">len</span>(l) <span class="kw">and</span> j < <span class="fn">len</span>(r):
+        <span class="kw">if</span> l[i] <= r[j]: result.<span class="fn">append</span>(l[i]); i += <span class="nm">1</span>
+        <span class="kw">else</span>:            result.<span class="fn">append</span>(r[j]); j += <span class="nm">1</span>
+    <span class="kw">return</span> result + l[i:] + r[j:]</pre>
+    </div>
+
+    <div class="algo-card">
+      <div class="algo-header"><div class="algo-name">⚡ Quick Sort</div><span class="complexity-badge">O(n log n) avg</span></div>
+      <pre style="padding:1.2rem; background:var(--code-bg); font-family:'JetBrains Mono',monospace; font-size:0.83rem; overflow-x:auto;"><span class="kw">def</span> <span class="fn">quick_sort</span>(arr):
+    <span class="kw">if</span> <span class="fn">len</span>(arr) <= <span class="nm">1</span>: <span class="kw">return</span> arr
+    pivot = arr[<span class="fn">len</span>(arr) // <span class="nm">2</span>]
+    left   = [x <span class="kw">for</span> x <span class="kw">in</span> arr <span class="kw">if</span> x < pivot]
+    middle = [x <span class="kw">for</span> x <span class="kw">in</span> arr <span class="kw">if</span> x == pivot]
+    right  = [x <span class="kw">for</span> x <span class="kw">in</span> arr <span class="kw">if</span> x > pivot]
+    <span class="kw">return</span> <span class="fn">quick_sort</span>(left) + middle + <span class="fn">quick_sort</span>(right)
+
+<span class="cm"># Python's built-in sort uses Timsort (O(n log n), stable)</span>
+arr.<span class="fn">sort</span>()              <span class="cm"># in-place</span>
+<span class="fn">sorted</span>(arr)             <span class="cm"># returns new list</span>
+<span class="fn">sorted</span>(students, key=<span class="kw">lambda</span> s: s.gpa, reverse=<span class="kw">True</span>)</pre>
+    </div>
+  </section>
+
+  <!-- ═══ DSA: RECURSION ═══ -->
+  <section class="section" id="recursion">
+    <div class="section-header">
+      <div class="section-num">21</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Algorithms</div>
+        <div class="section-title">Recursion & Backtracking</div>
+      </div>
+    </div>
+    <div class="callout callout-info">
+      <strong>ℹ️ Recursion = function calling itself.</strong> Always needs: (1) Base case — stops recursion, (2) Recursive case — breaks problem into smaller pieces.
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">recursion.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># ── Factorial ───────────────────────────────</span>
+<span class="kw">def</span> <span class="fn">factorial</span>(n):
+    <span class="kw">if</span> n <= <span class="nm">1</span>: <span class="kw">return</span> <span class="nm">1</span>          <span class="cm"># base case</span>
+    <span class="kw">return</span> n * <span class="fn">factorial</span>(n - <span class="nm">1</span>)  <span class="cm"># recursive case</span>
+
+<span class="cm"># ── Fibonacci (memoized) ─────────────────────</span>
+<span class="kw">from</span> functools <span class="kw">import</span> lru_cache
+
+<span class="op">@lru_cache</span>(maxsize=<span class="kw">None</span>)    <span class="cm"># cache results!</span>
+<span class="kw">def</span> <span class="fn">fib</span>(n):
+    <span class="kw">if</span> n <= <span class="nm">1</span>: <span class="kw">return</span> n
+    <span class="kw">return</span> <span class="fn">fib</span>(n-<span class="nm">1</span>) + <span class="fn">fib</span>(n-<span class="nm">2</span>)
+
+<span class="cm"># ── Power of a number ─────────────────────────</span>
+<span class="kw">def</span> <span class="fn">power</span>(base, exp):
+    <span class="kw">if</span> exp == <span class="nm">0</span>: <span class="kw">return</span> <span class="nm">1</span>
+    <span class="kw">if</span> exp % <span class="nm">2</span> == <span class="nm">0</span>:
+        half = <span class="fn">power</span>(base, exp//<span class="nm">2</span>)
+        <span class="kw">return</span> half * half  <span class="cm"># O(log n)!</span>
+    <span class="kw">return</span> base * <span class="fn">power</span>(base, exp-<span class="nm">1</span>)
+
+<span class="cm"># ── Backtracking — N-Queens ──────────────────</span>
+<span class="kw">def</span> <span class="fn">solve_n_queens</span>(n):
+    solutions = []
+    <span class="kw">def</span> <span class="fn">backtrack</span>(queens, cols, diag1, diag2, row=<span class="nm">0</span>):
+        <span class="kw">if</span> row == n:
+            solutions.<span class="fn">append</span>(queens[:]); <span class="kw">return</span>
+        <span class="kw">for</span> col <span class="kw">in</span> <span class="fn">range</span>(n):
+            <span class="kw">if</span> col <span class="kw">in</span> cols <span class="kw">or</span> (row-col) <span class="kw">in</span> diag1 <span class="kw">or</span> (row+col) <span class="kw">in</span> diag2:
+                <span class="kw">continue</span>
+            queens.<span class="fn">append</span>(col)
+            <span class="fn">backtrack</span>(queens, cols|{col}, diag1|{row-col}, diag2|{row+col}, row+<span class="nm">1</span>)
+            queens.<span class="fn">pop</span>()
+    <span class="fn">backtrack</span>([], <span class="fn">set</span>(), <span class="fn">set</span>(), <span class="fn">set</span>())
+    <span class="kw">return</span> solutions</pre>
+    </div>
+  </section>
+
+  <!-- ═══ DSA: DYNAMIC PROGRAMMING ═══ -->
+  <section class="section" id="dp">
+    <div class="section-header">
+      <div class="section-num">22</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Algorithms</div>
+        <div class="section-title">Dynamic Programming</div>
+      </div>
+    </div>
+    <div class="callout callout-info">
+      <strong>ℹ️ DP = Recursion + Memoization (or Tabulation).</strong> Break problem into overlapping subproblems, solve each once, store results.
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">dynamic_programming.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="cm"># ── 0/1 Knapsack — Tabulation ───────────────</span>
+<span class="kw">def</span> <span class="fn">knapsack</span>(weights, values, capacity):
+    n = <span class="fn">len</span>(weights)
+    dp = [[<span class="nm">0</span>] * (capacity + <span class="nm">1</span>) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(n + <span class="nm">1</span>)]
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, n + <span class="nm">1</span>):
+        <span class="kw">for</span> w <span class="kw">in</span> <span class="fn">range</span>(capacity + <span class="nm">1</span>):
+            dp[i][w] = dp[i-<span class="nm">1</span>][w]
+            <span class="kw">if</span> weights[i-<span class="nm">1</span>] <= w:
+                dp[i][w] = <span class="fn">max</span>(dp[i][w],
+                    dp[i-<span class="nm">1</span>][w - weights[i-<span class="nm">1</span>]] + values[i-<span class="nm">1</span>])
+    <span class="kw">return</span> dp[n][capacity]
+
+<span class="cm"># ── Longest Common Subsequence ───────────────</span>
+<span class="kw">def</span> <span class="fn">lcs</span>(s1, s2):
+    m, n = <span class="fn">len</span>(s1), <span class="fn">len</span>(s2)
+    dp = [[<span class="nm">0</span>]*(n+<span class="nm">1</span>) <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(m+<span class="nm">1</span>)]
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, m+<span class="nm">1</span>):
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">1</span>, n+<span class="nm">1</span>):
+            <span class="kw">if</span> s1[i-<span class="nm">1</span>] == s2[j-<span class="nm">1</span>]:
+                dp[i][j] = dp[i-<span class="nm">1</span>][j-<span class="nm">1</span>] + <span class="nm">1</span>
+            <span class="kw">else</span>:
+                dp[i][j] = <span class="fn">max</span>(dp[i-<span class="nm">1</span>][j], dp[i][j-<span class="nm">1</span>])
+    <span class="kw">return</span> dp[m][n]
+
+<span class="cm"># ── Coin Change ─────────────────────────────</span>
+<span class="kw">def</span> <span class="fn">min_coins</span>(coins, amount):
+    dp = [<span class="fn">float</span>(<span class="st">'inf'</span>)] * (amount + <span class="nm">1</span>)
+    dp[<span class="nm">0</span>] = <span class="nm">0</span>
+    <span class="kw">for</span> coin <span class="kw">in</span> coins:
+        <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(coin, amount + <span class="nm">1</span>):
+            dp[x] = <span class="fn">min</span>(dp[x], dp[x - coin] + <span class="nm">1</span>)
+    <span class="kw">return</span> dp[amount] <span class="kw">if</span> dp[amount] != <span class="fn">float</span>(<span class="st">'inf'</span>) <span class="kw">else</span> -<span class="nm">1</span></pre>
+    </div>
+  </section>
+
+  <!-- ═══ MATPLOTLIB ═══ -->
+  <section class="section" id="matplotlib">
+    <div class="section-header">
+      <div class="section-num">23</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Data Visualization</div>
+        <div class="section-title">Matplotlib Basics</div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">matplotlib_intro.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># ── Anatomy of a Figure ──────────────────────</span>
+fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="nm">10</span>, <span class="nm">6</span>))
+<span class="cm"># fig = whole canvas, ax = one plot</span>
+
+students = [<span class="st">"Riya"</span>, <span class="st">"Arjun"</span>, <span class="st">"Meera"</span>, <span class="st">"Dev"</span>, <span class="st">"Sara"</span>]
+marks    = [<span class="nm">88</span>, <span class="nm">92</span>, <span class="nm">76</span>, <span class="nm">85</span>, <span class="nm">91</span>]
+
+ax.<span class="fn">plot</span>(students, marks,
+        color=<span class="st">"#00d4aa"</span>,
+        marker=<span class="st">"o"</span>,
+        linewidth=<span class="nm">2</span>,
+        markersize=<span class="nm">8</span>,
+        label=<span class="st">"Math Marks"</span>)
+
+<span class="cm"># Labels & Formatting</span>
+ax.<span class="fn">set_title</span>(<span class="st">"Student Performance"</span>, fontsize=<span class="nm">16</span>, pad=<span class="nm">15</span>)
+ax.<span class="fn">set_xlabel</span>(<span class="st">"Student"</span>, fontsize=<span class="nm">12</span>)
+ax.<span class="fn">set_ylabel</span>(<span class="st">"Marks"</span>, fontsize=<span class="nm">12</span>)
+ax.<span class="fn">set_ylim</span>(<span class="nm">0</span>, <span class="nm">100</span>)
+ax.<span class="fn">legend</span>()
+ax.<span class="fn">grid</span>(<span class="kw">True</span>, linestyle=<span class="st">"--"</span>, alpha=<span class="nm">0.5</span>)
+fig.<span class="fn">tight_layout</span>()
+plt.<span class="fn">savefig</span>(<span class="st">"report.png"</span>, dpi=<span class="nm">150</span>, bbox_inches=<span class="st">"tight"</span>)
+plt.<span class="fn">show</span>()</pre>
+    </div>
+  </section>
+
+  <!-- ═══ CHART TYPES ═══ -->
+  <section class="section" id="plots">
+    <div class="section-header">
+      <div class="section-num">24</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Data Visualization</div>
+        <div class="section-title">All Chart Types</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">all_charts.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+subjects = [<span class="st">"Math"</span>, <span class="st">"Science"</span>, <span class="st">"English"</span>, <span class="st">"History"</span>]
+scores   = [<span class="nm">88</span>, <span class="nm">76</span>, <span class="nm">92</span>, <span class="nm">68</span>]
+x = np.<span class="fn">linspace</span>(<span class="nm">0</span>, <span class="nm">10</span>, <span class="nm">100</span>)
+
+fig, axes = plt.<span class="fn">subplots</span>(<span class="nm">2</span>, <span class="nm">3</span>, figsize=(<span class="nm">15</span>, <span class="nm">10</span>))
+
+<span class="cm"># 1. Line Chart</span>
+axes[<span class="nm">0</span>,<span class="nm">0</span>].<span class="fn">plot</span>(x, np.<span class="fn">sin</span>(x), color=<span class="st">"#00d4aa"</span>, label=<span class="st">"sin(x)"</span>)
+axes[<span class="nm">0</span>,<span class="nm">0</span>].<span class="fn">set_title</span>(<span class="st">"Line Chart"</span>)
+
+<span class="cm"># 2. Bar Chart</span>
+axes[<span class="nm">0</span>,<span class="nm">1</span>].<span class="fn">bar</span>(subjects, scores, color=[<span class="st">"#00d4aa"</span>,<span class="st">"#ff6b6b"</span>,<span class="st">"#ffd166"</span>,<span class="st">"#a78bfa"</span>])
+axes[<span class="nm">0</span>,<span class="nm">1</span>].<span class="fn">set_title</span>(<span class="st">"Bar Chart"</span>)
+
+<span class="cm"># 3. Scatter Plot</span>
+study = [<span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">5</span>, <span class="nm">7</span>, <span class="nm">8</span>, <span class="nm">10</span>]
+grade = [<span class="nm">45</span>, <span class="nm">60</span>, <span class="nm">70</span>, <span class="nm">82</span>, <span class="nm">88</span>, <span class="nm">95</span>]
+axes[<span class="nm">0</span>,<span class="nm">2</span>].<span class="fn">scatter</span>(study, grade, color=<span class="st">"#38bdf8"</span>, s=<span class="nm">80</span>)
+axes[<span class="nm">0</span>,<span class="nm">2</span>].<span class="fn">set_title</span>(<span class="st">"Scatter Plot"</span>)
+
+<span class="cm"># 4. Pie Chart</span>
+axes[<span class="nm">1</span>,<span class="nm">0</span>].<span class="fn">pie</span>(scores, labels=subjects, autopct=<span class="st">"%1.1f%%"</span>,
+              colors=[<span class="st">"#00d4aa"</span>,<span class="st">"#ff6b6b"</span>,<span class="st">"#ffd166"</span>,<span class="st">"#a78bfa"</span>])
+axes[<span class="nm">1</span>,<span class="nm">0</span>].<span class="fn">set_title</span>(<span class="st">"Pie Chart"</span>)
+
+<span class="cm"># 5. Histogram</span>
+data = np.random.<span class="fn">normal</span>(<span class="nm">75</span>, <span class="nm">10</span>, <span class="nm">200</span>)  <span class="cm"># 200 student marks</span>
+axes[<span class="nm">1</span>,<span class="nm">1</span>].<span class="fn">hist</span>(data, bins=<span class="nm">20</span>, color=<span class="st">"#ffd166"</span>, edgecolor=<span class="st">"black"</span>)
+axes[<span class="nm">1</span>,<span class="nm">1</span>].<span class="fn">set_title</span>(<span class="st">"Histogram"</span>)
+
+<span class="cm"># 6. Horizontal Bar</span>
+axes[<span class="nm">1</span>,<span class="nm">2</span>].<span class="fn">barh</span>(subjects, scores, color=<span class="st">"#a78bfa"</span>)
+axes[<span class="nm">1</span>,<span class="nm">2</span>].<span class="fn">set_title</span>(<span class="st">"Horizontal Bar"</span>)
+
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">show</span>()</pre>
+    </div>
+
+    <table class="topic-table">
+      <tr><th>Chart</th><th>When to Use</th><th>Function</th></tr>
+      <tr><td>Line</td><td>Trends over time (marks per semester)</td><td class="method">ax.plot(x, y)</td></tr>
+      <tr><td>Bar</td><td>Comparing categories (subject scores)</td><td class="method">ax.bar(x, y)</td></tr>
+      <tr><td>Scatter</td><td>Relationships (study hours vs grade)</td><td class="method">ax.scatter(x, y)</td></tr>
+      <tr><td>Histogram</td><td>Distribution (how many scored 70-80)</td><td class="method">ax.hist(data)</td></tr>
+      <tr><td>Pie</td><td>Proportions (% of each grade)</td><td class="method">ax.pie(sizes)</td></tr>
+      <tr><td>Heatmap</td><td>Matrix data (correlation between subjects)</td><td class="method">ax.imshow(matrix)</td></tr>
+      <tr><td>Box Plot</td><td>Spread & outliers of marks</td><td class="method">ax.boxplot(data)</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══ MATPLOTLIB STYLING ═══ -->
+  <section class="section" id="styling">
+    <div class="section-header">
+      <div class="section-num">25</div>
+      <div class="section-title-wrap">
+        <div class="section-label">Data Visualization</div>
+        <div class="section-title">Styling & Subplots</div>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">advanced_plots.py</span></div>
+        <span class="code-lang">Python</span>
+      </div>
+      <pre><span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+<span class="cm"># ── Styles ───────────────────────────────────</span>
+plt.<span class="fn">style.use</span>(<span class="st">"seaborn-v0_8-darkgrid"</span>)  <span class="cm"># or "ggplot", "dark_background"</span>
+
+<span class="cm"># ── Custom Colors ────────────────────────────</span>
+colors = [<span class="st">"#00d4aa"</span>, <span class="st">"#ff6b6b"</span>, <span class="st">"#ffd166"</span>, <span class="st">"#a78bfa"</span>]
+
+<span class="cm"># ── Annotations ──────────────────────────────</span>
+ax.<span class="fn">annotate</span>(<span class="st">"Highest!"</span>,
+    xy=(<span class="nm">2</span>, <span class="nm">92</span>),          <span class="cm"># point to annotate</span>
+    xytext=(<span class="nm">3</span>, <span class="nm">96</span>),       <span class="cm"># text position</span>
+    arrowprops=<span class="fn">dict</span>(arrowstyle=<span class="st">"->"</span>, color=<span class="st">"red"</span>))
+
+<span class="cm"># ── Dual axis ────────────────────────────────</span>
+ax2 = ax.<span class="fn">twinx</span>()
+ax2.<span class="fn">plot</span>(x, attendance, color=<span class="st">"orange"</span>, label=<span class="st">"Attendance %"</span>)
+
+<span class="cm"># ── gridspec — unequal subplots ──────────────</span>
+fig = plt.<span class="fn">figure</span>(figsize=(<span class="nm">12</span>, <span class="nm">8</span>))
+gs = fig.<span class="fn">add_gridspec</span>(<span class="nm">2</span>, <span class="nm">2</span>)
+ax1 = fig.<span class="fn">add_subplot</span>(gs[<span class="nm">0</span>, :])    <span class="cm"># spans both columns</span>
+ax2 = fig.<span class="fn">add_subplot</span>(gs[<span class="nm">1</span>, <span class="nm">0</span>])
+ax3 = fig.<span class="fn">add_subplot</span>(gs[<span class="nm">1</span>, <span class="nm">1</span>])
+
+<span class="cm"># ── Add value labels to bar chart ────────────</span>
+bars = ax.<span class="fn">bar</span>(subjects, scores)
+<span class="kw">for</span> bar <span class="kw">in</span> bars:
+    ax.<span class="fn">text</span>(bar.<span class="fn">get_x</span>() + bar.<span class="fn">get_width</span>()/2,
+            bar.<span class="fn">get_height</span>() + <span class="nm">1</span>,
+            <span class="st">f'</span>{<span class="fn">int</span>(bar.<span class="fn">get_height</span>())}<span class="st">'</span>,
+            ha=<span class="st">'center'</span>, fontweight=<span class="st">'bold'</span>)</pre>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       PROJECT 1: GRADE ANALYTICS
+  ═══════════════════════════════════ -->
+  <section class="section" id="project1">
+    <div class="section-header">
+      <div class="section-num" style="border-color:rgba(255,107,107,0.4); color:var(--project1)">P1</div>
+      <div class="section-title-wrap">
+        <div class="section-label" style="color:var(--project1)">Project 1 — Complete Code</div>
+        <div class="section-title">🎓 Student Grade Analytics System</div>
+      </div>
+    </div>
+
+    <p style="color:var(--text-muted); margin-bottom:1.5rem;">This project uses: <strong>Variables, Lists, Dicts, OOP, File I/O, Exceptions, Sorting, Comprehensions, Matplotlib.</strong> It's a complete grade management system for a class.</p>
+
+    <div class="full-project full-project-1">
+      <div class="full-project-header">
+        <div class="project-tag" style="background:rgba(255,107,107,0.15); color:var(--project1)">grade_analytics.py — Full Project</div>
+      </div>
+      <div class="code-block" style="border-radius:0; border:none; margin:0;">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">grade_analytics.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="cm">"""
+PROJECT 1: Student Grade Analytics System
+Concepts: OOP, Lists/Dicts, File I/O, Sorting, Matplotlib
+"""</span>
+
+<span class="kw">import</span> json, csv, os
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="cm"># CONCEPT: Classes & OOP</span>
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="kw">class</span> <span class="cl">Student</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, name, roll, marks: dict):
+        <span class="kw">self</span>.name = name
+        <span class="kw">self</span>.roll = roll
+        <span class="kw">self</span>._marks = marks   <span class="cm"># encapsulated</span>
+
+    <span class="op">@property</span>
+    <span class="kw">def</span> <span class="fn">average</span>(<span class="kw">self</span>):       <span class="cm"># computed property</span>
+        <span class="kw">return</span> <span class="fn">round</span>(<span class="fn">sum</span>(<span class="kw">self</span>._marks.<span class="fn">values</span>()) / <span class="fn">len</span>(<span class="kw">self</span>._marks), <span class="nm">2</span>)
+
+    <span class="op">@property</span>
+    <span class="kw">def</span> <span class="fn">grade</span>(<span class="kw">self</span>):
+        avg = <span class="kw">self</span>.average
+        <span class="kw">if</span> avg >= <span class="nm">90</span>: <span class="kw">return</span> <span class="st">"A+"</span>
+        <span class="kw">elif</span> avg >= <span class="nm">80</span>: <span class="kw">return</span> <span class="st">"A"</span>
+        <span class="kw">elif</span> avg >= <span class="nm">70</span>: <span class="kw">return</span> <span class="st">"B"</span>
+        <span class="kw">elif</span> avg >= <span class="nm">60</span>: <span class="kw">return</span> <span class="st">"C"</span>
+        <span class="kw">elif</span> avg >= <span class="nm">40</span>: <span class="kw">return</span> <span class="st">"D"</span>
+        <span class="kw">else</span>: <span class="kw">return</span> <span class="st">"F"</span>
+
+    <span class="kw">def</span> <span class="fn">add_subject</span>(<span class="kw">self</span>, subject, mark):
+        <span class="kw">if</span> <span class="kw">not</span> (<span class="nm">0</span> <= mark <= <span class="nm">100</span>):   <span class="cm"># Exception handling</span>
+            <span class="kw">raise</span> <span class="cl">ValueError</span>(<span class="st">f"Mark </span>{mark}<span class="st"> out of range (0-100)"</span>)
+        <span class="kw">self</span>._marks[subject] = mark
+
+    <span class="kw">def</span> <span class="fn">to_dict</span>(<span class="kw">self</span>):           <span class="cm"># For JSON serialization</span>
+        <span class="kw">return</span> {<span class="st">"name"</span>: <span class="kw">self</span>.name, <span class="st">"roll"</span>: <span class="kw">self</span>.roll, <span class="st">"marks"</span>: <span class="kw">self</span>._marks}
+
+    <span class="kw">def</span> <span class="fn">__str__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="st">f"[{self.roll}] {self.name:<20} Avg: {self.average:6.2f} | {self.grade}"</span>
+
+    <span class="kw">def</span> <span class="fn">__lt__</span>(<span class="kw">self</span>, other):     <span class="cm"># For sorting</span>
+        <span class="kw">return</span> <span class="kw">self</span>.average > other.average   <span class="cm"># descending</span>
+
+
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="cm"># CONCEPT: Class as Manager (Encapsulation)</span>
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="kw">class</span> <span class="cl">GradeBook</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, filename=<span class="st">"grades.json"</span>):
+        <span class="kw">self</span>.filename = filename
+        <span class="kw">self</span>.students: list[<span class="cl">Student</span>] = []
+        <span class="kw">self</span>.<span class="fn">_load</span>()
+
+    <span class="kw">def</span> <span class="fn">add_student</span>(<span class="kw">self</span>, name, roll, marks):
+        <span class="cm"># Check duplicate roll numbers (hashing concept)</span>
+        rolls = {s.roll <span class="kw">for</span> s <span class="kw">in</span> <span class="kw">self</span>.students}
+        <span class="kw">if</span> roll <span class="kw">in</span> rolls:
+            <span class="kw">raise</span> <span class="cl">ValueError</span>(<span class="st">f"Roll {roll} already exists!"</span>)
+        <span class="kw">self</span>.students.<span class="fn">append</span>(<span class="cl">Student</span>(name, roll, marks))
+        <span class="kw">self</span>.<span class="fn">_save</span>()
+
+    <span class="kw">def</span> <span class="fn">get_sorted</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="fn">sorted</span>(<span class="kw">self</span>.students)    <span class="cm"># uses __lt__</span>
+
+    <span class="kw">def</span> <span class="fn">class_average</span>(<span class="kw">self</span>):
+        <span class="cm"># Comprehension + functions</span>
+        avgs = [s.average <span class="kw">for</span> s <span class="kw">in</span> <span class="kw">self</span>.students]
+        <span class="kw">return</span> <span class="fn">round</span>(<span class="fn">sum</span>(avgs) / <span class="fn">len</span>(avgs), <span class="nm">2</span>)
+
+    <span class="kw">def</span> <span class="fn">toppers</span>(<span class="kw">self</span>, n=<span class="nm">3</span>):
+        <span class="kw">return</span> <span class="kw">self</span>.<span class="fn">get_sorted</span>()[:n]
+
+    <span class="kw">def</span> <span class="fn">grade_distribution</span>(<span class="kw">self</span>):
+        <span class="kw">from</span> collections <span class="kw">import</span> Counter
+        <span class="kw">return</span> <span class="cl">Counter</span>(s.grade <span class="kw">for</span> s <span class="kw">in</span> <span class="kw">self</span>.students)
+
+    <span class="cm"># ── File I/O ──────────────────────────────</span>
+    <span class="kw">def</span> <span class="fn">_save</span>(<span class="kw">self</span>):
+        <span class="kw">with</span> <span class="fn">open</span>(<span class="kw">self</span>.filename, <span class="st">"w"</span>) <span class="kw">as</span> f:
+            json.<span class="fn">dump</span>([s.<span class="fn">to_dict</span>() <span class="kw">for</span> s <span class="kw">in</span> <span class="kw">self</span>.students], f, indent=<span class="nm">2</span>)
+
+    <span class="kw">def</span> <span class="fn">_load</span>(<span class="kw">self</span>):
+        <span class="kw">try</span>:
+            <span class="kw">with</span> <span class="fn">open</span>(<span class="kw">self</span>.filename) <span class="kw">as</span> f:
+                data = json.<span class="fn">load</span>(f)
+                <span class="kw">self</span>.students = [<span class="cl">Student</span>(**d) <span class="kw">for</span> d <span class="kw">in</span> data]
+        <span class="kw">except</span> <span class="cl">FileNotFoundError</span>:
+            <span class="fn">print</span>(<span class="st">"Starting fresh grade book."</span>)
+
+    <span class="kw">def</span> <span class="fn">export_csv</span>(<span class="kw">self</span>, path=<span class="st">"report.csv"</span>):
+        <span class="kw">with</span> <span class="fn">open</span>(path, <span class="st">"w"</span>, newline=<span class="st">""</span>) <span class="kw">as</span> f:
+            w = csv.<span class="fn">writer</span>(f)
+            w.<span class="fn">writerow</span>([<span class="st">"Rank"</span>, <span class="st">"Name"</span>, <span class="st">"Roll"</span>, <span class="st">"Average"</span>, <span class="st">"Grade"</span>])
+            <span class="kw">for</span> i, s <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="kw">self</span>.<span class="fn">get_sorted</span>(), <span class="nm">1</span>):
+                w.<span class="fn">writerow</span>([i, s.name, s.roll, s.average, s.grade])
+
+    <span class="cm"># ── Matplotlib Visualization ──────────────</span>
+    <span class="kw">def</span> <span class="fn">generate_report</span>(<span class="kw">self</span>):
+        fig, axes = plt.<span class="fn">subplots</span>(<span class="nm">1</span>, <span class="nm">3</span>, figsize=(<span class="nm">16</span>, <span class="nm">5</span>))
+        fig.<span class="fn">suptitle</span>(<span class="st">"Class Performance Report"</span>, fontsize=<span class="nm">16</span>, fontweight=<span class="st">"bold"</span>)
+
+        names = [s.name <span class="kw">for</span> s <span class="kw">in</span> <span class="kw">self</span>.<span class="fn">get_sorted</span>()]
+        avgs  = [s.average <span class="kw">for</span> s <span class="kw">in</span> <span class="kw">self</span>.<span class="fn">get_sorted</span>()]
+
+        <span class="cm"># Bar chart — averages</span>
+        colors = [<span class="st">"#00d4aa"</span> <span class="kw">if</span> a >= <span class="nm">75</span> <span class="kw">else</span> <span class="st">"#ff6b6b"</span> <span class="kw">for</span> a <span class="kw">in</span> avgs]
+        axes[<span class="nm">0</span>].<span class="fn">bar</span>(names, avgs, color=colors)
+        axes[<span class="nm">0</span>].<span class="fn">set_title</span>(<span class="st">"Rankings"</span>); axes[<span class="nm">0</span>].<span class="fn">tick_params</span>(axis=<span class="st">"x"</span>, rotation=<span class="nm">45</span>)
+        axes[<span class="nm">0</span>].<span class="fn">axhline</span>(<span class="kw">self</span>.<span class="fn">class_average</span>(), color=<span class="st">"gold"</span>, ls=<span class="st">"--"</span>, label=<span class="st">"Class Avg"</span>)
+        axes[<span class="nm">0</span>].<span class="fn">legend</span>()
+
+        <span class="cm"># Pie — grade distribution</span>
+        dist = <span class="kw">self</span>.<span class="fn">grade_distribution</span>()
+        axes[<span class="nm">1</span>].<span class="fn">pie</span>(dist.<span class="fn">values</span>(), labels=dist.<span class="fn">keys</span>(), autopct=<span class="st">"%1.0f%%"</span>)
+        axes[<span class="nm">1</span>].<span class="fn">set_title</span>(<span class="st">"Grade Distribution"</span>)
+
+        <span class="cm"># Histogram — mark distribution</span>
+        axes[<span class="nm">2</span>].<span class="fn">hist</span>(avgs, bins=<span class="nm">8</span>, color=<span class="st">"#a78bfa"</span>, edgecolor=<span class="st">"white"</span>)
+        axes[<span class="nm">2</span>].<span class="fn">set_title</span>(<span class="st">"Distribution of Averages"</span>)
+
+        plt.<span class="fn">tight_layout</span>()
+        plt.<span class="fn">savefig</span>(<span class="st">"class_report.png"</span>, dpi=<span class="nm">150</span>)
+        plt.<span class="fn">show</span>()
+
+
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="cm"># MAIN — Using all concepts together</span>
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    gb = <span class="cl">GradeBook</span>()
+
+    <span class="cm"># Add students (OOP + Dict + Exception handling)</span>
+    students_data = [
+        (<span class="st">"Riya Sharma"</span>,    <span class="nm">101</span>, {<span class="st">"Math"</span>:<span class="nm">92</span>, <span class="st">"Science"</span>:<span class="nm">88</span>, <span class="st">"English"</span>:<span class="nm">85</span>}),
+        (<span class="st">"Arjun Mehta"</span>,    <span class="nm">102</span>, {<span class="st">"Math"</span>:<span class="nm">78</span>, <span class="st">"Science"</span>:<span class="nm">95</span>, <span class="st">"English"</span>:<span class="nm">72</span>}),
+        (<span class="st">"Meera Patel"</span>,    <span class="nm">103</span>, {<span class="st">"Math"</span>:<span class="nm">65</span>, <span class="st">"Science"</span>:<span class="nm">70</span>, <span class="st">"English"</span>:<span class="nm">88</span>}),
+        (<span class="st">"Dev Kapoor"</span>,     <span class="nm">104</span>, {<span class="st">"Math"</span>:<span class="nm">90</span>, <span class="st">"Science"</span>:<span class="nm">82</span>, <span class="st">"English"</span>:<span class="nm">91</span>}),
+        (<span class="st">"Sara Iyer"</span>,      <span class="nm">105</span>, {<span class="st">"Math"</span>:<span class="nm">55</span>, <span class="st">"Science"</span>:<span class="nm">60</span>, <span class="st">"English"</span>:<span class="nm">58</span>}),
+    ]
+
+    <span class="kw">for</span> name, roll, marks <span class="kw">in</span> students_data:
+        <span class="kw">try</span>:
+            gb.<span class="fn">add_student</span>(name, roll, marks)
+        <span class="kw">except</span> <span class="cl">ValueError</span> <span class="kw">as</span> e:
+            <span class="fn">print</span>(<span class="st">f"Skipped: </span>{e}<span class="st">"</span>)
+
+    <span class="cm"># Print ranked list (sorting + __str__)</span>
+    <span class="fn">print</span>(<span class="st">"\n🏆 Class Rankings:"</span>)
+    <span class="kw">for</span> rank, s <span class="kw">in</span> <span class="fn">enumerate</span>(gb.<span class="fn">get_sorted</span>(), <span class="nm">1</span>):
+        <span class="fn">print</span>(<span class="st">f"  </span>{rank}<span class="st">. </span>{s}<span class="st">"</span>)
+
+    <span class="fn">print</span>(<span class="st">f"\n📊 Class Average: </span>{gb.<span class="fn">class_average</span>()}<span class="st">"</span>)
+    <span class="fn">print</span>(<span class="st">f"🎓 Grade Distribution: </span>{<span class="fn">dict</span>(gb.<span class="fn">grade_distribution</span>())}<span class="st">"</span>)
+
+    gb.<span class="fn">export_csv</span>()
+    gb.<span class="fn">generate_report</span>()   <span class="cm"># Shows all 3 charts!</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       PROJECT 2: TASK MANAGER DSA
+  ═══════════════════════════════════ -->
+  <section class="section" id="project2">
+    <div class="section-header">
+      <div class="section-num" style="border-color:rgba(0,212,170,0.4); color:var(--project2)">P2</div>
+      <div class="section-title-wrap">
+        <div class="section-label" style="color:var(--project2)">Project 2 — Complete Code</div>
+        <div class="section-title">📋 Smart Task Manager with DSA</div>
+      </div>
+    </div>
+
+    <p style="color:var(--text-muted); margin-bottom:1.5rem;">This project uses: <strong>Linked List, Stack (Undo), Heap (Priority Queue), Graph (Dependencies), BFS, Hashing, OOP, Lambda, Generators.</strong></p>
+
+    <div class="full-project full-project-2">
+      <div class="full-project-header">
+        <div class="project-tag" style="background:rgba(0,212,170,0.15); color:var(--project2)">task_manager.py — Full Project</div>
+      </div>
+      <div class="code-block" style="border-radius:0; border:none; margin:0;">
+        <div class="code-header">
+          <div class="code-header-left"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><span class="code-filename">task_manager.py</span></div>
+          <span class="code-lang">Python</span>
+        </div>
+        <pre><span class="cm">"""
+PROJECT 2: Smart Task Manager with DSA
+Concepts: Linked List, Stack, Heap, Graph, BFS, Hashing
+"""</span>
+
+<span class="kw">import</span> heapq
+<span class="kw">from</span> collections <span class="kw">import</span> defaultdict, deque
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="cm"># CONCEPT: OOP — Task as a class</span>
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="kw">class</span> <span class="cl">Task</span>:
+    _id_counter = <span class="nm">1</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, title, priority=<span class="nm">5</span>, category=<span class="st">"general"</span>):
+        <span class="kw">self</span>.id = <span class="st">f"T</span>{<span class="cl">Task</span>._id_counter:<span class="nm">03</span>d}<span class="st">"</span>
+        <span class="cl">Task</span>._id_counter += <span class="nm">1</span>
+        <span class="kw">self</span>.title = title
+        <span class="kw">self</span>.priority = priority   <span class="cm"># 1=highest, 10=lowest</span>
+        <span class="kw">self</span>.category = category
+        <span class="kw">self</span>.done = <span class="kw">False</span>
+        <span class="kw">self</span>.created = <span class="fn">datetime</span>.<span class="fn">now</span>()
+
+    <span class="kw">def</span> <span class="fn">complete</span>(<span class="kw">self</span>):
+        <span class="kw">self</span>.done = <span class="kw">True</span>
+
+    <span class="kw">def</span> <span class="fn">__lt__</span>(<span class="kw">self</span>, other):    <span class="cm"># for heap comparison</span>
+        <span class="kw">return</span> <span class="kw">self</span>.priority < other.priority
+
+    <span class="kw">def</span> <span class="fn">__str__</span>(<span class="kw">self</span>):
+        status = <span class="st">"✅"</span> <span class="kw">if</span> <span class="kw">self</span>.done <span class="kw">else</span> <span class="st">"⏳"</span>
+        <span class="kw">return</span> <span class="st">f"</span>{status}<span class="st"> [P</span>{<span class="kw">self</span>.priority}<span class="st">] </span>{<span class="kw">self</span>.id}<span class="st">: </span>{<span class="kw">self</span>.title}<span class="st"> ({self.category})"</span>
+
+
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="cm"># CONCEPT: Linked List — Task History</span>
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="kw">class</span> <span class="cl">HistoryNode</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, action, task):
+        <span class="kw">self</span>.action = action
+        <span class="kw">self</span>.task = task
+        <span class="kw">self</span>.prev = <span class="kw">None</span>   <span class="cm"># link to previous action</span>
+
+<span class="kw">class</span> <span class="cl">TaskHistory</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>):
+        <span class="kw">self</span>.head = <span class="kw">None</span>   <span class="cm"># most recent action</span>
+
+    <span class="kw">def</span> <span class="fn">record</span>(<span class="kw">self</span>, action, task):
+        node = <span class="cl">HistoryNode</span>(action, task)
+        node.prev = <span class="kw">self</span>.head
+        <span class="kw">self</span>.head = node    <span class="cm"># prepend</span>
+
+    <span class="kw">def</span> <span class="fn">undo</span>(<span class="kw">self</span>):         <span class="cm"># pop from front</span>
+        <span class="kw">if</span> <span class="kw">not</span> <span class="kw">self</span>.head:
+            <span class="kw">return</span> <span class="kw">None</span>
+        node = <span class="kw">self</span>.head
+        <span class="kw">self</span>.head = node.prev
+        <span class="kw">return</span> node
+
+    <span class="kw">def</span> <span class="fn">print_history</span>(<span class="kw">self</span>):
+        curr = <span class="kw">self</span>.head
+        <span class="fn">print</span>(<span class="st">"📜 History (newest first):"</span>)
+        <span class="kw">while</span> curr:
+            <span class="fn">print</span>(<span class="st">f"  {curr.action}: {curr.task.title}"</span>)
+            curr = curr.prev
+
+
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="cm"># CONCEPT: Heap — Priority Queue</span>
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="kw">class</span> <span class="cl">PriorityQueue</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>):
+        <span class="kw">self</span>._heap = []
+
+    <span class="kw">def</span> <span class="fn">push</span>(<span class="kw">self</span>, task):
+        heapq.<span class="fn">heappush</span>(<span class="kw">self</span>._heap, (task.priority, task))
+
+    <span class="kw">def</span> <span class="fn">pop</span>(<span class="kw">self</span>):       <span class="cm"># O(log n) — highest priority</span>
+        <span class="kw">if</span> <span class="kw">not</span> <span class="kw">self</span>._heap:
+            <span class="kw">raise</span> <span class="cl">IndexError</span>(<span class="st">"Queue is empty"</span>)
+        _, task = heapq.<span class="fn">heappop</span>(<span class="kw">self</span>._heap)
+        <span class="kw">return</span> task
+
+    <span class="kw">def</span> <span class="fn">peek</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="kw">self</span>._heap[<span class="nm">0</span>][<span class="nm">1</span>] <span class="kw">if</span> <span class="kw">self</span>._heap <span class="kw">else</span> <span class="kw">None</span>
+
+    <span class="kw">def</span> <span class="fn">get_sorted</span>(<span class="kw">self</span>):   <span class="cm"># Generator — memory efficient</span>
+        temp = <span class="kw">self</span>._heap[:]
+        <span class="kw">while</span> temp:
+            _, task = heapq.<span class="fn">heappop</span>(temp)
+            <span class="kw">yield</span> task
+
+
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="cm"># CONCEPT: Graph — Task Dependencies</span>
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="kw">class</span> <span class="cl">DependencyGraph</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>):
+        <span class="kw">self</span>.adj = <span class="fn">defaultdict</span>(<span class="fn">set</span>)  <span class="cm"># task_id → set of deps</span>
+
+    <span class="kw">def</span> <span class="fn">add_dependency</span>(<span class="kw">self</span>, task_id, depends_on):
+        <span class="cm"># task_id depends on depends_on</span>
+        <span class="kw">self</span>.adj[task_id].<span class="fn">add</span>(depends_on)
+
+    <span class="kw">def</span> <span class="fn">get_order</span>(<span class="kw">self</span>, task_id):
+        <span class="cm">"""BFS to get tasks that must complete before task_id"""</span>
+        visited = {task_id}
+        queue = <span class="fn">deque</span>([task_id])
+        order = []
+        <span class="kw">while</span> queue:
+            curr = queue.<span class="fn">popleft</span>()
+            <span class="kw">for</span> dep <span class="kw">in</span> <span class="kw">self</span>.adj[curr]:
+                <span class="kw">if</span> dep <span class="kw">not</span> <span class="kw">in</span> visited:
+                    visited.<span class="fn">add</span>(dep)
+                    queue.<span class="fn">append</span>(dep)
+                    order.<span class="fn">append</span>(dep)
+        <span class="kw">return</span> order
+
+    <span class="kw">def</span> <span class="fn">has_cycle</span>(<span class="kw">self</span>):
+        <span class="cm">"""DFS cycle detection — prevent circular dependencies"""</span>
+        visited, rec_stack = <span class="fn">set</span>(), <span class="fn">set</span>()
+        <span class="kw">def</span> <span class="fn">dfs</span>(node):
+            visited.<span class="fn">add</span>(node); rec_stack.<span class="fn">add</span>(node)
+            <span class="kw">for</span> nb <span class="kw">in</span> <span class="kw">self</span>.adj[node]:
+                <span class="kw">if</span> nb <span class="kw">not</span> <span class="kw">in</span> visited:
+                    <span class="kw">if</span> <span class="fn">dfs</span>(nb): <span class="kw">return</span> <span class="kw">True</span>
+                <span class="kw">elif</span> nb <span class="kw">in</span> rec_stack: <span class="kw">return</span> <span class="kw">True</span>
+            rec_stack.<span class="fn">discard</span>(node); <span class="kw">return</span> <span class="kw">False</span>
+        <span class="kw">return</span> <span class="fn">any</span>(<span class="fn">dfs</span>(n) <span class="kw">for</span> n <span class="kw">in</span> <span class="kw">self</span>.adj <span class="kw">if</span> n <span class="kw">not</span> <span class="kw">in</span> visited)
+
+
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="cm"># CONCEPT: Hash Map — O(1) Task Lookup</span>
+<span class="cm"># CONCEPT: Stack — Undo Operations</span>
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="kw">class</span> <span class="cl">TaskManager</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>):
+        <span class="kw">self</span>.task_map = {}            <span class="cm"># hash map: id → Task</span>
+        <span class="kw">self</span>.pq = <span class="cl">PriorityQueue</span>()    <span class="cm"># heap</span>
+        <span class="kw">self</span>.history = <span class="cl">TaskHistory</span>() <span class="cm"># linked list</span>
+        <span class="kw">self</span>.undo_stack = []         <span class="cm"># stack for undo</span>
+        <span class="kw">self</span>.graph = <span class="cl">DependencyGraph</span>() <span class="cm"># graph</span>
+
+    <span class="kw">def</span> <span class="fn">add_task</span>(<span class="kw">self</span>, title, priority=<span class="nm">5</span>, category=<span class="st">"general"</span>):
+        task = <span class="cl">Task</span>(title, priority, category)
+        <span class="kw">self</span>.task_map[task.id] = task   <span class="cm"># O(1) insert</span>
+        <span class="kw">self</span>.pq.<span class="fn">push</span>(task)             <span class="cm"># O(log n) heap insert</span>
+        <span class="kw">self</span>.history.<span class="fn">record</span>(<span class="st">"ADD"</span>, task)
+        <span class="kw">self</span>.undo_stack.<span class="fn">append</span>(<span class="st">"add"</span>, task)  <span class="cm"># stack push</span>
+        <span class="fn">print</span>(<span class="st">f"✅ Added: </span>{task}<span class="st">"</span>)
+        <span class="kw">return</span> task
+
+    <span class="kw">def</span> <span class="fn">complete_task</span>(<span class="kw">self</span>, task_id):
+        task = <span class="kw">self</span>.task_map.<span class="fn">get</span>(task_id)  <span class="cm"># O(1) lookup</span>
+        <span class="kw">if</span> <span class="kw">not</span> task:
+            <span class="kw">raise</span> <span class="cl">KeyError</span>(<span class="st">f"Task </span>{task_id}<span class="st"> not found"</span>)
+        <span class="cm"># Check if dependencies are done first (graph)</span>
+        deps = <span class="kw">self</span>.graph.<span class="fn">get_order</span>(task_id)
+        pending = [d <span class="kw">for</span> d <span class="kw">in</span> deps <span class="kw">if</span> d <span class="kw">in</span> <span class="kw">self</span>.task_map
+                   <span class="kw">and</span> <span class="kw">not</span> <span class="kw">self</span>.task_map[d].done]
+        <span class="kw">if</span> pending:
+            <span class="fn">print</span>(<span class="st">f"⚠️ Blocked! Complete first: </span>{pending}<span class="st">"</span>); <span class="kw">return</span>
+        task.<span class="fn">complete</span>()
+        <span class="kw">self</span>.history.<span class="fn">record</span>(<span class="st">"COMPLETE"</span>, task)
+        <span class="fn">print</span>(<span class="st">f"🎉 Completed: </span>{task.title}<span class="st">"</span>)
+
+    <span class="kw">def</span> <span class="fn">next_task</span>(<span class="kw">self</span>):
+        task = <span class="kw">self</span>.pq.<span class="fn">peek</span>()
+        <span class="fn">print</span>(<span class="st">f"👉 Next: </span>{task}<span class="st">"</span> <span class="kw">if</span> task <span class="kw">else</span> <span class="st">"Queue empty!"</span>)
+        <span class="kw">return</span> task
+
+    <span class="kw">def</span> <span class="fn">show_all</span>(<span class="kw">self</span>):
+        <span class="fn">print</span>(<span class="st">"\n📋 All Tasks (by priority):"</span>)
+        <span class="kw">for</span> task <span class="kw">in</span> <span class="kw">self</span>.pq.<span class="fn">get_sorted</span>():   <span class="cm"># generator!</span>
+            <span class="fn">print</span>(<span class="st">f"  </span>{task}<span class="st">"</span>)
+
+    <span class="kw">def</span> <span class="fn">filter_by</span>(<span class="kw">self</span>, category=<span class="kw">None</span>, done=<span class="kw">None</span>):
+        <span class="cm"># Lambda + filter</span>
+        tasks = <span class="kw">self</span>.task_map.<span class="fn">values</span>()
+        <span class="kw">if</span> category:
+            tasks = <span class="fn">filter</span>(<span class="kw">lambda</span> t: t.category == category, tasks)
+        <span class="kw">if</span> done <span class="kw">is</span> <span class="kw">not</span> <span class="kw">None</span>:
+            tasks = <span class="fn">filter</span>(<span class="kw">lambda</span> t: t.done == done, tasks)
+        <span class="kw">return</span> <span class="fn">sorted</span>(tasks, key=<span class="kw">lambda</span> t: t.priority)
+
+    <span class="kw">def</span> <span class="fn">stats</span>(<span class="kw">self</span>):
+        <span class="kw">from</span> collections <span class="kw">import</span> Counter
+        tasks = <span class="kw">list</span>(<span class="kw">self</span>.task_map.<span class="fn">values</span>())
+        <span class="fn">print</span>(<span class="st">f"\n📊 Stats:"</span>)
+        <span class="fn">print</span>(<span class="st">f"  Total:     </span>{<span class="fn">len</span>(tasks)}<span class="st">"</span>)
+        <span class="fn">print</span>(<span class="st">f"  Completed: </span>{<span class="fn">sum</span>(<span class="nm">1</span> <span class="kw">for</span> t <span class="kw">in</span> tasks <span class="kw">if</span> t.done)}<span class="st">"</span>)
+        cats = <span class="cl">Counter</span>(t.category <span class="kw">for</span> t <span class="kw">in</span> tasks)
+        <span class="fn">print</span>(<span class="st">f"  Categories: </span>{<span class="fn">dict</span>(cats)}<span class="st">"</span>)
+
+
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="cm"># MAIN</span>
+<span class="cm"># ═══════════════════════════════════════</span>
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+    tm = <span class="cl">TaskManager</span>()
+
+    <span class="cm"># Add tasks with priorities</span>
+    design = tm.<span class="fn">add_task</span>(<span class="st">"Design DB Schema"</span>, priority=<span class="nm">2</span>, category=<span class="st">"backend"</span>)
+    code   = tm.<span class="fn">add_task</span>(<span class="st">"Write API"</span>,        priority=<span class="nm">3</span>, category=<span class="st">"backend"</span>)
+    test   = tm.<span class="fn">add_task</span>(<span class="st">"Write Tests"</span>,      priority=<span class="nm">4</span>, category=<span class="st">"testing"</span>)
+    deploy = tm.<span class="fn">add_task</span>(<span class="st">"Deploy to Prod"</span>,   priority=<span class="nm">1</span>, category=<span class="st">"devops"</span>)
+
+    <span class="cm"># Set dependencies (Graph)</span>
+    tm.graph.<span class="fn">add_dependency</span>(code.id, design.id)    <span class="cm"># code needs design</span>
+    tm.graph.<span class="fn">add_dependency</span>(test.id, code.id)      <span class="cm"># test needs code</span>
+    tm.graph.<span class="fn">add_dependency</span>(deploy.id, test.id)    <span class="cm"># deploy needs test</span>
+
+    <span class="cm"># Try to deploy first — blocked!</span>
+    tm.<span class="fn">complete_task</span>(deploy.id)    <span class="cm"># ⚠️ blocked</span>
+
+    <span class="cm"># Complete in correct order</span>
+    tm.<span class="fn">complete_task</span>(design.id)
+    tm.<span class="fn">complete_task</span>(code.id)
+    tm.<span class="fn">complete_task</span>(test.id)
+    tm.<span class="fn">complete_task</span>(deploy.id)   <span class="cm"># ✅ success!</span>
+
+    tm.<span class="fn">show_all</span>()
+    tm.<span class="fn">stats</span>()
+    tm.history.<span class="fn">print_history</span>()</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div style="margin-bottom:0.5rem; color:var(--accent);">🐍 Python Mastery Notes</div>
+    <div>Built for complete learners — from print("Hello") to Dynamic Programming</div>
+    <div style="margin-top:0.5rem; color:rgba(122,143,166,0.5); font-size:0.7rem;">Basics → Collections → OOP → DSA → Algorithms → Visualization → Real Projects</div>
+  </div>
+
+</main>
+
+<script>
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+
+  // Smooth scroll offset
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>
